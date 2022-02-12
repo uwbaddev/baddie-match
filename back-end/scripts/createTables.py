@@ -15,8 +15,6 @@ def createTables():
         """
         CREATE TABLE matches (
             id INTEGER PRIMARY KEY,
-            first_name VARCHAR(255) NOT NULL,
-            last_name VARCHAR(255) NOT NULL,
             players INTEGER[] NOT NULL,
             winners INTEGER[] NOT NULL,
             score INTEGER[] NOT NULL,
