@@ -28,7 +28,6 @@ def createTables():
         """
         CREATE TABLE players (
             id INTEGER PRIMARY KEY,
-            event VARCHAR(2) NOT NULL,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
             elegible_year INTEGER,
