@@ -1,17 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&display=swap');
 
-h1 {
-  font-family: 'Barlow Condensed';
-  font-weight: 500;
-  align-items: center;
+:root {
+  --main-body-font: 'Barlow Condensed';
 }
 
 .header-panel {
+  margin: 0 0 0 0 ;
   padding: 0.6em 0;
   background-color: #FFD54F;
 }
 .header {
- font-family: 'Barlow Condensed';
+ font-family: var(--main-body-font);
   font-weight: 500;
   justify-content: center;
   display:flex;
@@ -19,11 +18,23 @@ h1 {
 }
 
 .header-icon {
-  padding: 3em 0 0 3em;
+  padding: 1.2em 0 0 3em;
 }
 
 .page-title {
+  font-family: var(--main-body-font);
   display: flex;
+  justify-content: center;
+  font-size: 2em;
+  padding: 1em 0;
+}
+.page-header {
+  font-family: var(--main-body-font);
+  font-size: 1.5em;
+}
+
+.forms {
+  font-family: var(--main-body-font) !important;
 }
 
 body {

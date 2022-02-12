@@ -5,10 +5,11 @@ import '../index.css'
 const Header = () => {
     return (
         <>
-            <Container className='header-panel'>
+            <Container fluid className='header-panel'>
                 <Row>
                     <Col className='header-icon'><DropdownIcon></DropdownIcon></Col>
                     <Col className='header'> WATERLOO WARRIORS</Col>
+                    <Col />
                 </Row>
             </Container>
         </>
