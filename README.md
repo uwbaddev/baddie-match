@@ -25,3 +25,7 @@ venv\scripts\activate
 setx FLASK_APP "app.py"
 flask run
 ```
+
+TODO:
+* setting up postgres
+* Things we will need `npm` `python3` `postgres`
