@@ -12,7 +12,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{user}:{password}@{host}/{
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import Categories, Players
+from categories import Categories
+from players import Players
 
 @app.route("/")
 def hello_world():
@@ -39,6 +40,11 @@ def newPlayer():
 def newCategory():
     name = request.form.get("name")
     print(name)
+    print('postgresql://{user}:{password}@{host}/{name}'.format(
+    user=os.getenv('DATABASE_USER'),
+    password=os.getenv('DATABASE_PASSWORD'),
+    host=os.getenv('DATABASE_HOST'),
+    name=os.getenv('DATABASE_NAME')))
     
     try:
         category=Categories(
