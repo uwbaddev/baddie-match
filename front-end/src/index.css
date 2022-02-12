@@ -8,10 +8,7 @@ h1 {
 
 .header-panel {
   padding: 0.6em 0;
-  background-color: #E4B429;
-  outline-width: 0.5em;
-  outline-color: black;
-  outline-style: solid;
+  background-color: #FFD54F;
 }
 .header {
  font-family: 'Barlow Condensed';
@@ -23,6 +20,10 @@ h1 {
 
 .header-icon {
   padding: 3em 0 0 3em;
+}
+
+.page-title {
+  display: flex;
 }
 
 body {
