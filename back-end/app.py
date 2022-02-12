@@ -1,6 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import os
+import os, json
 
 app = Flask(__name__)
 
@@ -34,6 +34,11 @@ def newCategory():
         return "Inserted {name} into categories".format(name=name), 200
     except Exception as e:
         return str(e), 500
+
+@app.route("/categories", methods = ["GET"])
+def getCategories():
+    categories = Categories.query.all()
+    return json.dumps([c.serialize() for c in categories])
 
 if __name__ == '__main__':
     app.run()
