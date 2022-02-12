@@ -1,5 +1,6 @@
 # from app import db
 from app import db
+import json
 
 # class Categories(db.Model):
 #   __tablename__ = 'categories'
@@ -27,13 +28,9 @@ class Players(db.Model):
     sex = db.Column(db.String)
 
     def get_all_players():
-      to_return = []
       players = Players.query.all()
       print('hi')
-      for player in players:
-
-        print(player.name)
-        to_return.append(player.serialize)
+      return json.dumps([player.serialize() for player in players])
     
     def createPlayer(id, first_name, last_name, elegible_year, sex): 
       # if ((id is None) | (first_name is None) | (last_name is None) | (elegible_year is None) | (sex is None)):
