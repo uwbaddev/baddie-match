@@ -32,12 +32,11 @@ class Players(db.Model):
       print('hi')
       return json.dumps([player.serialize() for player in players])
     
-    def createPlayer(id, first_name, last_name, elegible_year, sex): 
+    def createPlayer(first_name, last_name, elegible_year, sex): 
       # if ((id is None) | (first_name is None) | (last_name is None) | (elegible_year is None) | (sex is None)):
       #   raise Exception('fields cannot be null')
 
       player=Players(
-            id=id,
             first_name=first_name,
             last_name=last_name,
             elegible_year=elegible_year,
