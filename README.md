@@ -11,8 +11,23 @@ npm start
 ```
 
 ### Running Locally
-Make a copy of `.env.sample` and rename it to `.env`. Modify this file.
+#### PostgreSQL
+Will need postgreSQL, so download that first.
 
+Mac
+```
+brew install postgresql
+pg_ctl -D /usr/local/var/postgres/ start
+createdb <name>
+psql <name>
+```
+(Not sure about Windows)
+
+#### Setting up the environment variables
+Make a copy of `.env.sample` and rename it to `.env` in the `back-end` directory. Set the database host, name, user name, and password to whatever is set for your db.
+Run `scripts/createTables.py` to create the required tables.
+
+#### Running the app
 Mac/Linux
 ```
 cd back-end

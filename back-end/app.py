@@ -31,9 +31,9 @@ def newCategory():
         db.session.commit()
         print("success!")
         
-        return "success!"
+        return "Inserted {name} into categories".format(name=name), 200
     except Exception as e:
-        return str(e)
+        return str(e), 500
 
 if __name__ == '__main__':
     app.run()
