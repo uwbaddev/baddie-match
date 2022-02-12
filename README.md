@@ -9,6 +9,7 @@ npm start
 
 ### Running Locally
 ```
+cd back-end
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
