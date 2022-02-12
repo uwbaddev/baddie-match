@@ -1,6 +1,8 @@
 # baddie-match
 Web app to track our badminton matches
 
+https://www.figma.com/file/cMTxu6tnGFqgTrjF2QLrtN/Untitled?node-id=0%3A1
+
 ### Running Front End Locally
 ```
 cd front-end
@@ -27,3 +29,7 @@ venv\scripts\activate
 setx FLASK_APP "app.py"
 flask run
 ```
+
+TODO:
+* setting up postgres
+* Things we will need `npm` `python3` `postgres`
