@@ -1,16 +1,20 @@
+from dotenv import load_dotenv
+import os
 import psycopg2
 #from ..config import config
 
+load_dotenv()
+
 def createTables():
     conn = psycopg2.connect(
-        host="localhost",
-        database="test",
-        user="postgres",
-        password="password")
+        host=os.getenv("DATABASE_HOST"),
+        database=os.getenv("DATABASE_NAME"),
+        user=os.getenv("DATABASE_USER"),
+        password=os.getenv("DATABASE_PASSWORD"))
 
     commands = (
         """
-        CREATE TABLE players (
+        CREATE TABLE matches (
             id INTEGER PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
@@ -23,13 +27,19 @@ def createTables():
         )
         """,
         """
-        CREATE TABLE matches (
+        CREATE TABLE players (
             id INTEGER PRIMARY KEY,
             event VARCHAR(2) NOT NULL,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
             elegible_year INTEGER,
             sex VARCHAR(1) NOT NULL
+        )
+        """,
+        """
+        CREATE TABLE categories (
+            id INTEGER PRIMARY KEY,
+            name VARCHAR(255) NOT NULL
         )
         """,
         )

@@ -9,6 +9,8 @@ npm start
 ```
 
 ### Running Locally
+Make a copy of `.env.sample` and rename it to `.env`. Modify this file.
+
 Mac/Linux
 ```
 cd back-end
