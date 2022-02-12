@@ -1,0 +1,68 @@
+# from app import db
+from app import db
+
+# class Categories(db.Model):
+#   __tablename__ = 'categories'
+
+#   id = db.Column(db.Integer, primary_key=True)
+#   name = db.Column(db.String())
+
+#   def __repr__(self):
+#     return '<Category %r>' % self.name
+
+#   def serialize(self):
+#     return {
+#         'id': self.id,
+#         'name': self.name
+#     }
+
+class Players(db.Model):
+    #todo find out how to make non-nullable
+    __tablename__ = 'players'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    elegible_year = db.Column(db.Integer)
+    sex = db.Column(db.String)
+
+    def get_all_players():
+      to_return = []
+      players = Players.query.all()
+      print('hi')
+      for player in players:
+
+        print(player.name)
+        to_return.append(player.serialize)
+    
+    def createPlayer(id, first_name, last_name, elegible_year, sex): 
+      # if ((id is None) | (first_name is None) | (last_name is None) | (elegible_year is None) | (sex is None)):
+      #   raise Exception('fields cannot be null')
+
+      player=Players(
+            id=id,
+            first_name=first_name,
+            last_name=last_name,
+            elegible_year=elegible_year,
+            sex=sex,
+        )
+      db.session.add(player)
+      db.session.commit()
+      print("success!")
+      return "success!"
+
+
+    
+    def __repr__(self):
+        return 'todo'
+
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'first_name' : self.first_name,
+            'last_name': self.last_name,
+            'elegible_year' : self.elegible_year,
+            'sex' : self.sex
+        }
+
+
