@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
 import psycopg2
-#from ..config import config
 
 load_dotenv()
 
@@ -38,7 +37,7 @@ def createTables():
         """,
         """
         CREATE TABLE categories (
-            id INTEGER PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL
         )
         """,
