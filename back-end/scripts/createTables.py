@@ -12,12 +12,16 @@ def createTables():
         password=os.getenv("DATABASE_PASSWORD"))
 
     commands = (
+        "DROP TABLE matches",
+        "DROP TABLE players",
+        "DROP TABLE categories",
         """
         CREATE TABLE matches (
-            id INTEGER PRIMARY KEY,
-            players INTEGER[] NOT NULL,
-            winners INTEGER[] NOT NULL,
-            score INTEGER[] NOT NULL,
+            id SERIAL PRIMARY KEY,
+            event VARCHAR(255),
+            players INTEGER[],
+            winners INTEGER[],
+            score INTEGER[],
             category VARCHAR(255),
             date_added DATE,
             last_edit DATE
@@ -25,7 +29,7 @@ def createTables():
         """,
         """
         CREATE TABLE players (
-            id INTEGER PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
             elegible_year INTEGER,
