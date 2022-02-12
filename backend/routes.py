@@ -1,20 +1,9 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-import os, json
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{user}:{password}@{host}/{name}'.format(
-    user=os.getenv('DATABASE_USER'),
-    password=os.getenv('DATABASE_PASSWORD'),
-    host=os.getenv('DATABASE_HOST'),
-    name=os.getenv('DATABASE_NAME'))
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
+from __main__ import app, db
 from categories import Categories
 from players import Players
 from matches import Matches
+from flask import request, jsonify
+import os, json
 
 @app.route("/")
 def hello_world():
@@ -87,6 +76,3 @@ def newCategory():
 def getCategories():
     categories = Categories.query.all()
     return json.dumps([c.serialize() for c in categories])
-
-if __name__ == '__main__':
-    app.run()
