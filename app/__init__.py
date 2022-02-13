@@ -4,8 +4,8 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__, static_url_path='',
-                  static_folder=os.path.abspath("../front-end/build"),
-                  template_folder=os.path.abspath("../front-end/build"))
+                  static_folder="../../front-end/build",
+                  template_folder="../../front-end/build")
 CORS(app)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
