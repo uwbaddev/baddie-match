@@ -1,5 +1,5 @@
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider"
-import { CategoryUrl } from "../API/API"
+import { CategoryUrl, PlayerUrl } from "../API/API"
 import React from "react"
 import { useState, useEffect } from "react"
 
@@ -10,7 +10,7 @@ const useApp = () => {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        fetch('https://baddie-match.herokuapp.com/players')
+        fetch(PlayerUrl, { method: 'GET' })
             .then(res => res.json())
             .then(data => {
                 setPlayers(data);
