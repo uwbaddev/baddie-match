@@ -55,13 +55,13 @@ const SinglesForm = () => {
             <Row>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
@@ -77,16 +77,16 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col xs={3} md={9} >PLAYER ONE</Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
             </Row>
             <hr></hr>
             <Row>
                 <Col xs={3} md={9} >PLAYER TWO</Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
+                <Col xs={3} md={1} ><Form.Control type='number' inputMode='numeric' min='0' max='30'></Form.Control></Col>
             </Row>
 
             <Row>
