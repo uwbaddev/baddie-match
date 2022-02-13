@@ -1,8 +1,51 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useState, useContext } from "react";
+import { ReportUrl } from "../API/API";
+import { AppContext } from '../Contexts/AppContext'
+
+const SinglesForm = () => {
+    const { categories, players } = useContext(AppContext);
+
+    const [matchObj, setMatchObj] = useState({
+        event: 'Singles',
+        player1Id: 0,
+        player2Id: 0,
+        score: [0, 0, 0, 0, 0, 0],
+        category: ''
+    })
+
+    async function postResults() {
+        if (matchObj.player1Id == 0 || matchObj.player2Id == 0) {
+            return;
+        }
+        let counter = 0;
+        for (let i = 0; i < 6; i++) {
+            if (matchObj.score[i] == 21) {
+                counter++;
+            }
+        }
+        if (counter < 2) {
+            return;
+        }
+        const matchForm = new FormData();
+        matchForm.append('event', matchObj.event);
+        matchForm.append('player1Id', matchObj.player1Id);
+        matchForm.append('player2Id', matchObj.player2Id);
+        matchForm.append('score', matchObj.score);
+        matchForm.append('category', matchObj.category);
+
+        fetch(ReportUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            body: matchForm
+        }).then(response => response.json()).then(data => console.log(data)).catch(error => {
+            console.error('Error: ', error);
+        })
+    }
 
 
-
-const SinglesForm = ({players, categories}) => {
     return (
         <>
             <Row>
@@ -66,6 +109,6 @@ const SinglesForm = ({players, categories}) => {
             </Row>
         </>
     )
-}
 
-export default SinglesForm
+}
+export default SinglesForm;

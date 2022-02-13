@@ -2,12 +2,14 @@ import logo from './logo.svg';
 import './App.css';
 import MainRouter from './Routers/MainRouter';
 import { BrowserRouter } from 'react-router-dom';
+import AppContextProvider from './Contexts/AppContext';
 
 function App() {
   return (
     <>
-      <MainRouter />
-
+      <AppContextProvider>
+        <MainRouter />
+      </AppContextProvider>
       {/* <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />

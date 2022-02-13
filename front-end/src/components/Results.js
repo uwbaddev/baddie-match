@@ -8,7 +8,7 @@ const ResultsPage = () => {
     async function getResults() {
         const response = await fetch(ResultsURL, {
             method: 'GET',
-        }).then(response => response.json()).then(data => { setResults(response); console.log(data) })
+        }).then(response => response.json()).then(data => { setResults(response); console.log(data) }).catch(error => console.error('Error: ', error));
     }
     return (
         <>
