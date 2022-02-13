@@ -38,8 +38,9 @@ FLASK_APP=app.py flask run
 ```
 Windows
 ```
-venv\scripts\pip.exe install -r requirements.txt
+python3 -m venv venv
 venv\scripts\activate
+venv\scripts\pip.exe install -r requirements.txt
 setx FLASK_APP "app.py"
 flask run
 ```
