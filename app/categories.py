@@ -30,7 +30,7 @@ class Categories(db.Model):
       if (name is not None):
         category.name = name
         db.session.commit()
-      return 'success', 200
+      return 'success', 201
 
   def serialize(self):
     return {

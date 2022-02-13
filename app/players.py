@@ -56,7 +56,7 @@ class Players(db.Model):
       if (sex is not None):
         player.sex = sex
         db.session.commit()
-      return 'success', 200
+      return 'success', 201
     
     def delete(id):
       db.session.query(Players).filter(Players.id==id).delete()
