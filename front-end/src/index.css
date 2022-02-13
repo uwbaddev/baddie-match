@@ -32,6 +32,8 @@
 .page-header {
   font-family: var(--main-body-font);
   font-size: 1.5em;
+  padding-top: 1em;
+  padding-bottom: 0.25em;
 }
 
 .forms {
