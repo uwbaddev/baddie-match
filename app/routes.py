@@ -3,11 +3,12 @@ from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
 from flask import request, jsonify
+from flask_cors import cross_origin
 import os, json
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def hello():
+    return render_template("index.html")
 
 @app.route("/match", methods = ["GET"])
 def get_all_matches():
