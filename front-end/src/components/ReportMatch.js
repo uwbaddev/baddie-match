@@ -1,5 +1,4 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import EventSelect from "../Helpers/FormButton";
 import '../index.css';
 import { useState } from "react";
 import SinglesForm from "../Forms/SinglesForm";

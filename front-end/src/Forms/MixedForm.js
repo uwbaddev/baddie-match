@@ -16,6 +16,8 @@ const MixedForm = () => {
             <Row>
                 <Col>
                     <Form.Select >
+                        <option>Choose a player</option>
+
                         <option value='Darren Choi'>Darren Choi</option>
                         <option value='Angela Chen'>Angela Chen</option>
                         <option value="Jenny Lei">Jenny Lei</option>
@@ -23,7 +25,8 @@ const MixedForm = () => {
                     </Form.Select>
                 </Col>
                 <Col>
-                    <Form.Select >
+                    <Form.Select >                        <option>Choose a player</option>
+
                         <option value='Darren Choi'>Darren Choi</option>
                         <option value='Angela Chen'>Angela Chen</option>
                         <option value="Jenny Lei">Jenny Lei</option>
@@ -40,7 +43,8 @@ const MixedForm = () => {
             </Row>
             <Row>
                 <Col>
-                    <Form.Select >
+                    <Form.Select >                        <option>Choose a player</option>
+
                         <option value='Darren Choi'>Darren Choi</option>
                         <option value='Angela Chen'>Angela Chen</option>
                         <option value="Jenny Lei">Jenny Lei</option>
@@ -48,7 +52,8 @@ const MixedForm = () => {
                     </Form.Select>
                 </Col>
                 <Col>
-                    <Form.Select >
+                    <Form.Select >                        <option>Choose a player</option>
+
                         <option value='Darren Choi'>Darren Choi</option>
                         <option value='Angela Chen'>Angela Chen</option>
                         <option value="Jenny Lei">Jenny Lei</option>
@@ -67,16 +72,16 @@ const MixedForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={9} >TEAM ONE</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
             </Row>
             <hr></hr>
             <Row>
                 <Col xs={6} md={9} >TEAM TWO</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='1' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
             </Row>
 
             <Row>
@@ -84,7 +89,8 @@ const MixedForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={4}>
-                    <Form.Select>
+                    <Form.Select>                        <option>Choose an option</option>
+
                         <option value="OUA">OUA</option>
                         <option value='UniNats'>University Nationals</option>
                     </Form.Select>
