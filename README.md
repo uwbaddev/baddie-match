@@ -24,7 +24,7 @@ psql <name>
 (Not sure about Windows)
 
 #### Setting up the environment variables
-Make a copy of `.env.sample` and rename it to `.env` in the `back-end` directory. Set the database host, name, user name, and password to whatever is set for your db.
+Make a copy of `.env.sample` and rename it to `.env` in the root directory. Set the database to the <name> you just created.
 Run `scripts/createTables.py` to create the required tables.
 
 #### Running the app
