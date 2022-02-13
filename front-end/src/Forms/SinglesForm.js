@@ -102,8 +102,8 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col>
-                    <Button type='submit'>
-                        Submit
+                    <Button className='submit-button' type='submit'>
+                        SUMBIT
                     </Button>
                 </Col>
             </Row>
