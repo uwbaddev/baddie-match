@@ -2,7 +2,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 
 
-const SinglesForm = () => {
+const SinglesForm = ({players, categories}) => {
     return (
         <>
             <Row>
@@ -13,20 +13,13 @@ const SinglesForm = () => {
                 <Col>
                     <Form.Select >
                         <option>Choose a player</option>
-
-                        <option value='Darren Choi'>Darren Choi</option>
-                        <option value='Angela Chen'>Angela Chen</option>
-                        <option value="Jenny Lei">Jenny Lei</option>
-                        <option value="Ivan Cheng">Ivan Cheng</option>
+                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
                 <Col>
-                    <Form.Select >                        <option>Choose a player</option>
-
-                        <option value='Darren Choi'>Darren Choi</option>
-                        <option value='Angela Chen'>Angela Chen</option>
-                        <option value="Jenny Lei">Jenny Lei</option>
-                        <option value="Ivan Cheng">Ivan Cheng</option>
+                    <Form.Select >
+                        <option>Choose a player</option>
+                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
             </Row>
@@ -58,10 +51,9 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={4}>
-                    <Form.Select>                        <option>Choose an option</option>
-
-                        <option value="OUA">OUA</option>
-                        <option value='UniNats'>University Nationals</option>
+                    <Form.Select>
+                        <option>Choose an option</option>
+                        {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
                     </Form.Select>
                 </Col>
             </Row>

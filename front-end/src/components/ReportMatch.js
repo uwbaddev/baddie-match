@@ -1,6 +1,6 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import '../index.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SinglesForm from "../Forms/SinglesForm";
 import DoublesForm from "../Forms/DoublesForm";
 import MixedForm from "../Forms/MixedForm";
@@ -8,6 +8,21 @@ import MixedForm from "../Forms/MixedForm";
 const ReportMatchComponent = () => {
 
     const [eventType, setEventType] = useState('');
+    const [players, setPlayers] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        fetch('https://baddie-match.herokuapp.com/players')
+            .then(res => res.json())
+            .then(data => {
+                setPlayers(data);
+            });
+        fetch('https://baddie-match.herokuapp.com/categories')
+            .then(res => res.json())
+            .then(data => {
+                setCategories(data);
+            });
+    }, []);
 
     function selectEvent(event) {
         // console.log(event);
@@ -54,9 +69,9 @@ const ReportMatchComponent = () => {
                             />
                         </div>
                     ))}
-                    {eventType == 'Singles' && <SinglesForm></SinglesForm>}
-                    {eventType == 'Doubles' && <DoublesForm />}
-                    {eventType == 'Mixed' && <MixedForm />}
+                    {eventType == 'Singles' && <SinglesForm players={players} categories={categories} />}
+                    {eventType == 'Doubles' && <DoublesForm players={players} categories={categories} />}
+                    {eventType == 'Mixed' && <MixedForm players={players} categories={categories} />}
 
 
                 </Form>
