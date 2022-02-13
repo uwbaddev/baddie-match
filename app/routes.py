@@ -6,14 +6,19 @@ from flask import request, jsonify
 from flask_cors import cross_origin
 import os, json
 
+@cross_origin()
 @app.route("/")
 def hello():
     return render_template("index.html")
 
+
+@cross_origin()
 @app.route("/players", methods = ["GET"])
 def getplayers():
     return Players.get_all_players()
 
+
+@cross_origin()
 @app.route("/player", methods = ["POST"])
 def newPlayer():
     first_name = request.form.get("first_name")
@@ -27,6 +32,8 @@ def newPlayer():
     except Exception as e:
         return str(e), 500
 
+
+@cross_origin()
 @app.route("/player/<id>", methods = ["DELETE", "GET", "PUT"])
 def playerHandler(id):
     player = Players.findById(id)
@@ -48,6 +55,7 @@ def playerHandler(id):
         return "success", 200
 
               
+@cross_origin()              
 @app.route("/category", methods = ["POST"])
 def newCategory():
     name = request.form.get("name")
@@ -70,11 +78,15 @@ def newCategory():
     except Exception as e:
         return str(e), 500
 
+
+@cross_origin()
 @app.route("/categories", methods = ["GET"])
 def getCategories():
     categories = Categories.query.all()
     return json.dumps([c.serialize() for c in categories])
-    
+
+
+@cross_origin()    
 @app.route("/category/<id>", methods = ["GET","DELETE","PUT"])
 def getCategory(id):
     if (request.method == 'GET'):
