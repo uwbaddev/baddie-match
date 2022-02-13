@@ -14,7 +14,6 @@ class Players(db.Model):
 
     def get_all_players():
       players = Players.query.all()
-      print('hi')
       return json.dumps([player.serialize() for player in players])
     
     def createPlayer(first_name, last_name, elegible_year, sex): 

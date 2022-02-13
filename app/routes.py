@@ -11,6 +11,9 @@ import os, json
 def hello():
     return render_template("index.html")
 
+################################################################################
+#players 
+################################################################################
 
 @cross_origin()
 @app.route("/players", methods = ["GET"])
@@ -54,6 +57,10 @@ def playerHandler(id):
         Players.delete(id)
         return "success", 200
 
+
+################################################################################
+#categories 
+################################################################################
               
 @cross_origin()              
 @app.route("/category", methods = ["POST"])
@@ -88,7 +95,7 @@ def getCategories():
 
 @cross_origin()    
 @app.route("/category/<id>", methods = ["GET","DELETE","PUT"])
-def getCategory(id):
+def categoryHandler(id):
     if (request.method == 'GET'):
         category = Categories.findById(id)
         if (category is None):
@@ -108,7 +115,61 @@ def getCategory(id):
             return 'fail', 100
         Categories.delete(id)
         return "success", 200
+
+################################################################################
+#matches 
+################################################################################
     
+@cross_origin()
+@app.route("/matches", methods = ["GET"])
+def getMatches():
+    matches = Matches.query.all()
+    return json.dumps([m.serialize() for m in matches])
+
+@cross_origin()
+@app.route("/match/<id>", methods = ["DELETE", "GET", "PUT"])
+def matchHandler(id):
+    match = Matches.findById(id)
+    if (match is None):
+        return 'No match found', 100
+    elif (request.method == 'GET'):
+        return match, 200
+    elif (request.method == 'PUT'):
+        event = request.form.get("event")
+        players = request.form.get("players")
+        winners = request.form.get("winners")
+        score = request.form.get("score")
+        category = request.form.get("category")
+        print(score)
+        try:
+            return Matches.update(id, event, players, winners, score, category)
+        except Exception as e:
+            return str(e), 500
+    else:
+        Matches.delete(id)
+        return "success", 200
+
+@cross_origin()
+@app.route("/match/player/<id>", methods = ["GET"])
+def getMatchesWithPlayer(id):
+    to_return = Matches.getMatchesWithPlayer(id)
+    return to_return
+
+@cross_origin()
+@app.route("/match", methods = ["POST"])
+def addMatch():
+    event = request.form.get("event")
+    player1Id = request.form.get("player1Id")
+    player2Id = request.form.get("player2Id")
+    score  = request.form.get("score")
+    category = request.form.get("category")
+    try: 
+        (Matches.createMatch(event, player1Id, player2Id, score, category))
+        return 'Match was added', 200
+    
+    except Exception as e:
+        return str(e), 500
+
 
 if __name__ == '__main__':
     app.run()

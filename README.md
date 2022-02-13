@@ -48,3 +48,6 @@ flask run
 TODO:
 * setting up postgres
 * Things we will need `npm` `python3` `postgres`
+
+milestones:
+dec 12 10:36 - dos'd our own backend 
