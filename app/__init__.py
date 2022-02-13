@@ -5,7 +5,7 @@ import os
 
 root_dir = os.path.dirname(os.getcwd())
 print(root_dir)
-app = Flask(__name__, static_url_path='',
+app = Flask(__name__, static_url_path='/',
                   static_folder="../front-end/build",
                   template_folder="../front-end/build")
 CORS(app)

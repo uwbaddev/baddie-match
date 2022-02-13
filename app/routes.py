@@ -12,6 +12,9 @@ def serve():
     print(app.static_folder)
     return render_template("index.html")
 
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 @cross_origin()
 @app.route("/players", methods = ["GET"])
