@@ -14,7 +14,6 @@ class Players(db.Model):
 
     def get_all_players():
       players = Players.query.all()
-      print('hi')
       return json.dumps([player.serialize() for player in players])
     
     def createPlayer(first_name, last_name, elegible_year, sex): 
@@ -57,7 +56,7 @@ class Players(db.Model):
       if (sex is not None):
         player.sex = sex
         db.session.commit()
-      return 'success', 200
+      return 'success', 201
     
     def delete(id):
       db.session.query(Players).filter(Players.id==id).delete()
