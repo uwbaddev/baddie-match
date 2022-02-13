@@ -1,8 +1,12 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useContext } from "react";
+import { AppContext } from '../Contexts/AppContext'
 
 
 
-const DoublesForm = ({players, categories}) => {
+const DoublesForm = () => {
+    const { categories, players } = useContext(AppContext);
+
     return (
         <>
             <Row>

@@ -1,8 +1,12 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useContext } from "react";
+import { AppContext } from '../Contexts/AppContext'
 
 
 
-const MixedForm = ({players, categories}) => {
+const MixedForm = () => {
+    const { categories, players } = useContext(AppContext);
+
     //need to filter out player by gender
     return (
         <>
