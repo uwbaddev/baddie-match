@@ -1,5 +1,5 @@
-export const DomainName = "https://baddie-match.herokuapp.com";
-export const MatchUrl = (id) => `${DomainName}/results/${id}`
+export const DomainName = "https://baddie-match.herokuapp.com/api";
+export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportUrl = `${DomainName}/report`
 export const CategoryUrl = `${DomainName}/categories`;
 export const PlayersUrl = `${DomainName}/players`

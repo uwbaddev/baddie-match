@@ -12,9 +12,9 @@ const useApp = () => {
     const [matches, setMatches] = useState([]);
 
     useEffect(() => {
-        fetch(PlayersUrl, { method: 'GET' })
+        fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
             .then(res => res.json())
-            .then(data => { setPlayers(data); });
+            .then(data => { setPlayers(data); console.log('hi'); console.log(data) });
 
         fetch(CategoryUrl, { method: 'GET' })
             .then(response => response.json())

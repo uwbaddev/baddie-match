@@ -32,7 +32,7 @@ const ResultsPage = () => {
                             <Form.Select type='select' onChange={(e) => getResults(e)}>
 
                                 <option>Choose a player</option>
-                                {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
+                                {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
 
                             </Form.Select>
                         </Col>

@@ -44,6 +44,16 @@ const SinglesForm = () => {
             console.error('Error: ', error);
         })
     }
+    function handleMatchDataChange(evt) {
+        if (evt.target.name == 'score') {
+            let localObj = matchObj;
+            localObj.score[evt.target.id] = evt.target.value;
+            setMatchObj(localObj);
+        }
+        else {
+            setMatchObj({ ...matchObj, [evt.target.name]: evt.target.value })
+        }
+    }
 
 
     return (
@@ -54,15 +64,15 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col>
-                    <Form.Select >
+                    <Form.Select name='player1Id' onChange={handleMatchDataChange}>
                         <option>Choose a player</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
+                        {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
                 <Col>
-                    <Form.Select >
+                    <Form.Select name='player2Id' onChange={handleMatchDataChange}>
                         <option>Choose a player</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
+                        {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
             </Row>
@@ -77,16 +87,16 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={9} >PLAYER ONE</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='1' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='3' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='5' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
             </Row>
             <hr></hr>
             <Row>
                 <Col xs={6} md={9} >PLAYER TWO</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='2' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='4' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='6' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
             </Row>
 
             <Row>
@@ -94,7 +104,7 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={4}>
-                    <Form.Select>
+                    <Form.Select name="category" onChange={handleMatchDataChange}>
                         <option>Choose an option</option>
                         {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
                     </Form.Select>
