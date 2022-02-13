@@ -31,7 +31,7 @@ def newPlayer():
     sex = request.form.get("sex")
     try: 
         (Players.createPlayer(first_name, last_name, elegible_year, sex))
-        return 'Player ' + first_name + last_name + "was added.", 200
+        return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
     
     except Exception as e:
         return str(e), 500
