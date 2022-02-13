@@ -25,3 +25,4 @@ zipp==3.7.0
 python-dotenv==0.19.2
 psycopg2==2.9.3
 psycopg2-binary==2.9.3
+SQLAlchemy==1.4.31
