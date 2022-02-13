@@ -2,13 +2,14 @@ from app import app, db
 from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
-from flask import request, jsonify, send_from_directory
+from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import os, json
 
 @app.route("/")
 def serve():
-    return send_from_directory(app.static_folder, "index.html")
+    print(app.static_folder)
+    return render_template("index.html")
 
 @cross_origin()
 @app.route("/match", methods = ["GET"])
