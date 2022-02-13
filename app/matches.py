@@ -66,11 +66,12 @@ class Matches(db.Model):
 
   def createMatch(event, player1Id, player2Id, score, category):
     if ((event is None) | (player1Id is None) | (player2Id is None) | (score is None)):
-        raise Exception('fields cannot be null')
+      raise Exception('fields cannot be null')
     
     parsed_score = json.loads(score)
-     
-    #raise Exception(final_score)
+    if (len(parsed_score) != 6):
+      raise Exception('score must be an array of 6')
+
     
     match=Matches (
       event = event,
@@ -79,13 +80,26 @@ class Matches(db.Model):
       category = category,
       date_added = datetime.today(),
       last_edit = datetime.today(),
+      winners = Matches.getWinnerSingles(parsed_score, player1Id, player2Id)
     )
     db.session.add(match)
     db.session.commit()
     return 'success'
   
- 
-      
+  def getWinnerSingles(s, player1Id, player2Id):
+    player1score = 0
+    if (s[0] > s[1]):
+      player1score += 1
+    if (s[2] > s[3]):
+      player1score += 1
+    if (s[4] > s[5]):
+      player1score += 1
+    
+    if (player1score == 2):
+      return [player1Id]
+    else:
+      return [player2Id]
+    
   def serialize(self):
     return {
         'id': self.id,
