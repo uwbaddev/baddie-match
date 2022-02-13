@@ -10,13 +10,11 @@ import os, json
 def hello():
     return render_template("index.html")
 
-@cross_origin()
 @app.route("/match", methods = ["GET"])
 def get_all_matches():
     matches = Matches.query.all()
     return jsonify([e.serialize() for e in matches])
 
-@cross_origin()
 @app.route("/match/<id>")
 def get_matches(id):
     match = Matches.query.filter_by(id=id).first()
@@ -37,12 +35,11 @@ def get_matches(id):
     
 #     return "Inserted {name} into categories".format(name=name), 200
 
-@cross_origin()
+
 @app.route("/players", methods = ["GET"])
 def getplayers():
     return Players.get_all_players()
 
-@cross_origin()
 @app.route("/player", methods = ["POST"])
 def newPlayer():
     id = request.form.get("id")
@@ -55,7 +52,7 @@ def newPlayer():
     except Exception as e:
         return str(e)
 
-@cross_origin()
+
 @app.route("/category", methods = ["POST"])
 def newCategory():
     name = request.form.get("name")
@@ -76,7 +73,6 @@ def newCategory():
     except Exception as e:
         return str(e), 500
 
-@cross_origin()
 @app.route("/categories", methods = ["GET"])
 def getCategories():
     categories = Categories.query.all()
