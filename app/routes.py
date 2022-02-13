@@ -1,7 +1,7 @@
-from __main__ import app, db
-from categories import Categories
-from players import Players
-from matches import Matches
+from app import app, db
+from app.categories import Categories
+from app.players import Players
+from app.matches import Matches
 from flask import request, jsonify
 import os, json
 
