@@ -10,24 +10,25 @@
   background-color: #FFD54F;
 }
 .header {
- font-family: var(--main-body-font);
+  font-family: var(--main-body-font);
   font-weight: 500;
   justify-content: center;
   display:flex;
-  font-size: 3em;
+  font-size: 1.5em;
   padding-left: 0.3em;
 }
-
-.header-icon {
-  padding: 1.2em 0 0 3em;
+.navbar-light .navbar-toggler {
+  border: 0;
 }
 
 .page-title {
+  color:#4a4a4a;
   font-family: var(--main-body-font);
   display: flex;
   justify-content: center;
-  font-size: 2em;
-  padding: 0.5em 0em 0em 0em;
+  font-size: 1.5em;
+  padding: 0.5em 0em;
+  margin: 0;
 }
 .page-header {
   font-family: var(--main-body-font);
@@ -39,17 +40,80 @@
 .forms {
   font-family: var(--main-body-font) !important;
 }
-
+.form-header {
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+  color: black !important;
+}
+.form-table-header {
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+  color: black !important;
+}
+.form-section {
+  margin: 1.5em 0;
+}
+.score-col {
+  width: 50px;
+  box-sizing: content-box;
+  text-align: center;
+}
+.score-input {
+  /* background-color: #ececec; */
+  padding: .25em .5em;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.card {
+  border: none;
+}
+.card-body {
+  padding: 0.75em 1em;
+}
+.card-header {
+  padding: 0.25em 1em;
+  border-radius: 0.25em !important;
+  border: none;
+}
+.nav-tabs {
+  gap: 1px;
+  border-bottom-color: #4a4a4a !important;
+}
+.nav-item {
+  flex: 1;
+  line-height: 1.2;
+  width: 10em;
+}
+.report-tab {
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+  width: 100%;
+  border-bottom-color: #4a4a4a !important;
+}
+.report-tab:not([aria-selected='true']) {
+  background-color: #ececec !important;
+  color: #4a4a4a;
+}
+.report-tab[aria-selected='true'] {
+  color: #4a4a4a !important;
+  border-color: #4a4a4a !important;
+  border-bottom-color: transparent !important;
+}
+.report-tab:hover:not([aria-selected='true']) {
+  background-color: #f5f5f5 !important;
+  border-color: #ececec !important;
+  border-bottom-color: #4a4a4a !important;
+}
 .submit-button {
+  color: #FFD54F;
   background-color: #4a4a4a;
   border: none;
   font-family: var(--main-body-font);
-  margin: 2em 0em 2em 0em
-}
-
-input[type='radio']:checked {
-  background-color: rgba(0,0,0,.25);
-  border-color: rgba(0,0,0,.25);
+  width: 100%;
+  font-weight: 700;
+  padding: .75em;
+  letter-spacing: 1px;
 }
 
 body {

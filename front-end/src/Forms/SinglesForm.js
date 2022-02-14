@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Card, Row, Col, Form, Button } from "react-bootstrap";
 import { useState, useContext } from "react";
 import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
@@ -68,65 +68,80 @@ const SinglesForm = () => {
 
     return (
         <>
-            <Row>
-                <Col className='page-header'>PLAYER ONE</Col>
-                <Col className='page-header'> PLAYER TWO</Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Select name='player1Id' onChange={handleMatchDataChange}>
-                        <option>Choose a player</option>
-                        {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-                <Col>
-                    <Form.Select name='player2Id' onChange={handleMatchDataChange}>
-                        <option>Choose a player</option>
-                        {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                <Col className='page-header'>Score</Col>
-            </Row>
-            <Row>
-                <Col xs={3} md={9} ></Col>
-                <Col xs={3} md={1} >GAME 1</Col>
-                <Col xs={3} md={1} >GAME 2</Col>
-                <Col xs={3} md={1} >GAME 3</Col>
-            </Row>
-            <Row>
-                <Col xs={3} md={9} >PLAYER ONE</Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='0' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='2' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='4' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-            </Row>
-            <hr></hr>
-            <Row>
-                <Col xs={3} md={9} >PLAYER TWO</Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='1' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='3' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={3} md={1} ><Form.Control name='score' id='5' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-            </Row>
+            <Card className='form-section'>
+                <Card.Header>
+                    <Row>
+                        <Col className='form-header'>PLAYER ONE</Col>
+                        <Col className='form-header'> PLAYER TWO</Col>
+                    </Row>
+                </Card.Header>
+                <Card.Body>
+                <Row>
+                    <Col>
+                        <Form.Select name='player1Id' onChange={handleMatchDataChange}>
+                            <option>Choose a player</option>
+                            {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                        </Form.Select>
+                    </Col>
+                    <Col>
+                        <Form.Select name='player2Id' onChange={handleMatchDataChange}>
+                            <option>Choose a player</option>
+                            {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                        </Form.Select>
+                    </Col>
+                </Row>
+                </Card.Body>
+            </Card>
 
-            <Row>
-                <Col className='page-header'>CATEGORY</Col>
-            </Row>
-            <Row>
-                <Col xs={10} md={4}>
-                    <Form.Select name="category" onChange={handleMatchDataChange}>
-                        <option>Choose an option</option>
-                        {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Button className='submit-button' type='submit' onClick={(e) => postResults(e)}>
-                        SUBMIT
-                    </Button>
-                </Col>
-            </Row>
+            <Card>
+                <Card.Header>
+                    <Row>
+                        <Col className='form-header'>Score</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 1</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 2</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 3</Col>
+                    </Row>
+                </Card.Header>
+                <Card.Body>
+                    <Row className="align-items-center">
+                        <Col className='form-table-header' >PLAYER ONE</Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='0' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='2' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='4' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                    </Row>
+                    <hr></hr>
+                    <Row className="align-items-center">
+                        <Col className='form-table-header' >PLAYER TWO</Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='1' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='3' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='5' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+
+            <Card className='form-section'>
+                <Card.Header>
+                    <Row>
+                        <Col className='form-header'>CATEGORY</Col>
+                    </Row>
+                </Card.Header>
+                <Card.Body>
+                    <Row>
+                        <Col>
+                            <Form.Select name="category" onChange={handleMatchDataChange}>
+                                <option>Choose an option</option>
+                                {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
+                            </Form.Select>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+
+            <div className="form-section">
+                <Button className='submit-button' type='submit' onClick={(e) => postResults(e)}>
+                    SUBMIT
+                </Button>
+            </div>
         </>
     )
 
