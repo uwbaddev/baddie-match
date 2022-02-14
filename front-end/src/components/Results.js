@@ -1,15 +1,17 @@
-import { useState } from "react";
-import { Col, Container, Row, Form, FormControl, FormSelect } from "react-bootstrap";
-import { ResultsURL } from "../API/API";
+import { useContext, useState } from "react";
+import { Col, Container, Row, Form } from "react-bootstrap";
+import { AppContext } from "../Contexts/AppContext";
 
 const ResultsPage = () => {
     const [results, setResults] = useState({});
+    const { players, matches, queryPlayerResults } = useContext(AppContext)
+    const [selectedPlayer, setSelectedPlayer] = useState()
+    // const [matches, setMatches] = useState([])
 
-    async function getResults() {
-        const response = await fetch(ResultsURL, {
-            method: 'GET',
-        }).then(response => response.json()).then(data => { setResults(response); console.log(data) }).catch(error => console.error('Error: ', error));
-    }
+   /*  function getResults(id) {
+        queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
+    } */
+
     return (
         <>
             <Container>
@@ -26,15 +28,31 @@ const ResultsPage = () => {
                 <Form>
                     <Row>
                         <Col>
-                            <Form.Select type='select' onChange={(e) => getResults(e)}>
+                            <Form.Select type='select' /*onChange={(e) => getResults(e)*}*/>
+
                                 <option>Choose a player</option>
-                                <option value='Darren Choi'>Darren Choi</option>
-                                <option value='Angela Chen'>Angela Chen</option>
-                                <option value="Jenny Lei">Jenny Lei</option>
-                                <option value="Ivan Cheng">Ivan Cheng</option></Form.Select>
+                                {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
+
+                            </Form.Select>
                         </Col>
                     </Row>
                 </Form>
+                <hr></hr>
+                {matches.map((p, i) => 
+                <div>
+                    <Row>
+                        <Col xs={4}>{players.find(x => x.id === p.players[0]).first_name}</Col>
+                        <Col xs={4}>vs.</Col>
+                        <Col xs={4}>{players.find(x => x.id === p.players[1]).first_name}</Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={6}>Winner: {players.find(x => x.id === p.winners[0]).first_name}</Col>
+                        <Col xs={4}>{p.score.join(' ')}</Col>
+                    </Row>
+                    <hr></hr>
+                </div>
+                )}
             </Container>
         </>
     )
