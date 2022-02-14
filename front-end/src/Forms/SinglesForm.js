@@ -1,6 +1,6 @@
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useState, useContext } from "react";
-import { ReportUrl } from "../API/API";
+import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
 
 const SinglesForm = () => {
@@ -14,7 +14,8 @@ const SinglesForm = () => {
         category: ''
     })
 
-    async function postResults() {
+    async function postResults(e) {
+        e.preventDefault();
         if (matchObj.player1Id == 0 || matchObj.player2Id == 0) {
             return;
         }
@@ -27,18 +28,27 @@ const SinglesForm = () => {
         if (counter < 2) {
             return;
         }
+        let scoreString = '[';
+        for (let i = 0; i < 6; i++) {
+            if (i == 5) {
+                scoreString = scoreString + matchObj.score[i] + ']';
+                break;
+            }
+            scoreString = scoreString + matchObj.score[i] + ',';
+        }
+        console.log(matchObj);
         const matchForm = new FormData();
         matchForm.append('event', matchObj.event);
         matchForm.append('player1Id', matchObj.player1Id);
         matchForm.append('player2Id', matchObj.player2Id);
-        matchForm.append('score', matchObj.score);
+        matchForm.append('score', scoreString);
         matchForm.append('category', matchObj.category);
 
-        fetch(ReportUrl, {
+        fetch(ReportMatchUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+            // headers: {
+            //     'Content-Type': 'application/json'
+            // },
             body: matchForm
         }).then(response => response.json()).then(data => console.log(data)).catch(error => {
             console.error('Error: ', error);
@@ -87,16 +97,16 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={9} >PLAYER ONE</Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='1' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='3' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='5' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='0' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='2' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='4' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
             </Row>
             <hr></hr>
             <Row>
                 <Col xs={6} md={9} >PLAYER TWO</Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='2' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='4' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control name='score' id='6' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='1' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='3' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control name='score' id='5' type='number' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
             </Row>
 
             <Row>
@@ -112,7 +122,7 @@ const SinglesForm = () => {
             </Row>
             <Row>
                 <Col>
-                    <Button type='submit'>
+                    <Button type='submit' onClick={(e) => postResults(e)}>
                         Submit
                     </Button>
                 </Col>

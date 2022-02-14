@@ -14,7 +14,7 @@ const useApp = () => {
     useEffect(() => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
             .then(res => res.json())
-            .then(data => { setPlayers(data); console.log('hi'); console.log(data) });
+            .then(data => { setPlayers(data) });
 
         fetch(CategoryUrl, { method: 'GET' })
             .then(response => response.json())
