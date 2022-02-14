@@ -5,7 +5,7 @@ import '../index.css'
 const Header = () => {
     return (
         <>
-            <Navbar className='header-panel' expand={false}>
+            <Navbar fixed="sticky" className='header-panel' expand={false}>
                 <Container fluid>
                     <Navbar.Brand href="/" className='header'>WATERLOO WARRIORS</Navbar.Brand>
                     <Navbar.Toggle aria-controls="offcanvasNavbar" />
@@ -20,7 +20,7 @@ const Header = () => {
                         <Offcanvas.Body>
                             <Nav className="justify-content-end flex-grow-1 page-header pe-3">
                                 <Nav.Link href="/">HOME</Nav.Link>
-                                <Nav.Link href="/report">REPORT SCORE</Nav.Link>
+                                <Nav.Link href="/report">REPORT MATCH</Nav.Link>
                                 <Nav.Link href="/results">RESULTS</Nav.Link>
                             </Nav>
                         </Offcanvas.Body>

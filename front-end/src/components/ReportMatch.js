@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Tabs, Tab, Row, Col, Form } from "react-bootstrap";
 import '../index.css';
 import { useState, useEffect } from "react";
 import SinglesForm from "../Forms/SinglesForm";
@@ -7,51 +7,25 @@ import MixedForm from "../Forms/MixedForm";
 
 const ReportMatchComponent = () => {
     const [eventType, setEventType] = useState('')
+
     return (
         <>
             <Container>
                 <Row>
-                    <Col>
-                        <p className='page-title'>REPORT MATCH</p>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col> <p className='page-header'>EVENT</p></Col>
+                    <Col> <p className='page-title'>REPORT MATCH</p></Col>
                 </Row>
                 <Form>
-                    {['radio'].map((type) => (
-                        <div key={`inline-${type}`} className="mb-3">
-                            <Form.Check
-                                inline
-                                label="Singles"
-                                name="group1"
-                                type={type}
-                                id={`inline-${type}-1`}
-                                onChange={() => setEventType('Singles')}
-                            />
-                            <Form.Check
-                                inline
-                                label="Doubles"
-                                name="group1"
-                                type={type}
-                                id={`inline-${type}-2`}
-                                onChange={() => setEventType('Doubles')}
-                            />
-                            <Form.Check
-                                inline
-                                label="Mixed Doubles"
-                                name="group1"
-                                type={type}
-                                id={`inline-${type}-3`}
-                                onChange={() => setEventType('Mixed')}
-                            />
-                        </div>
-                    ))}
-                    {eventType == 'Singles' && <SinglesForm />}
-                    {eventType == 'Doubles' && <DoublesForm />}
-                    {eventType == 'Mixed' && <MixedForm />}
-
-
+                    <Tabs activeKey={eventType} onSelect={type => setEventType(type)}>
+                        <Tab eventKey="Singles" title="Singles" tabClassName="report-tab">
+                            <SinglesForm />
+                        </Tab>
+                        <Tab eventKey="Doubles" title="Doubles" tabClassName="report-tab">
+                            <DoublesForm />
+                        </Tab>
+                        <Tab eventKey="Mixed" title="Mixed" tabClassName="report-tab">
+                            <MixedForm />
+                        </Tab>
+                    </Tabs>
                 </Form>
             </Container>
         </>
