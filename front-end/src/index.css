@@ -53,6 +53,13 @@
 .form-section {
   margin: 1.5em 0;
 }
+.form-label {
+  font-family: var(--main-body-font);
+  margin: 0 !important;
+}
+.form-select:not(:last-of-type) {
+  margin-bottom: 1em;
+}
 .score-col {
   width: 50px;
   box-sizing: content-box;
