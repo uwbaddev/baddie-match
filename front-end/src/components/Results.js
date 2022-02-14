@@ -3,9 +3,9 @@ import { Col, Container, Row, Form } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
 
 const ResultsPage = () => {
-    const [results, setResults] = useState({});
+    // const [results, setResults] = useState({});
     const { players, matches, queryPlayerResults } = useContext(AppContext)
-    const [selectedPlayer, setSelectedPlayer] = useState()
+    // const [selectedPlayer, setSelectedPlayer] = useState()
     // const [matches, setMatches] = useState([])
 
    /*  function getResults(id) {
@@ -20,38 +20,50 @@ const ResultsPage = () => {
                         RESULTS
                     </Col>
                 </Row>
-                <Row>
-                    <Col className='page-header'>
-                        Pick a player for results
+                { matches.length == 0 || players.length == 0 ? (
+                    /* if no matches yet or if there are matches but no players */
+                    <Col className='page-title'>
+                        Retreiving data, please be patient...
                     </Col>
-                </Row>
-                <Form>
-                    <Row>
-                        <Col>
-                            <Form.Select type='select' /*onChange={(e) => getResults(e)*}*/>
+                ) : (
+                    <>
+                        <Row>
+                            <Col className='page-header'>
+                                Pick a player for results
+                            </Col>
+                        </Row>
+                        <Form>
+                            <Row>
+                                <Col>
+                                    <Form.Select type='select' /*onChange={(e) => getResults(e)*}*/>
 
-                                <option>Choose a player</option>
-                                {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
+                                        <option>Choose a player</option>
+                                        {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
 
-                            </Form.Select>
-                        </Col>
-                    </Row>
-                </Form>
-                <hr></hr>
-                {matches.map((p, i) => 
-                <div>
-                    <Row>
-                        <Col xs={4}>{players.find(x => x.id === p.players[0]).first_name}</Col>
-                        <Col xs={4}>vs.</Col>
-                        <Col xs={4}>{players.find(x => x.id === p.players[1]).first_name}</Col>
-                    </Row>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                        </Form>
+                        <hr></hr>
+                        {matches.map((match, i) => {
+                            console.log('??', players, matches);
+                            return (
+                                <div key={i}>
+                                    <Row>
+                                        <Col xs={4}>{players.find(x => x.id === match.players[0]).first_name}</Col>
+                                        <Col xs={4}>vs.</Col>
+                                        <Col xs={4}>{players.find(x => x.id === match.players[1]).first_name}</Col>
+                                    </Row>
 
-                    <Row>
-                        <Col xs={6}>Winner: {players.find(x => x.id === p.winners[0]).first_name}</Col>
-                        <Col xs={4}>{p.score.join(' ')}</Col>
-                    </Row>
-                    <hr></hr>
-                </div>
+                                    <Row>
+                                        <Col xs={6}>Winner: {players.find(x => x.id === match.winners[0]).first_name}</Col>
+                                        <Col xs={4}>{match.score.join(' ')}</Col>
+                                    </Row>
+                                    <hr></hr>
+                                </div>
+                            )
+                        })}
+                    </>
                 )}
             </Container>
         </>
