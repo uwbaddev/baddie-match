@@ -1,6 +1,10 @@
 from dotenv import load_dotenv
 import os
 import psycopg2
+import sys
+
+# run in the venv
+# running with commandline with any single arg will drop all old tables before creating. 
 
 load_dotenv()
 
@@ -11,10 +15,13 @@ def createTables():
         user=os.getenv("DATABASE_USER"),
         password=os.getenv("DATABASE_PASSWORD"))
 
-    commands = (
+    drop = (
         "DROP TABLE matches",
         "DROP TABLE players",
         "DROP TABLE categories",
+        )
+
+    commands = (
         """
         CREATE TABLE matches (
             id SERIAL PRIMARY KEY,
@@ -45,11 +52,22 @@ def createTables():
         )
     try:
         cur = conn.cursor()
+
+        # drop tables, if provided args
+        if (len(sys.argv) == 2):
+            print('dropping old tables')
+            for d in drop:
+                cur.execute(d)
+        conn.commit()
+
+
         # create table one by one
         for command in commands:
             cur.execute(command)
+
         # close communication with the PostgreSQL database server
         cur.close()
+
         # commit the changes
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
