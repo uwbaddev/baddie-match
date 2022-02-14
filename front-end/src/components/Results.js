@@ -4,14 +4,13 @@ import { AppContext } from "../Contexts/AppContext";
 
 const ResultsPage = () => {
     const [results, setResults] = useState({});
-    const { players, queryPlayerResults } = useContext(AppContext)
+    const { players, matches, queryPlayerResults } = useContext(AppContext)
     const [selectedPlayer, setSelectedPlayer] = useState()
-    const [matches, setMatches] = useState([])
+    // const [matches, setMatches] = useState([])
 
-    function getResults(id) {
+   /*  function getResults(id) {
         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
-    }
-
+    } */
 
     return (
         <>
@@ -29,7 +28,7 @@ const ResultsPage = () => {
                 <Form>
                     <Row>
                         <Col>
-                            <Form.Select type='select' onChange={(e) => getResults(e)}>
+                            <Form.Select type='select' /*onChange={(e) => getResults(e)*}*/>
 
                                 <option>Choose a player</option>
                                 {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
@@ -39,8 +38,21 @@ const ResultsPage = () => {
                     </Row>
                 </Form>
                 <hr></hr>
-                {/* RESULTS CARD G OES HERE */}
-                {/* {results.map((p, i) => )} */}
+                {matches.map((p, i) => 
+                <div>
+                    <Row>
+                        <Col xs={4}>{players.find(x => x.id === p.players[0]).first_name}</Col>
+                        <Col xs={4}>vs.</Col>
+                        <Col xs={4}>{players.find(x => x.id === p.players[1]).first_name}</Col>
+                    </Row>
+
+                    <Row>
+                        <Col xs={6}>Winner: {players.find(x => x.id === p.winners[0]).first_name}</Col>
+                        <Col xs={4}>{p.score.join(' ')}</Col>
+                    </Row>
+                    <hr></hr>
+                </div>
+                )}
             </Container>
         </>
     )
