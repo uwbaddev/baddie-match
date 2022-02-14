@@ -76,20 +76,20 @@ const SinglesForm = () => {
                     </Row>
                 </Card.Header>
                 <Card.Body>
-                <Row>
-                    <Col>
-                        <Form.Select name='player1Id' onChange={handleMatchDataChange}>
-                            <option>Select</option>
-                            {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
-                        </Form.Select>
-                    </Col>
-                    <Col>
-                        <Form.Select name='player2Id' onChange={handleMatchDataChange}>
-                            <option>Select</option>
-                            {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
-                        </Form.Select>
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col>
+                            <Form.Select name='player1Id' onChange={handleMatchDataChange}>
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                        </Col>
+                        <Col>
+                            <Form.Select name='player2Id' onChange={handleMatchDataChange}>
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                        </Col>
+                    </Row>
                 </Card.Body>
             </Card>
 
@@ -121,19 +121,13 @@ const SinglesForm = () => {
 
             <Card className='form-section'>
                 <Card.Header>
-                    <Row>
-                        <Col className='form-header'>CATEGORY</Col>
-                    </Row>
+                    <Col className='form-header'>CATEGORY</Col>
                 </Card.Header>
                 <Card.Body>
-                    <Row>
-                        <Col>
-                            <Form.Select name="category" onChange={handleMatchDataChange}>
-                                <option>Choose an option</option>
-                                {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
-                            </Form.Select>
-                        </Col>
-                    </Row>
+                    <Form.Select name="category" onChange={handleMatchDataChange}>
+                        <option>Choose an option</option>
+                        {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
+                    </Form.Select>
                 </Card.Body>
             </Card>
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
 
 
@@ -10,81 +10,83 @@ const DoublesForm = () => {
 
     return (
         <>
-            <Row>
-                <Col className='page-header'>TEAM ONE</Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Select >
-                        <option>Select</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-                <Col>
-                    <Form.Select >
-                        <option>Select</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                <Col className='page-header'> TEAM TWO</Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Form.Select >
-                        <option>Select</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-                <Col>
-                    <Form.Select >
-                        <option>Select</option>
-                        {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                <Col className='page-header'>Score</Col>
-            </Row>
-            <Row>
-                <Col xs={6} md={9} ></Col>
-                <Col xs={2} md={1} >GAME 1</Col>
-                <Col xs={2} md={1} >GAME 2</Col>
-                <Col xs={2} md={1} >GAME 3</Col>
-            </Row>
-            <Row>
-                <Col xs={6} md={9} >TEAM ONE</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-            </Row>
-            <hr></hr>
-            <Row>
-                <Col xs={6} md={9} >TEAM TWO</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
-            </Row>
+            <Card className='form-section'>
+                <Card.Header>
+                    <Row>
+                        <Col className='form-header'>TEAM ONE</Col>
+                        <Col className='form-header'>TEAM TWO</Col>
+                    </Row>
+                </Card.Header>
+                <Card.Body>
+                    <Row>
+                        <Col>
+                            <Form.Select >
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                            <Form.Select >
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                        </Col>
 
-            <Row>
-                <Col className='page-header'>CATEGORY</Col>
-            </Row>
-            <Row>
-                <Col xs={6} md={4}>
-                    <Form.Select>
+                        <Col>
+                            <Form.Select >
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                            <Form.Select >
+                                <option>Select</option>
+                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                            </Form.Select>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+
+            <Card>
+                <Card.Header>
+                    <Row>
+                        <Col className='form-header'>Score</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 1</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 2</Col>
+                        <Col xs='auto' className='form-table-header score-col' >SET 3</Col>
+                    </Row>
+                </Card.Header>
+                <Card.Body>
+                    <Row className="align-items-center">
+                        <Col className='form-table-header' >TEAM ONE</Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                    </Row>
+                    <hr></hr>
+                    <Row className="align-items-center">
+                        <Col className='form-table-header' >TEAM TWO</Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                        <Col xs='auto' className='score-col' ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+
+            <Card className='form-section'>
+                <Card.Header>
+                    <Col className='form-header'>CATEGORY</Col>
+                </Card.Header>
+                <Card.Body>
+                    <Form.Select name="category">
                         <option>Choose an option</option>
                         {categories.map((c, i) => <option key={i} value={c.name}>{c.name}</option>)}
                     </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <Button type='submit'>
-                        Submit
-                    </Button>
-                </Col>
-            </Row>
+                </Card.Body>
+            </Card>
+            
+            <div className='form-section'>
+                <Button className='submit-button' type='submit'>
+                    Submit
+                </Button>
+            </div>
         </>
     )
 }

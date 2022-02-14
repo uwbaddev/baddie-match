@@ -10,7 +10,7 @@ const MainRouter = () => {
             <BrowserRouter>
                 <Header />
                 <Routes>
-                    <Route exact path='/' element={LandingPage()}></Route>
+                    <Route exact path='/' element={LandingPage()} />
                     <Route exact path='/report' element={ReportMatchComponent()} />
                     <Route exact path='results' element={ResultsPage()} />
                 </Routes>
