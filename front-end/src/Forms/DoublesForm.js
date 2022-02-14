@@ -16,13 +16,13 @@ const DoublesForm = () => {
             <Row>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
@@ -33,13 +33,13 @@ const DoublesForm = () => {
             <Row>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
                 <Col>
                     <Form.Select >
-                        <option>Choose a player</option>
+                        <option>Select</option>
                         {players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
                     </Form.Select>
                 </Col>
@@ -55,16 +55,16 @@ const DoublesForm = () => {
             </Row>
             <Row>
                 <Col xs={6} md={9} >TEAM ONE</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
             </Row>
             <hr></hr>
             <Row>
                 <Col xs={6} md={9} >TEAM TWO</Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
-                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
+                <Col xs={2} md={1} ><Form.Control type='number' min='0' max='30' inputMode='numeric'></Form.Control></Col>
             </Row>
 
             <Row>

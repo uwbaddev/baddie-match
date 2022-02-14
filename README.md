@@ -22,7 +22,14 @@ pg_ctl -D /usr/local/var/postgres/ start
 createdb <name>
 psql <name>
 ```
-(Not sure about Windows)
+
+Windows
+```
+Download postgresql from https://www.postgresql.org/
+Run installation, with all defaults
+Open psql command line, from start menu
+CREATE DATABASE <name>;
+```
 
 #### Setting up the environment variables
 Make a copy of `.env.sample` and rename it to `.env` in the root directory. Set the database to the <name> you just created.
