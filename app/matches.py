@@ -88,17 +88,21 @@ class Matches(db.Model):
   
   def getWinnerSingles(s, player1Id, player2Id):
     player1score = 0
+    player2score = 0
     if (s[0] > s[1]):
       player1score += 1
+    elif (s[0] < s[1]):
+      player2score += 1  
     if (s[2] > s[3]):
       player1score += 1
+    elif (s[0] < s[1]):
+      player2score += 1 
     if (s[4] > s[5]):
       player1score += 1
+    elif (s[0] < s[1]):
+      player2score += 1 
     
-    if (player1score == 2):
-      return [player1Id]
-    else:
-      return [player2Id]
+    return player1Id if player1score > player2score else player2Id
     
   def serialize(self):
     return {

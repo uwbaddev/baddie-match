@@ -16,6 +16,9 @@ const ResultsPage = () => {
     function formatPlayer(match, index) {
         let winner = match.winners[0]
         let player = players.find(x => x.id === match.players[index]).first_name
+        console.log(winner)
+        console.log(match.players[index])
+        console.log(player)
 
         if (winner === match.players[index]) {
             return (<b>{player}</b>)
