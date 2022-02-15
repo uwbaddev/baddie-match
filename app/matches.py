@@ -102,7 +102,7 @@ class Matches(db.Model):
     elif (s[0] < s[1]):
       player2score += 1 
     
-    return player1Id if player1score > player2score else player2Id
+    return [player1Id] if player1score > player2score else [player2Id]
     
   def serialize(self):
     return {
