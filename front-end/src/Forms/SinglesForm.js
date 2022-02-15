@@ -1,9 +1,13 @@
-import { Container, Card, Row, Col, Form, Button } from "react-bootstrap";
-import { useState, useContext } from "react";
+import { Container, Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import { useState, useContext, useEffect } from "react";
 import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
 
 const SinglesForm = () => {
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [show, setShow] = useState(true);
+
     const { categories, players } = useContext(AppContext);
 
     const [matchObj, setMatchObj] = useState({
@@ -16,27 +20,29 @@ const SinglesForm = () => {
 
     async function postResults(e) {
         e.preventDefault();
-        if (matchObj.player1Id == 0 || matchObj.player2Id == 0) {
+        if (matchObj.player1Id == 0 || matchObj.player2Id == 0 ||
+            matchObj.player1Id === matchObj.player2Id) {
+            setErrorMessage('Invalid players selected!');
             return;
         }
-        let counter = 0;
+
+        // TODO: complex score validation
+
+        let zero_score = 0;
         for (let i = 0; i < 6; i++) {
-            if (matchObj.score[i] == 21) {
-                counter++;
-            }
+            if (matchObj.score[i] === 0) zero_score++;
         }
-        if (counter < 2) {
+        if (zero_score === 6) {
+            setErrorMessage('Invalid scores inputted');
             return;
         }
-        let scoreString = '[';
-        for (let i = 0; i < 6; i++) {
-            if (i == 5) {
-                scoreString = scoreString + matchObj.score[i] + ']';
-                break;
-            }
-            scoreString = scoreString + matchObj.score[i] + ',';
+
+        if (matchObj.category === '') {
+            setErrorMessage('No category selected!');
+            return;
         }
-        console.log(matchObj);
+
+        let scoreString = '[' + matchObj.score.join(',') + ']';
         const matchForm = new FormData();
         matchForm.append('event', matchObj.event);
         matchForm.append('player1Id', matchObj.player1Id);
@@ -50,10 +56,13 @@ const SinglesForm = () => {
             //     'Content-Type': 'application/json'
             // },
             body: matchForm
-        }).then(response => response.json()).then(data => console.log(data)).catch(error => {
+        }).then(response => response.json()).then(data => {
+            setErrorMessage('Success');
+        }).catch(error => {
             console.error('Error: ', error);
         })
     }
+
     function handleMatchDataChange(evt) {
         if (evt.target.name == 'score') {
             let localObj = matchObj;
@@ -65,9 +74,22 @@ const SinglesForm = () => {
         }
     }
 
+    function SubmissionAlert() {
+        const [show, setShow] = useState(true);
+      
+        if (show) {
+          return (
+            <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+              <p>{errorMessage}</p>
+            </Alert>
+          );
+        }
+        return null;
+      }
 
     return (
         <>
+            {errorMessage && (<SubmissionAlert />)}
             <Card className='form-section'>
                 <Card.Header>
                     <Row>

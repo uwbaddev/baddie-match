@@ -15,7 +15,7 @@ const useApp = () => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
             .then(res => res.json())
             .then(data => {
-                data.sort((a,b) => (a.first_name > b.first_name) ? 1 : ((b.first_name > a.first_name) ? -1 : 0))
+                data.sort((a,b) => (a.first_name > b.first_name) ? 1 : ((b.first_name > a.first_name) ? -1 : 0));
                 setPlayers(data);
             });
     
@@ -25,7 +25,10 @@ const useApp = () => {
 
         fetch(AllMatchesUrl, { method: 'GET' })
             .then(response => response.json())
-            .then(data => setMatches(data));
+            .then(data => {
+                data.reverse();
+                setMatches(data);
+            });
 
     }, []);
 

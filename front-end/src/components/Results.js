@@ -12,6 +12,36 @@ const ResultsPage = () => {
         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
     } */
 
+    // TODO: someone with Reaact experience pls do this better
+    function formatPlayer(match, index) {
+        let winner = match.winners[0]
+        let player = players.find(x => x.id === match.players[index]).first_name
+
+        if (winner === match.players[index]) {
+            return (<b>{player}</b>)
+        }
+        return player
+    }
+
+    function formatPlayers(match) {
+        return (
+            <p>{formatPlayer(match, 0)} vs. {formatPlayer(match, 1)}</p>
+        )
+    }
+
+    function formatScores(scores) {
+        let scoreString = ''
+        for (let i = 0; i < scores.length; i++) {
+            if (i % 2 === 0) {
+                if (scores[i] == 0) return scoreString
+                scoreString += scores[i] + '-'
+            } else {
+                scoreString += scores[i] + '   '
+            }
+        }
+        return scoreString;
+    }
+
     return (
         <>
             <Container>
@@ -27,7 +57,7 @@ const ResultsPage = () => {
                     </Col>
                 ) : (
                     <>
-                        <Row>
+                        {/* <Row>
                             <Col className='page-header'>
                                 Pick a player for results
                             </Col>
@@ -35,7 +65,7 @@ const ResultsPage = () => {
                         <Form>
                             <Row>
                                 <Col>
-                                    <Form.Select type='select' /*onChange={(e) => getResults(e)*}*/>
+                                    <Form.Select type='select' /*onChange={(e) => getResults(e)*}>
 
                                         <option>Choose a player</option>
                                         {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
@@ -43,21 +73,14 @@ const ResultsPage = () => {
                                     </Form.Select>
                                 </Col>
                             </Row>
-                        </Form>
-                        <hr></hr>
+                        </Form> */}
+                        <hr></hr> 
                         {matches.map((match, i) => {
-                            console.log('??', players, matches);
                             return (
                                 <div key={i}>
                                     <Row>
-                                        <Col xs={4}>{players.find(x => x.id === match.players[0]).first_name}</Col>
-                                        <Col xs={4}>vs.</Col>
-                                        <Col xs={4}>{players.find(x => x.id === match.players[1]).first_name}</Col>
-                                    </Row>
-
-                                    <Row>
-                                        <Col xs={6}>Winner: {players.find(x => x.id === match.winners[0]).first_name}</Col>
-                                        <Col xs={4}>{match.score.join(' ')}</Col>
+                                        <Col>{formatPlayers(match)}</Col>
+                                        <Col>{formatScores(match.score)}</Col>
                                     </Row>
                                     <hr></hr>
                                 </div>
