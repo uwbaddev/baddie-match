@@ -96,7 +96,7 @@ const SinglesForm = () => {
             <Card>
                 <Card.Header>
                     <Row>
-                        <Col className='form-header'>Score</Col>
+                        <Col className='form-header'>SCORE</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 1</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 2</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 3</Col>
