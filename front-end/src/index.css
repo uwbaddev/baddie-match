@@ -56,6 +56,7 @@
 .form-label {
   font-family: var(--main-body-font);
   margin: 0 !important;
+  letter-spacing: 1px;
 }
 .form-select:not(:last-of-type) {
   margin-bottom: 1em;

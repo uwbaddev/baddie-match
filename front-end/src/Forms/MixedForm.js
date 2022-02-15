@@ -12,10 +12,7 @@ const MixedForm = () => {
         <>
             <Card className='form-section'>
                 <Card.Header>
-                    <Row>
-                        <Col className='form-header'>TEAM ONE</Col>
-                        <Col className='form-header'>TEAM TWO</Col>
-                    </Row>
+                    <Col className='form-header'>TEAM ONE</Col>
                 </Card.Header>
                 <Card.Body>
                     <Row>
@@ -25,21 +22,29 @@ const MixedForm = () => {
                                 <option>Select</option>
                                 {players.filter(p => p.sex === 'M').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
-                            
+                        </Col>
+                        <Col>
                             <Form.Label>Female</Form.Label>
                             <Form.Select >
                                 <option>Select</option>
                                 {players.filter(p => p.sex === 'F').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
-
+                    </Row>
+                </Card.Body>
+                <Card.Header>
+                    <Col className='form-header'>TEAM TWO</Col>
+                </Card.Header>
+                <Card.Body>
+                    <Row>
                         <Col>
                             <Form.Label>Male</Form.Label>
                             <Form.Select >
                                 <option>Select</option>
                                 {players.filter(p => p.sex === 'M').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
-
+                        </Col>
+                        <Col>
                             <Form.Label>Female</Form.Label>
                             <Form.Select >
                                 <option>Select</option>
@@ -53,7 +58,7 @@ const MixedForm = () => {
             <Card>
                 <Card.Header>
                     <Row>
-                        <Col className='form-header'>Score</Col>
+                        <Col className='form-header'>SCORE</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 1</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 2</Col>
                         <Col xs='auto' className='form-table-header score-col' >SET 3</Col>
