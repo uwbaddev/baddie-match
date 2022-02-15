@@ -4,7 +4,7 @@ import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
 
 const SinglesForm = () => {
-    const [errorMessage, setErrorMessage] = useState('');
+    const [bannerMessage, setBannerMessage] = useState('');
 
     const [show, setShow] = useState(true);
 
@@ -22,7 +22,7 @@ const SinglesForm = () => {
         e.preventDefault();
         if (matchObj.player1Id == 0 || matchObj.player2Id == 0 ||
             matchObj.player1Id === matchObj.player2Id) {
-            setErrorMessage('Invalid players selected!');
+            setBannerMessage('Invalid players selected!');
             return;
         }
 
@@ -33,12 +33,12 @@ const SinglesForm = () => {
             if (matchObj.score[i] === 0) zero_score++;
         }
         if (zero_score === 6) {
-            setErrorMessage('Invalid scores inputted');
+            setBannerMessage('Invalid scores inputted');
             return;
         }
 
         if (matchObj.category === '') {
-            setErrorMessage('No category selected!');
+            setBannerMessage('No category selected!');
             return;
         }
 
@@ -56,9 +56,10 @@ const SinglesForm = () => {
             //     'Content-Type': 'application/json'
             // },
             body: matchForm
-        }).then(response => response.json()).then(data => {
-            setErrorMessage('Success');
+        }).then(response => {
+            setBannerMessage("Match Submitted")
         }).catch(error => {
+            console.log("Failed")
             console.error('Error: ', error);
         })
     }
@@ -79,8 +80,8 @@ const SinglesForm = () => {
       
         if (show) {
           return (
-            <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-              <p>{errorMessage}</p>
+            <Alert variant="info" onClose={() => setShow(false)} dismissible>
+              <p>{bannerMessage}</p>
             </Alert>
           );
         }
@@ -89,7 +90,7 @@ const SinglesForm = () => {
 
     return (
         <>
-            {errorMessage && (<SubmissionAlert />)}
+            {bannerMessage && (<SubmissionAlert />)}
             <Card className='form-section'>
                 <Card.Header>
                     <Row>

@@ -95,7 +95,7 @@ const MixedForm = () => {
 
             <div className='form-section'>
                 <Button className='submit-button' type='submit'>
-                    Submit
+                    SUBMIT
                 </Button>
             </div>
         </>
