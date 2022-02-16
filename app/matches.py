@@ -64,46 +64,62 @@ class Matches(db.Model):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
 
-  def createMatch(event, player1Id, player2Id, score, category):
-    if ((event is None) | (player1Id is None) | (player2Id is None) | (score is None)):
+  def createMatch(event, players, score, category):
+    # TODO: player error checking
+    if ((event is None) | (score is None)):
       raise Exception('fields cannot be null')
     
     parsed_score = json.loads(score)
     if (len(parsed_score) != 6):
       raise Exception('score must be an array of 6')
 
-    
-    match=Matches (
-      event = event,
-      players = [player1Id, player2Id],
-      score = parsed_score,
-      category = category,
-      date_added = datetime.today(),
-      last_edit = datetime.today(),
-      winners = Matches.getWinnerSingles(parsed_score, player1Id, player2Id)
-    )
-    db.session.add(match)
+    if event == "Singles":
+      match=Matches (
+        event = event,
+        players = [players[0], players[1]],
+        score = parsed_score,
+        category = category,
+        date_added = datetime.today(),
+        last_edit = datetime.today(),
+        winners = Matches.getWinner(parsed_score, players, event)
+      )
+      db.session.add(match)
+    else:
+      match=Matches (
+        event = event,
+        players = [players[0], players[1], players[2], players[3]],
+        score = parsed_score,
+        category = category,
+        date_added = datetime.today(),
+        last_edit = datetime.today(),
+        winners = Matches.getWinner(parsed_score, players, event)
+      )
+      db.session.add(match)
+      
     db.session.commit()
     return 'success'
   
-  def getWinnerSingles(s, player1Id, player2Id):
-    player1score = 0
-    player2score = 0
+  def getWinner(s, players, event):
+    team1score = 0
+    team2score = 0
     if (s[0] > s[1]):
-      player1score += 1
+      team1score += 1
     elif (s[0] < s[1]):
-      player2score += 1  
+      team2score += 1  
     if (s[2] > s[3]):
-      player1score += 1
+      team1score += 1
     elif (s[0] < s[1]):
-      player2score += 1 
+      team2score += 1 
     if (s[4] > s[5]):
-      player1score += 1
+      team1score += 1
     elif (s[0] < s[1]):
-      player2score += 1 
-    
-    return [player1Id] if player1score > player2score else [player2Id]
-    
+      team2score += 1
+
+    if (event == 'Singles'):
+      return [players[0]] if team1score > team2score else [players[1]]
+    else:
+      return [players[0], players[1]] if team1score > team2score else [players[2], players[3]]  
+
   def serialize(self):
     return {
         'id': self.id,

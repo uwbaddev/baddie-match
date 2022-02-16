@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
-import { Col, Container, Row, Form } from "react-bootstrap";
+import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
+import { MatchUrl } from "../API/API"
 
 const ResultsPage = () => {
     // const [results, setResults] = useState({});
@@ -16,9 +17,6 @@ const ResultsPage = () => {
     function formatPlayer(match, index) {
         let winner = match.winners[0]
         let player = players.find(x => x.id === match.players[index]).first_name
-        console.log(winner)
-        console.log(match.players[index])
-        console.log(player)
 
         if (winner === match.players[index]) {
             return (<b>{player}</b>)
@@ -43,6 +41,15 @@ const ResultsPage = () => {
             }
         }
         return scoreString;
+    }
+
+    async function postDeleteMatch(e, matchId) {
+        e.preventDefault();
+        fetch(MatchUrl(matchId), { method: 'DELETE' })
+            .then(response => {
+                console.log(response)
+                window.location.reload();
+            })
     }
 
     return (
@@ -82,8 +89,9 @@ const ResultsPage = () => {
                             return (
                                 <div key={i}>
                                     <Row>
-                                        <Col>{formatPlayers(match)}</Col>
-                                        <Col>{formatScores(match.score)}</Col>
+                                        <Col xs={5}>{formatPlayers(match)}</Col>
+                                        <Col xs={5}>{formatScores(match.score)}</Col>
+                                        <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button>Delete</Button></Col>
                                     </Row>
                                     <hr></hr>
                                 </div>
