@@ -103,15 +103,17 @@ const MixedForm = () => {
                 <Card.Body>
                     <Row>
                         <Col>
+                            <Form.Label>Male</Form.Label>
                             <Form.Select name='player1Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {players.filter(p => p.sex === 'M').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                         <Col>
+                            <Form.Label>Female</Form.Label>
                             <Form.Select name='player2Id' onChange={handleMatchDataChange}> 
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {players.filter(p => p.sex === 'F').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                     </Row>
@@ -123,15 +125,17 @@ const MixedForm = () => {
                 <Card.Body>
                     <Row>
                         <Col>
+                            <Form.Label>Male</Form.Label>
                             <Form.Select name='player3Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {players.filter(p => p.sex === 'M').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                         <Col>
+                            <Form.Label>Female</Form.Label>
                             <Form.Select name='player4Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {players.filter(p => p.sex === 'F').map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                     </Row>
