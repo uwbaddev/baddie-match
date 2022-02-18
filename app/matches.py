@@ -64,29 +64,40 @@ class Matches(db.Model):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
 
-  def createMatch(event, player1Id, player2Id, score, category):
-    if ((event is None) | (player1Id is None) | (player2Id is None) | (score is None)):
+  def createMatch(event, playersInMatch, score, category):
+    if ((event is None) | (playersInMatch[0] is None) | (playersInMatch[1] is None) | (score is None)):
       raise Exception('fields cannot be null')
+
+    if not ((event == 'doubles') | (event == 'Doubles') | (event == 'singles') | (event == 'Singles')):
+      raise Exception('event must be (D)doubles or (S)singles. Recieved: ' + event)
     
     parsed_score = json.loads(score)
     if (len(parsed_score) != 6):
       raise Exception('score must be an array of 6')
 
-    
+    if (len(playersInMatch) > 2):
+      if ((event == 'singles') | (event == 'Singles')):
+        raise Exception('event singles cannot more than 2 players.')
+      if not (len(playersInMatch) == 4):
+        raise Exception('event doubles must have 4 players')
+    else:
+      if ((event == 'doubles') | (event == 'Doubles')):
+        raise Exception('event doubles must have 4 players.')
+      
     match=Matches (
       event = event,
-      players = [player1Id, player2Id],
+      players=playersInMatch,
       score = parsed_score,
       category = category,
       date_added = datetime.today(),
       last_edit = datetime.today(),
-      winners = Matches.getWinnerSingles(parsed_score, player1Id, player2Id)
+      winners = Matches.getWinner(parsed_score, playersInMatch)
     )
     db.session.add(match)
     db.session.commit()
     return 'success'
   
-  def getWinnerSingles(s, player1Id, player2Id):
+  def getWinner(s, players):
     player1score = 0
     player2score = 0
     if (s[0] > s[1]):
@@ -95,14 +106,20 @@ class Matches(db.Model):
       player2score += 1  
     if (s[2] > s[3]):
       player1score += 1
-    elif (s[0] < s[1]):
+    elif (s[2] < s[3]):
       player2score += 1 
     if (s[4] > s[5]):
       player1score += 1
-    elif (s[0] < s[1]):
+    elif (s[4] < s[5]):
       player2score += 1 
+
+    if len(players) == 4:
+      if player1score > player2score:
+        return [players[0], players[1]]
+      else:
+        return [players[2], players[3]]
     
-    return [player1Id] if player1score > player2score else [player2Id]
+    return [players[0]] if player1score > player2score else [[players[1]]]
     
   def serialize(self):
     return {
