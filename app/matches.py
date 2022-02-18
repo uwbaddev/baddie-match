@@ -91,7 +91,7 @@ class Matches(db.Model):
       category = category,
       date_added = datetime.today(),
       last_edit = datetime.today(),
-      winners = Matches.getWinner(parsed_score, playersInMatch)
+      winners = Matches.getWinner(parsed_score, playersInMatch, event)
     )
     db.session.add(match)
     db.session.commit()
