@@ -3,7 +3,7 @@ import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
 import { MatchUrl } from "../API/API"
 
-const ResultsPage = () => {
+const ResultsAdminPage = () => {
     // const [results, setResults] = useState({});
     const { players, matches, queryPlayerResults } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
@@ -63,6 +63,15 @@ const ResultsPage = () => {
         return scoreString;
     }
 
+    async function postDeleteMatch(e, matchId) {
+        e.preventDefault();
+        fetch(MatchUrl(matchId), { method: 'DELETE' })
+            .then(response => {
+                console.log(response)
+                window.location.reload();
+            })
+    }
+
     return (
         <>
             <Container>
@@ -100,8 +109,9 @@ const ResultsPage = () => {
                             return (
                                 <div key={i}>
                                     <Row>
-                                        <Col xs={6}>{formatPlayers(match)}</Col>
-                                        <Col xs={6}>{formatScores(match.score)}</Col>
+                                        <Col xs={5}>{formatPlayers(match)}</Col>
+                                        <Col xs={5}>{formatScores(match.score)}</Col>
+                                        <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button>Delete</Button></Col>
                                     </Row>
                                     <hr></hr>
                                 </div>
@@ -114,4 +124,4 @@ const ResultsPage = () => {
     )
 }
 
-export default ResultsPage;
+export default ResultsAdminPage;

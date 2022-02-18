@@ -86,7 +86,7 @@ class Matches(db.Model):
       
     match=Matches (
       event = event,
-      players=playersInMatch,
+      players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
       score = parsed_score,
       category = category,
       date_added = datetime.today(),
@@ -96,31 +96,28 @@ class Matches(db.Model):
     db.session.add(match)
     db.session.commit()
     return 'success'
-  
-  def getWinner(s, players):
-    player1score = 0
-    player2score = 0
-    if (s[0] > s[1]):
-      player1score += 1
-    elif (s[0] < s[1]):
-      player2score += 1  
-    if (s[2] > s[3]):
-      player1score += 1
-    elif (s[2] < s[3]):
-      player2score += 1 
-    if (s[4] > s[5]):
-      player1score += 1
-    elif (s[4] < s[5]):
-      player2score += 1 
 
-    if len(players) == 4:
-      if player1score > player2score:
-        return [players[0], players[1]]
-      else:
-        return [players[2], players[3]]
-    
-    return [players[0]] if player1score > player2score else [[players[1]]]
-    
+  def getWinner(s, players, event):
+    team1score = 0
+    team2score = 0
+    if (s[0] > s[1]):
+      team1score += 1
+    elif (s[0] < s[1]):
+      team2score += 1  
+    if (s[2] > s[3]):
+      team1score += 1
+    elif (s[2] < s[3]):
+      team2score += 1 
+    if (s[4] > s[5]):
+      team1score += 1
+    elif (s[4] < s[5]):
+      team2score += 1
+
+    if (event == 'Singles'):
+      return [players[0]] if team1score > team2score else [players[1]]
+    else:
+      return [players[0], players[1]] if team1score > team2score else [players[2], players[3]]  
+
   def serialize(self):
     return {
         'id': self.id,

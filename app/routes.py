@@ -162,22 +162,18 @@ def getMatchesWithPlayer(id):
 @cross_origin()
 @app.route("/api/match", methods = ["POST"])
 def addMatch():
-    event = request.form.get("event")
-    player1Id = request.form.get("player1Id")
-    player2Id = request.form.get("player2Id")
-    player3Id = request.form.get("player3Id")
-    player4Id = request.form.get("player4Id")
-    score  = request.form.get("score")
-    category = request.form.get("category")
-    players = [player1Id, player2Id]
-    if player3Id is not None:
-        players.append(player3Id)
-    if player4Id is not None:
-        players.append(player4Id)
-    
     try: 
+        event = request.form.get("event")
+        score  = request.form.get("score")
+        category = request.form.get("category")
+        players = [request.form.get("player1Id"), request.form.get("player2Id")]
+
+        if event != "Singles":
+            players.append(request.form.get("player3Id"))
+            players.append(request.form.get("player4Id"))
+
         (Matches.createMatch(event, players, score, category))
-        return 'Match was added', 200
+        return 'Match was added', 200    
     
     except Exception as e:
         return str(e), 500
