@@ -64,41 +64,39 @@ class Matches(db.Model):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
 
-  def createMatch(event, players, score, category):
-    # TODO: player error checking
-    if ((event is None) | (score is None)):
+  def createMatch(event, playersInMatch, score, category):
+    if ((event is None) | (playersInMatch[0] is None) | (playersInMatch[1] is None) | (score is None)):
       raise Exception('fields cannot be null')
+
+    if not ((event == 'doubles') | (event == 'Doubles') | (event == 'singles') | (event == 'Singles')):
+      raise Exception('event must be (D)doubles or (S)singles. Recieved: ' + event)
     
     parsed_score = json.loads(score)
     if (len(parsed_score) != 6):
       raise Exception('score must be an array of 6')
 
-    if event == "Singles":
-      match=Matches (
-        event = event,
-        players = [players[0], players[1]],
-        score = parsed_score,
-        category = category,
-        date_added = datetime.today(),
-        last_edit = datetime.today(),
-        winners = Matches.getWinner(parsed_score, players, event)
-      )
-      db.session.add(match)
+    if (len(playersInMatch) > 2):
+      if ((event == 'singles') | (event == 'Singles')):
+        raise Exception('event singles cannot more than 2 players.')
+      if not (len(playersInMatch) == 4):
+        raise Exception('event doubles must have 4 players')
     else:
-      match=Matches (
-        event = event,
-        players = [players[0], players[1], players[2], players[3]],
-        score = parsed_score,
-        category = category,
-        date_added = datetime.today(),
-        last_edit = datetime.today(),
-        winners = Matches.getWinner(parsed_score, players, event)
-      )
-      db.session.add(match)
+      if ((event == 'doubles') | (event == 'Doubles')):
+        raise Exception('event doubles must have 4 players.')
       
+    match=Matches (
+      event = event,
+      players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
+      score = parsed_score,
+      category = category,
+      date_added = datetime.today(),
+      last_edit = datetime.today(),
+      winners = Matches.getWinner(parsed_score, playersInMatch)
+    )
+    db.session.add(match)
     db.session.commit()
     return 'success'
-  
+
   def getWinner(s, players, event):
     team1score = 0
     team2score = 0
@@ -108,11 +106,11 @@ class Matches(db.Model):
       team2score += 1  
     if (s[2] > s[3]):
       team1score += 1
-    elif (s[0] < s[1]):
+    elif (s[2] < s[3]):
       team2score += 1 
     if (s[4] > s[5]):
       team1score += 1
-    elif (s[0] < s[1]):
+    elif (s[4] < s[5]):
       team2score += 1
 
     if (event == 'Singles'):
