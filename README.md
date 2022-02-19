@@ -14,7 +14,7 @@ npm start
 
 ### Running Locally
 #### PostgreSQL
-Will need postgreSQL, so download that first.
+You will need postgreSQL, so download that first.
 
 Mac
 ```
@@ -34,7 +34,7 @@ CREATE DATABASE <name>;
 
 #### Setting up the environment variables
 Make a copy of `.env.sample` and rename it to `.env` in the root directory. Set the database to the <name> you just created.
-Run `scripts/createTables.py` to create the required tables.
+Run `scripts/createTables.py` to create the required tables. For now, you will need to populate the data manually.
 
 #### Running the app
 Mac/Linux
