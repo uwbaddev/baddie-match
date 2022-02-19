@@ -1,0 +1,784 @@
+{
+	"version": 1,
+	"collections": [
+		{
+			"id": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+			"uid": "0-0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+			"name": "match",
+			"description": null,
+			"auth": null,
+			"events": null,
+			"variables": [],
+			"order": [
+				"061711e9-8082-4fd6-ba67-e7567cd5d11b",
+				"23693e19-0e83-42cf-8fa6-2e8931744046",
+				"6c7d85fd-8b72-4f74-be08-34dbfccbf7bc",
+				"4dde5365-a9cc-4a7b-be51-85dd8cdcc3c9",
+				"68d3ac01-99e6-41da-89d7-18471773b731",
+				"0e7c4a43-e207-433d-92bc-f849f3840291"
+			],
+			"folders_order": [],
+			"protocolProfileBehavior": {},
+			"createdAt": "2022-02-13T04:35:50.413Z",
+			"folders": [],
+			"requests": [
+				{
+					"id": "061711e9-8082-4fd6-ba67-e7567cd5d11b",
+					"uid": "0-061711e9-8082-4fd6-ba67-e7567cd5d11b",
+					"name": "get all",
+					"url": "{{base_url}}/matches",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				},
+				{
+					"id": "0e7c4a43-e207-433d-92bc-f849f3840291",
+					"uid": "0-0e7c4a43-e207-433d-92bc-f849f3840291",
+					"name": "get all matches with players",
+					"url": "{{base_url}}/match/player/976",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				},
+				{
+					"id": "23693e19-0e83-42cf-8fa6-2e8931744046",
+					"uid": "0-23693e19-0e83-42cf-8fa6-2e8931744046",
+					"name": "input match",
+					"url": "{{base_url}}/match",
+					"description": null,
+					"data": [
+						{
+							"key": "event",
+							"value": "Singles",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "player1Id",
+							"value": "1",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "player2Id",
+							"value": "2",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "category",
+							"value": "Singles",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "score",
+							"value": "[21, 9, 21, 13, 0 ,0]",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "score[1]",
+							"value": "21",
+							"description": "",
+							"type": "default",
+							"enabled": false
+						},
+						{
+							"key": "score[2]",
+							"value": "1",
+							"description": "",
+							"type": "default",
+							"enabled": false
+						},
+						{
+							"key": "score[3]",
+							"value": "21",
+							"description": "",
+							"type": "default",
+							"enabled": false
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				},
+				{
+					"id": "4dde5365-a9cc-4a7b-be51-85dd8cdcc3c9",
+					"uid": "0-4dde5365-a9cc-4a7b-be51-85dd8cdcc3c9",
+					"name": "delete match id",
+					"url": "{{base_url}}/match/6",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "DELETE",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				},
+				{
+					"id": "68d3ac01-99e6-41da-89d7-18471773b731",
+					"uid": "0-68d3ac01-99e6-41da-89d7-18471773b731",
+					"name": "update match",
+					"url": "{{base_url}}/match/1",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "PUT",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				},
+				{
+					"id": "6c7d85fd-8b72-4f74-be08-34dbfccbf7bc",
+					"uid": "0-6c7d85fd-8b72-4f74-be08-34dbfccbf7bc",
+					"name": "get match by id",
+					"url": "{{base_url}}/match/7",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "0e61eb0a-ab7b-48ef-b4d6-f59451de02e8",
+					"pathVariables": {}
+				}
+			]
+		},
+		{
+			"id": "629c53a0-3d55-421a-ae81-8150589b3a34",
+			"uid": "0-629c53a0-3d55-421a-ae81-8150589b3a34",
+			"name": "app",
+			"description": null,
+			"auth": null,
+			"events": null,
+			"variables": [],
+			"order": [
+				"9980588b-38a4-4f0e-b22d-d66c4ae04a37",
+				"8a3de297-625b-4bc6-90b2-1a12dc680aba",
+				"a56a1389-86d4-4003-a5e2-f3d9c0395b1b",
+				"71edf929-08b6-4ae5-b996-100d171ece7f",
+				"60857782-a052-4fc0-9a26-2852270c575d"
+			],
+			"folders_order": [],
+			"protocolProfileBehavior": {},
+			"createdAt": "2022-02-12T21:53:26.731Z",
+			"folders": [],
+			"requests": [
+				{
+					"id": "60857782-a052-4fc0-9a26-2852270c575d",
+					"uid": "0-60857782-a052-4fc0-9a26-2852270c575d",
+					"name": "delete player",
+					"url": "{{base_url}}/player/3",
+					"description": "",
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "first_name",
+							"value": "sdf",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "asd",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "elegible_year",
+							"value": "10",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "sex",
+							"value": "M",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "DELETE",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "1",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "hi",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "629c53a0-3d55-421a-ae81-8150589b3a34",
+					"pathVariables": {}
+				},
+				{
+					"id": "71edf929-08b6-4ae5-b996-100d171ece7f",
+					"uid": "0-71edf929-08b6-4ae5-b996-100d171ece7f",
+					"name": "update pplayer",
+					"url": "{{base_url}}/player/6",
+					"description": "",
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "default",
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "sdflkjklj",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "as",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "elegible_year",
+							"value": "10",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "sex",
+							"value": "M",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "PUT",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "1",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "hi",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "629c53a0-3d55-421a-ae81-8150589b3a34",
+					"pathVariables": {}
+				},
+				{
+					"id": "8a3de297-625b-4bc6-90b2-1a12dc680aba",
+					"uid": "0-8a3de297-625b-4bc6-90b2-1a12dc680aba",
+					"name": "edit a plyer",
+					"url": "{{base_url}}/player/3",
+					"description": "",
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "default",
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "sdf",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "asd",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "elegible_year",
+							"value": "10",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "sex",
+							"value": "M",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "PUT",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "1",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "hi",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "629c53a0-3d55-421a-ae81-8150589b3a34",
+					"pathVariables": {}
+				},
+				{
+					"id": "9980588b-38a4-4f0e-b22d-d66c4ae04a37",
+					"uid": "0-9980588b-38a4-4f0e-b22d-d66c4ae04a37",
+					"name": "get alls players",
+					"url": "{{base_url}}/players",
+					"description": "",
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "first_name",
+							"value": "sdf",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "asd",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "elegible_year",
+							"value": "10",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "sex",
+							"value": "M",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "1",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "hi",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "629c53a0-3d55-421a-ae81-8150589b3a34",
+					"pathVariables": {}
+				},
+				{
+					"id": "a56a1389-86d4-4003-a5e2-f3d9c0395b1b",
+					"uid": "0-a56a1389-86d4-4003-a5e2-f3d9c0395b1b",
+					"name": "post add player",
+					"url": "{{base_url}}/player",
+					"description": "",
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "first_name",
+							"value": "sdf",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "asd",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "elegible_year",
+							"value": "10",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						},
+						{
+							"key": "sex",
+							"value": "M",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "1",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						},
+						{
+							"key": "first_name",
+							"value": "hi",
+							"equals": true,
+							"description": null,
+							"enabled": false
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "629c53a0-3d55-421a-ae81-8150589b3a34",
+					"pathVariables": {}
+				}
+			]
+		},
+		{
+			"id": "f312844e-6284-4066-a633-9e6f5384faf9",
+			"uid": "0-f312844e-6284-4066-a633-9e6f5384faf9",
+			"name": "category",
+			"description": null,
+			"auth": null,
+			"events": null,
+			"variables": [],
+			"order": [
+				"b2420c0c-1a3d-48dd-9ee7-9933ff97ccf4",
+				"7ae9b9d8-f167-4902-a1fb-3e93177eb81e",
+				"504e964c-bfc7-46f0-b886-82a8cd398a2e",
+				"fa9503a7-64b8-43e2-8d73-41eba80651c1",
+				"3f905d9e-524b-416b-b3d4-2cfbce5f68e2"
+			],
+			"folders_order": [],
+			"protocolProfileBehavior": {},
+			"createdAt": "2022-02-13T03:13:01.496Z",
+			"folders": [],
+			"requests": [
+				{
+					"id": "3f905d9e-524b-416b-b3d4-2cfbce5f68e2",
+					"uid": "0-3f905d9e-524b-416b-b3d4-2cfbce5f68e2",
+					"name": "get all category",
+					"url": "{{base_url}}/categories",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f312844e-6284-4066-a633-9e6f5384faf9",
+					"pathVariables": {}
+				},
+				{
+					"id": "504e964c-bfc7-46f0-b886-82a8cd398a2e",
+					"uid": "0-504e964c-bfc7-46f0-b886-82a8cd398a2e",
+					"name": "edit category",
+					"url": "{{base_url}}/category/2",
+					"description": null,
+					"data": [
+						{
+							"key": "name",
+							"value": "helloihjkhjjkhkljhlkiuhliuhlkj",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "PUT",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f312844e-6284-4066-a633-9e6f5384faf9",
+					"pathVariables": {}
+				},
+				{
+					"id": "7ae9b9d8-f167-4902-a1fb-3e93177eb81e",
+					"uid": "0-7ae9b9d8-f167-4902-a1fb-3e93177eb81e",
+					"name": "add a new category",
+					"url": "{{base_url}}/category",
+					"description": null,
+					"data": [
+						{
+							"key": "name",
+							"value": "hi",
+							"description": "",
+							"type": "default",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f312844e-6284-4066-a633-9e6f5384faf9",
+					"pathVariables": {}
+				},
+				{
+					"id": "b2420c0c-1a3d-48dd-9ee7-9933ff97ccf4",
+					"uid": "0-b2420c0c-1a3d-48dd-9ee7-9933ff97ccf4",
+					"name": "get category",
+					"url": "{{base_url}}/category/2",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f312844e-6284-4066-a633-9e6f5384faf9",
+					"pathVariables": {}
+				},
+				{
+					"id": "fa9503a7-64b8-43e2-8d73-41eba80651c1",
+					"uid": "0-fa9503a7-64b8-43e2-8d73-41eba80651c1",
+					"name": "delete category",
+					"url": "{{base_url}}/category/1",
+					"description": null,
+					"data": null,
+					"dataOptions": null,
+					"dataMode": null,
+					"headerData": null,
+					"method": "DELETE",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "f312844e-6284-4066-a633-9e6f5384faf9",
+					"pathVariables": {}
+				}
+			]
+		}
+	],
+	"environments": [
+		{
+			"id": "2689157e-defb-4680-b5c4-e6ecdf532d48",
+			"name": "other",
+			"values": []
+		},
+		{
+			"id": "886c8d05-8dfb-45ae-acf3-fc6b7c0f8e2e",
+			"name": "local",
+			"values": [
+				{
+					"key": "base_url",
+					"value": "localhost:5000/api",
+					"type": "default",
+					"enabled": true
+				}
+			]
+		},
+		{
+			"id": "ffc481a9-c4d6-44f6-a227-f6167aed2544",
+			"name": "My Workspace - globals",
+			"values": []
+		}
+	],
+	"headerPresets": [],
+	"globals": []
+}
