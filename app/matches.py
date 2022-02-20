@@ -15,9 +15,11 @@ class Matches(db.Model):
   date_added = db.Column(db.Date())
   last_edit = db.Column(db.Date())
 
+
   def __repr__(self):
     return '<Matches %r>' % self.id
   
+
   def findById(id):
       match = Matches.query.get(id)
       if (match is None):
@@ -25,34 +27,41 @@ class Matches(db.Model):
       else:
         return match.serialize()
 
-  def update(id, event, players, winners, score, category):
+
+  def update(id, event, players, score, category):
       if (id is None):
-        raise Exception('fields cannot be null')
+        raise Exception('id cannot be null')
       
       match = Matches.query.get(id)
 
       if (event is not None):
+        Matches.validateEvent(event)
         match.event = event
-        db.session.commit()
+
       if (players is not None):
+        Matches.validatePlayers(players)
         match.players = players
-        db.session.commit()
-      if (winners is not None):
-        match.winners = winners
-        db.session.commit()
+
       if (score is not None):
-        match.score = score
-        db.session.commit()
+        match.score = json.loads(score)
+        Matches.validateScore(match.score)
+        match.winner = Matches.getWinner(score, players, event)
+
       if (category is not None):
         match.category = category
-        db.session.commit()
-      match.last_edit = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
+      match.last_edit = datetime.today()
+
+      Matches.validatePlayersAndEvents(match.players, match.event)
+
+      db.session.commit()
       return 'success', 201
   
+
   def delete(id):
     db.session.query(Matches).filter(Matches.id==id).delete()
     db.session.commit()
+
 
   def getMatchesWithPlayer(id):
     id = int(id)
@@ -64,26 +73,18 @@ class Matches(db.Model):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
 
+
   def createMatch(event, playersInMatch, score, category):
     if ((event is None) | (playersInMatch[0] is None) | (playersInMatch[1] is None) | (score is None)):
       raise Exception('fields cannot be null')
-
-    if not ((event == 'doubles') | (event == 'Doubles') | (event == 'singles') | (event == 'Singles')):
-      raise Exception('event must be (D)doubles or (S)singles. Recieved: ' + event)
-    
+  
     parsed_score = json.loads(score)
-    if (len(parsed_score) != 6):
-      raise Exception('score must be an array of 6')
 
-    if (len(playersInMatch) > 2):
-      if ((event == 'singles') | (event == 'Singles')):
-        raise Exception('event singles cannot more than 2 players.')
-      if not (len(playersInMatch) == 4):
-        raise Exception('event doubles must have 4 players')
-    else:
-      if ((event == 'doubles') | (event == 'Doubles')):
-        raise Exception('event doubles must have 4 players.')
-      
+    Matches.validateEvent(event)
+    Matches.validateScore(parsed_score)
+    Matches.validatePlayersAndEvents(playersInMatch, event)
+    Matches.validatePlayers(playersInMatch)
+
     match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
@@ -117,6 +118,32 @@ class Matches(db.Model):
       return [players[0]] if team1score > team2score else [players[1]]
     else:
       return [players[0], players[1]] if team1score > team2score else [players[2], players[3]]  
+
+  
+  def validatePlayers(players):
+    if (len(players) != len(set(players))):
+      raise Exception('players contain duplicates, received: ' + ", ".join(map(str,players)))
+
+  def validateEvent(event):
+    if not ((event == 'Doubles') | (event == 'Singles')):
+      raise Exception('event must be Doubles or Singles. Recieved: ' + event)
+
+  def validateScore(score):
+    if (len(score) != 6):
+      raise Exception('score must be an array of 6')
+
+  def validatePlayersAndEvents(players, event):
+    if (event == 'Singles'):
+      if (len(players) != 2):
+        raise Exception('event Singles must have 2 players.')
+    if (event == 'Doubles'):
+      if (len(players) != 4):
+        raise Exception('event Doubles must have 4 players.')
+      if (players[2] is None): 
+        raise Exception('player3Id cannot be null')
+      if (players[3] is None):
+        raise Exception('player4Id cannot be null')
+
 
   def serialize(self):
     return {
