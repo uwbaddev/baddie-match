@@ -130,23 +130,33 @@ def matchHandler(id):
     match = Matches.findById(id)
     if (match is None):
         return 'No match found', 204
+
     elif (request.method == 'GET'):
         return match, 200
+
     elif (request.method == 'PUT'):
         event = request.form.get("event")
-        players = request.form.get("players")
-        winners = request.form.get("winners")
         score = request.form.get("score")
         category = request.form.get("category")
-        print(score)
+        players = [request.form.get("player1Id"), request.form.get("player2Id")]
+
+        if (event != "Singles"):
+            players.append(request.form.get("player3Id"))
+            players.append(request.form.get("player4Id"))
+
         try:
-            return Matches.update(id, event, players, winners, score, category)
+            Matches.update(id, event, players, score, category)
+            return 'success', 201
+
         except Exception as e:
+            db.session.rollback()
             return str(e), 500
+
     else:
         try:
             Matches.delete(id)
             return "success", 200
+
         except Exception as e:
             return str(e), 500
 
@@ -168,7 +178,7 @@ def addMatch():
         category = request.form.get("category")
         players = [request.form.get("player1Id"), request.form.get("player2Id")]
 
-        if event != "Singles":
+        if (event != "Singles"):
             players.append(request.form.get("player3Id"))
             players.append(request.form.get("player4Id"))
 
