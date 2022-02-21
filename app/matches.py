@@ -55,7 +55,6 @@ class Matches(db.Model):
       Matches.validatePlayersAndEvents(match.players, match.event)
 
       db.session.commit()
-      return 'success', 201
   
 
   def delete(id):
@@ -75,9 +74,6 @@ class Matches(db.Model):
 
 
   def createMatch(event, playersInMatch, score, category):
-    if ((event is None) | (playersInMatch[0] is None) | (playersInMatch[1] is None) | (score is None)):
-      raise Exception('fields cannot be null')
-  
     parsed_score = json.loads(score)
 
     Matches.validateEvent(event)
@@ -125,17 +121,27 @@ class Matches(db.Model):
       raise Exception('players contain duplicates, received: ' + ", ".join(map(str,players)))
 
   def validateEvent(event):
+    if event is None:
+      raise Exception('event cannot be null')
     if not ((event == 'Doubles') | (event == 'Singles')):
       raise Exception('event must be Doubles or Singles. Recieved: ' + event)
 
   def validateScore(score):
+    if score is None: 
+      raise Exception('score cannot be null')
     if (len(score) != 6):
       raise Exception('score must be an array of 6')
 
   def validatePlayersAndEvents(players, event):
+    if (players[0] is None):
+      raise Exception('player1Id cannot be null')
+    if (players[1] is None):
+      raise Exception('player2Id cannot be null')
+
     if (event == 'Singles'):
       if (len(players) != 2):
         raise Exception('event Singles must have 2 players.')
+
     if (event == 'Doubles'):
       if (len(players) != 4):
         raise Exception('event Doubles must have 4 players.')

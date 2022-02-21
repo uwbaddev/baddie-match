@@ -145,7 +145,8 @@ def matchHandler(id):
             players.append(request.form.get("player4Id"))
 
         try:
-            return Matches.update(id, event, players, score, category)
+            Matches.update(id, event, players, score, category)
+            return 'success', 201
 
         except Exception as e:
             db.session.rollback()
