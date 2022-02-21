@@ -8,13 +8,13 @@ Score and stats tracker for the Waterloo Warriors badminton team.
 
 ### Frontend
 
-The frontend is built using [React.js](https://reactjs.org/). You will need [npm](https://www.npmjs.com/) to get started. Afterwards, to get the frontend server working locally, run:
+The frontend is built using [React.js](https://reactjs.org/). You will need [npm](https://www.npmjs.com/) to get started. After downloading, you can get the frontend server working locally by running:
 ```
 cd front-end
 npm install
 npm start
 ```
-Note that the frontend queries the production backend APIs and data. To change this, you must edit the `DomainName` in [`API.js`](https://github.com/angelamchen/baddie-match/blob/main/front-end/src/API/API.js) to point to your local server (usually `https://localhost:5000`)
+**Note:** The frontend queries the production backend APIs and data. To change this, you must edit the `DomainName` in [`API.js`](https://github.com/angelamchen/baddie-match/blob/main/front-end/src/API/API.js) to point to your local server (usually `https://localhost:5000`)
 
 ### Backend
 #### 1. PostgreSQL
