@@ -43,8 +43,8 @@ class Matches(db.Model):
         match.players = players
 
       if (score is not None):
-        match.score = json.loads(score)
-        Matches.validateScore(match.score)
+        Matches.validateScore(score)
+        match.score = score
         match.winner = Matches.getWinner(score, players, event)
 
       if (category is not None):
@@ -74,21 +74,19 @@ class Matches(db.Model):
 
 
   def createMatch(event, playersInMatch, score, category):
-    parsed_score = json.loads(score)
-
     Matches.validateEvent(event)
-    Matches.validateScore(parsed_score)
+    Matches.validateScore(score)
     Matches.validatePlayersAndEvents(playersInMatch, event)
     Matches.validatePlayers(playersInMatch)
 
     match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
-      score = parsed_score,
+      score = score,
       category = category,
       date_added = datetime.today(),
       last_edit = datetime.today(),
-      winners = Matches.getWinner(parsed_score, playersInMatch, event)
+      winners = Matches.getWinner(score, playersInMatch, event)
     )
     db.session.add(match)
     db.session.commit()

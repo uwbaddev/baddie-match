@@ -52,9 +52,9 @@ const SinglesForm = () => {
 
         fetch(ReportMatchUrl, {
             method: 'POST',
-            // headers: {
-            //     'Content-Type': 'application/json'
-            // },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: matchForm
         }).then(response => {
             setBannerMessage("Match Submitted")
