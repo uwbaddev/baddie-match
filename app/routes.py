@@ -29,10 +29,10 @@ def getplayers():
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
 def newPlayer():
-    first_name = request.form.get("first_name")
-    last_name = request.form.get("last_name")
-    elegible_year = request.form.get("elegible_year")
-    sex = request.form.get("sex")
+    first_name = request.json.get("first_name")
+    last_name = request.json.get("last_name")
+    elegible_year = request.json.get("elegible_year")
+    sex = request.json.get("sex")
     try: 
         (Players.createPlayer(first_name, last_name, elegible_year, sex))
         return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
@@ -50,10 +50,10 @@ def playerHandler(id):
     elif (request.method == 'GET'):
         return player, 200
     elif (request.method == 'PUT'):
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        elegible_year = request.form.get("elegible_year")
-        sex = request.form.get("sex")
+        first_name = request.json.get("first_name")
+        last_name = request.json.get("last_name")
+        elegible_year = request.json.get("elegible_year")
+        sex = request.json.get("sex")
         try:
             return Players.update(id, first_name, last_name, elegible_year, sex)
         except Exception as e:
@@ -70,7 +70,7 @@ def playerHandler(id):
 @cross_origin()              
 @app.route("/api/category", methods = ["POST"])
 def newCategory():
-    name = request.form.get("name")  
+    name = request.json.get("name")
     try:
         category=Categories(
             name=name
@@ -101,7 +101,7 @@ def categoryHandler(id):
         else:
             return category, 200
     elif (request.method == 'PUT'):
-        name = request.form.get("name")
+        name = request.json.get("name")
         try:
             return Categories.update(id, name)
         except Exception as e:
@@ -135,14 +135,14 @@ def matchHandler(id):
         return match, 200
 
     elif (request.method == 'PUT'):
-        event = request.form.get("event")
-        score = request.form.get("score")
-        category = request.form.get("category")
-        players = [request.form.get("player1Id"), request.form.get("player2Id")]
+        event = request.json.get("event")
+        score = request.json.get("score")
+        category = request.json.get("category")
+        players = [request.json.get("player1Id"), request.json.get("player2Id")]
 
         if (event != "Singles"):
-            players.append(request.form.get("player3Id"))
-            players.append(request.form.get("player4Id"))
+            players.append(request.json.get("player3Id"))
+            players.append(request.json.get("player4Id"))
 
         try:
             Matches.update(id, event, players, score, category)
@@ -173,14 +173,14 @@ def getMatchesWithPlayer(id):
 @app.route("/api/match", methods = ["POST"])
 def addMatch():
     try: 
-        event = request.form.get("event")
-        score  = request.form.get("score")
-        category = request.form.get("category")
-        players = [request.form.get("player1Id"), request.form.get("player2Id")]
+        event = request.json.get("event")
+        score  = request.json.get("score")
+        category = request.json.get("category")
+        players = [request.json.get("player1Id"), request.json.get("player2Id")]
 
         if (event != "Singles"):
-            players.append(request.form.get("player3Id"))
-            players.append(request.form.get("player4Id"))
+            players.append(request.json.get("player3Id"))
+            players.append(request.json.get("player4Id"))
 
         (Matches.createMatch(event, players, score, category))
         return 'Match was added', 200    

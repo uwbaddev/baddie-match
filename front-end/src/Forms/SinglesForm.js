@@ -42,20 +42,12 @@ const SinglesForm = () => {
             return;
         }
 
-        let scoreString = '[' + matchObj.score.join(',') + ']';
-        const matchForm = new FormData();
-        matchForm.append('event', matchObj.event);
-        matchForm.append('player1Id', matchObj.player1Id);
-        matchForm.append('player2Id', matchObj.player2Id);
-        matchForm.append('score', scoreString);
-        matchForm.append('category', matchObj.category);
-
         fetch(ReportMatchUrl, {
             method: 'POST',
-            // headers: {
-            //     'Content-Type': 'application/json'
-            // },
-            body: matchForm
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(matchObj)
         }).then(response => {
             setBannerMessage("Match Submitted")
         }).catch(error => {
