@@ -1,4 +1,4 @@
-import { Container, Card, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Card, Row, Col, Form, Button, FormLabel } from "react-bootstrap";
 import { useState, useContext } from "react";
 import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
@@ -14,14 +14,14 @@ const SinglesForm = () => {
         category: ''
     })
 
-    async function postResults(e) {
-        e.preventDefault();
+    async function postResults() {
         if (matchObj.player1Id == 0 || matchObj.player2Id == 0) {
             return;
         }
         let counter = 0;
         for (let i = 0; i < 6; i++) {
-            if (matchObj.score[i] == 21) {
+            //currently only works if no deuces, so have to check this out
+            if (matchObj.score[i] >= 21) {
                 counter++;
             }
         }
@@ -55,10 +55,24 @@ const SinglesForm = () => {
         })
     }
     function handleMatchDataChange(evt) {
+
         if (evt.target.name == 'score') {
             let localObj = matchObj;
             localObj.score[evt.target.id] = evt.target.value;
+            if (evt.target.id % 2 == 0 && evt.target.value < 20) {
+                localObj.score[parseInt(evt.target.id) + 1] = JSON.stringify(21);
+            }
+            else if (evt.target.id % 2 == 0 && evt.target.value >= 20) {
+                localObj.score[parseInt(evt.target.id) + 1] = JSON.stringify(evt.target.value + 2);
+            }
+            else if (evt.target.id % 2 == 1 && evt.target.value < 20) {
+                localObj.score[parseInt(evt.target.id) - 1] = JSON.stringify(21);
+            }
+            else if (evt.target.id % 2 == 1 % evt.target.value >= 20) {
+                localObj.score[parseInt(evt.target.id) - 1] = JSON.stringify(evt.target.value + 2);
+            }
             setMatchObj(localObj);
+            console.log(localObj);
         }
         else {
             setMatchObj({ ...matchObj, [evt.target.name]: evt.target.value })
@@ -105,16 +119,40 @@ const SinglesForm = () => {
                 <Card.Body>
                     <Row className="align-items-center">
                         <Col className='form-table-header' >PLAYER ONE</Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='0' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='2' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='4' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='0' type='number' min='0' max='30' onChange={handleMatchDataChange} value={matchObj.score[0]}></Form.Control>
+                            </Form.Label>
+                        </Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='2' type='number' min='0' max='30' onChange={handleMatchDataChange} value={matchObj.score[2]}></Form.Control>
+                            </Form.Label>
+                        </Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='4' type='number' min='0' max='30' onChange={handleMatchDataChange} value={matchObj.score[4]}></Form.Control>
+                            </Form.Label>
+                        </Col>
                     </Row>
                     <hr></hr>
                     <Row className="align-items-center">
                         <Col className='form-table-header' >PLAYER TWO</Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='1' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='3' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
-                        <Col xs='auto' className='score-col' ><Form.Control className='score-input' name='score' id='5' type='number' inputMode='numeric' min='0' max='30' onChange={handleMatchDataChange}></Form.Control></Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='1' type='number' min='0' max='30' value={matchObj.score[1]} onChange={handleMatchDataChange} ></Form.Control>
+                            </Form.Label>
+                        </Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='3' type='number' min='0' max='30' value={matchObj.score[3]} onChange={handleMatchDataChange} ></Form.Control>
+                            </Form.Label>
+                        </Col>
+                        <Col xs='auto' className='score-col' >
+                            <Form.Label>
+                                <Form.Control className='score-input' name='score' id='5' type='number' min='0' max='30' value={matchObj.score[5]} onChange={handleMatchDataChange} ></Form.Control>
+                            </Form.Label>
+                        </Col>
                     </Row>
                 </Card.Body>
             </Card>
@@ -132,7 +170,7 @@ const SinglesForm = () => {
             </Card>
 
             <div className="form-section">
-                <Button className='submit-button' type='submit' onClick={(e) => postResults(e)}>
+                <Button className='submit-button' type='submit' onClick={e => postResults()}>
                     SUBMIT
                 </Button>
             </div>
