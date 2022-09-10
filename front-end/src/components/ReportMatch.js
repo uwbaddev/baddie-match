@@ -1,21 +1,19 @@
 import { Container, Tabs, Tab, Row, Col, Form } from "react-bootstrap";
 import '../index.css';
-import { useState, useEffect } from "react";
+import { useRef } from "react";
 import SinglesForm from "../Forms/SinglesForm";
 import DoublesForm from "../Forms/DoublesForm";
 import MixedForm from "../Forms/MixedForm";
 
 const ReportMatchComponent = () => {
-    const [eventType, setEventType] = useState('')
-
     return (
         <>
             <Container>
                 <Row>
                     <Col> <p className='page-title'>REPORT MATCH</p></Col>
                 </Row>
-                <Form>
-                    <Tabs activeKey={eventType} onSelect={type => setEventType(type)}>
+                <Form id="match-form">
+                    <Tabs defaultActiveKey="Singles">
                         <Tab eventKey="Singles" title="Singles" tabClassName="report-tab">
                             <SinglesForm />
                         </Tab>

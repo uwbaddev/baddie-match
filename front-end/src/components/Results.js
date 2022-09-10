@@ -114,7 +114,7 @@ const ResultsPage = () => {
                                                 <div>
                                                 <Row>
                                                     <Col xs={6}>{formatPlayers(match)}</Col>
-                                                    <Col xs={6}>{formatScores(match.score)}</Col>
+                                                    <Col xs={6}><p>{formatScores(match.score)}</p></Col>
                                                 </Row>
                                                 </div>
                                             )
@@ -123,7 +123,7 @@ const ResultsPage = () => {
                                                 <div>
                                                 <Row>
                                                     <Col xs={6}>{formatPlayers(match)}</Col>
-                                                    <Col xs={6}>{formatScores(match.score)}</Col>
+                                                    <Col xs={6}><p>{formatScores(match.score)}</p></Col>
                                                 </Row>
                                                 <hr></hr>
                                                 </div>

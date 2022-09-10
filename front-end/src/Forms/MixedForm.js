@@ -2,8 +2,7 @@ import { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { ReportMatchUrl } from "../API/API";
 import { AppContext } from "../Contexts/AppContext";
-
-
+import * as ReactDOM from 'react-dom';
 
 const MixedForm = () => {
     const [bannerMessage, setBannerMessage] = useState('');
@@ -53,6 +52,8 @@ const MixedForm = () => {
             body: JSON.stringify(matchObj)
         }).then(response => {
             setBannerMessage("Match Submitted")
+            var node = document.getElementById("match-form");
+            ReactDOM.findDOMNode(node).reset();
         }).catch(error => {
             console.log("Failed")
             console.error('Error: ', error);

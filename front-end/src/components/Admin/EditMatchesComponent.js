@@ -119,7 +119,7 @@ const EditMatchesComponent = () => {
                                                 <div>
                                                 <Row>
                                                     <Col xs={5}>{formatPlayers(match)}</Col>
-                                                    <Col xs={5}>{formatScores(match.score)}</Col>
+                                                    <Col xs={5}><p>{formatScores(match.score)}</p></Col>
                                                     <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
                                                 </Row>
                                                 </div>
@@ -129,7 +129,7 @@ const EditMatchesComponent = () => {
                                                 <div>
                                                  <Row>
                                                     <Col xs={5}>{formatPlayers(match)}</Col>
-                                                    <Col xs={5}>{formatScores(match.score)}</Col>
+                                                    <Col xs={5}><p>{formatScores(match.score)}</p></Col>
                                                     <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
                                                 </Row>
                                                 <hr></hr>

@@ -135,8 +135,12 @@
 }
 
 .delete-button {
-  background-color: #ff3e3e;
+  background-color: #9e2727;
   border: none;
+}
+
+.delete-button:hover {
+  background-color: #3b1212;
 }
 
 body {
@@ -159,6 +163,10 @@ p {
 
 hr {
   color: #c8c8c8;
+}
+
+.nav-link {
+  color: rgb(68, 64, 57);
 }
 
 Container {

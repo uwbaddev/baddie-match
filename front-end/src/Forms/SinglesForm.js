@@ -1,9 +1,10 @@
 import { Container, Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { ReportMatchUrl, ReportUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext'
+import * as ReactDOM from 'react-dom';
 
-const SinglesForm = () => {
+const SinglesForm = (formRef) => {
     const [bannerMessage, setBannerMessage] = useState('');
 
     const [show, setShow] = useState(true);
@@ -50,6 +51,8 @@ const SinglesForm = () => {
             body: JSON.stringify(matchObj)
         }).then(response => {
             setBannerMessage("Match Submitted")
+            var node = document.getElementById("match-form");
+            ReactDOM.findDOMNode(node).reset();
         }).catch(error => {
             console.log("Failed")
             console.error('Error: ', error);
