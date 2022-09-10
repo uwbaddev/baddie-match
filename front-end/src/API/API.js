@@ -7,3 +7,4 @@ export const AllMatchesUrl = `${DomainName}/matches`;
 export const PlayerMatchesUrl = (id) => `${DomainName}/match/player/${id}`
 export const PlayerIdUrl = (id) => `${DomainName}/player/${id}`
 export const CategoryId = (id) => `${DomainName}/category/${id}`
+export const CreatePlayerUrl = `${DomainName}/player`;

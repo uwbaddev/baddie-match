@@ -3,7 +3,8 @@ import ReportMatchComponent from '../components/ReportMatch';
 import Header from '../components/Header';
 import LandingPage from '../components/LandingPage';
 import ResultsPage from '../components/Results';
-import ResultsAdminPage from '../components/ResultsAdmin';
+import Admin from '../components/Admin/Admin';
+
 
 const MainRouter = () => {
     return (
@@ -13,8 +14,8 @@ const MainRouter = () => {
                 <Routes>
                     <Route exact path='/' element={LandingPage()} />
                     <Route exact path='/report' element={ReportMatchComponent()} />
-                    <Route exact path='results' element={ResultsPage()} />
-                    <Route exact path='/admin/results' element={ResultsAdminPage()} />
+                    <Route exact path='/results' element={ResultsPage()} />
+                    <Route exact path='/admin' element={Admin()} />
                 </Routes>
             </BrowserRouter>
         </>

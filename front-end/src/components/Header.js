@@ -23,6 +23,7 @@ const Header = () => {
                                 <Nav.Link href="/report">REPORT MATCH</Nav.Link>
                                 <Nav.Link href="/results">RESULTS</Nav.Link>
                             </Nav>
+                            <a href="/admin">Admin</a>
                         </Offcanvas.Body>
                     </Navbar.Offcanvas>
                 </Container>

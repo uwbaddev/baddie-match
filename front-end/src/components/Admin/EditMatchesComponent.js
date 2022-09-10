@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
-import { AppContext } from "../Contexts/AppContext";
-import { MatchUrl } from "../API/API"
+import { AppContext } from "../../Contexts/AppContext";
+import { MatchUrl } from "../../API/API"
 
-const ResultsAdminPage = () => {
+const EditMatchesComponent = () => {
     // const [results, setResults] = useState({});
     const { players, matches, queryPlayerResults } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
@@ -124,4 +124,4 @@ const ResultsAdminPage = () => {
     )
 }
 
-export default ResultsAdminPage;
+export default EditMatchesComponent;

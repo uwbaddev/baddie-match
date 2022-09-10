@@ -29,12 +29,12 @@ def getplayers():
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
 def newPlayer():
-    first_name = request.json.get("first_name")
-    last_name = request.json.get("last_name")
-    elegible_year = request.json.get("elegible_year")
+    first_name = request.json.get("firstName")
+    last_name = request.json.get("lastName")
+    eligible_year = int(request.json.get("eligibleYear"))
     sex = request.json.get("sex")
     try: 
-        (Players.createPlayer(first_name, last_name, elegible_year, sex))
+        (Players.createPlayer(first_name, last_name, eligible_year, sex))
         return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
     
     except Exception as e:
