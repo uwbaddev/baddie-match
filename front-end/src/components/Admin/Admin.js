@@ -4,8 +4,6 @@ import AddPlayerComponent from "./AddPlayerComponent";
 import EditMatchesComponent from "./EditMatchesComponent";
 
 const Admin = () => {
-    const [adminType, setAdminType] = useState('')
-
     return (
         <>
             <Container>
@@ -13,12 +11,12 @@ const Admin = () => {
                     <Col> <p className='page-title'>Admin</p></Col>
                 </Row>
                 <Form>
-                    <Tabs activeKey={adminType} onSelect={type => setAdminType(type)}>
+                    <Tabs defaultActiveKey="editMatches">
+                    <Tab eventKey="editMatches" title="Edit Matches" tabClassName="report-tab">
+                            <EditMatchesComponent />
+                        </Tab>
                         <Tab eventKey="AddPlayer" title="Add Player" tabClassName="report-tab">
                             <AddPlayerComponent />
-                        </Tab>
-                        <Tab eventKey="EditMatches" title="Edit Matches" tabClassName="report-tab">
-                            <EditMatchesComponent />
                         </Tab>
                     </Tabs>
                 </Form>

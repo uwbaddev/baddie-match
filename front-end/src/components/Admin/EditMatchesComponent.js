@@ -72,14 +72,16 @@ const EditMatchesComponent = () => {
             })
     }
 
+    function formatDate(date) {
+        const lastIndex = date.lastIndexOf('-');
+        const dateString = date.slice(0, lastIndex);
+        var d = new Date(dateString);
+        return d.toDateString();
+    }
+
     return (
         <>
             <Container>
-                <Row >
-                    <Col className='page-title'>
-                        RESULTS
-                    </Col>
-                </Row>
                 { matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */
                     <Col className='page-title'>
@@ -105,17 +107,38 @@ const EditMatchesComponent = () => {
                             </Row>
                         </Form> */}
                         <hr></hr> 
-                        {matches.map((match, i) => {
-                            return (
-                                <div key={i}>
-                                    <Row>
-                                        <Col xs={5}>{formatPlayers(match)}</Col>
-                                        <Col xs={5}>{formatScores(match.score)}</Col>
-                                        <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button>Delete</Button></Col>
+                        {Object.keys(matches).sort().reverse().map((k) => {
+                           return(
+                                <div>
+                                    <Row 
+                                        className='table-header'>{formatDate(k)}
                                     </Row>
-                                    <hr></hr>
+                                    {matches[k].map((match, i) => {
+                                        if (matches[k].length === i + 1) {
+                                            return(
+                                                <div>
+                                                <Row>
+                                                    <Col xs={5}>{formatPlayers(match)}</Col>
+                                                    <Col xs={5}>{formatScores(match.score)}</Col>
+                                                    <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
+                                                </Row>
+                                                </div>
+                                            )
+                                        } else {
+                                            return (
+                                                <div>
+                                                 <Row>
+                                                    <Col xs={5}>{formatPlayers(match)}</Col>
+                                                    <Col xs={5}>{formatScores(match.score)}</Col>
+                                                    <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
+                                                </Row>
+                                                <hr></hr>
+                                                </div>
+                                            )
+                                        }
+                                    })}
                                 </div>
-                            )
+                           )
                         })}
                     </>
                 )}

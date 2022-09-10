@@ -63,6 +63,13 @@ const ResultsPage = () => {
         return scoreString;
     }
 
+    function formatDate(date) {
+        const lastIndex = date.lastIndexOf('-');
+        const dateString = date.slice(0, lastIndex);
+        var d = new Date(dateString);
+        return d.toDateString();
+    }
+
     return (
         <>
             <Container>
@@ -95,17 +102,36 @@ const ResultsPage = () => {
                                 </Col>
                             </Row>
                         </Form> */}
-                        <hr></hr> 
-                        {matches.map((match, i) => {
-                            return (
-                                <div key={i}>
-                                    <Row>
-                                        <Col xs={6}>{formatPlayers(match)}</Col>
-                                        <Col xs={6}>{formatScores(match.score)}</Col>
+                        {Object.keys(matches).sort().reverse().map((k) => {
+                           return(
+                                <div>
+                                    <Row 
+                                        className='table-header'>{formatDate(k)}
                                     </Row>
-                                    <hr></hr>
+                                    {matches[k].map((match, i) => {
+                                        if (matches[k].length === i + 1) {
+                                            return(
+                                                <div>
+                                                <Row>
+                                                    <Col xs={6}>{formatPlayers(match)}</Col>
+                                                    <Col xs={6}>{formatScores(match.score)}</Col>
+                                                </Row>
+                                                </div>
+                                            )
+                                        } else {
+                                            return (
+                                                <div>
+                                                <Row>
+                                                    <Col xs={6}>{formatPlayers(match)}</Col>
+                                                    <Col xs={6}>{formatScores(match.score)}</Col>
+                                                </Row>
+                                                <hr></hr>
+                                                </div>
+                                            )
+                                        }
+                                    })}
                                 </div>
-                            )
+                           )
                         })}
                     </>
                 )}

@@ -26,8 +26,16 @@ const useApp = () => {
         fetch(AllMatchesUrl, { method: 'GET' })
             .then(response => response.json())
             .then(data => {
-                data.reverse();
-                setMatches(data);
+                var matchesDict = {};
+                
+                data.forEach((d) => {
+                    if (!(d.date_added in matchesDict)) {
+                        matchesDict[d.date_added] = [];
+                    }
+                    matchesDict[d.date_added].push(d);
+                });
+                
+                setMatches(matchesDict);
             });
 
     }, []);

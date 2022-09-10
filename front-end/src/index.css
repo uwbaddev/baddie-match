@@ -123,6 +123,21 @@
   padding: .75em;
   letter-spacing: 1px;
 }
+.table-header {
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+  color: black !important;
+  padding: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  background-color: #e8e8e2;
+  font-size: large;
+}
+
+.delete-button {
+  background-color: #ff3e3e;
+  border: none;
+}
 
 body {
   margin: 0;
@@ -136,6 +151,18 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+p {
+  margin: 5px;
+}
+
+hr {
+  color: #c8c8c8;
+}
+
+Container {
+  margin-bottom: 20px;
 }
 
 @media all and (max-device-width: 480px){
