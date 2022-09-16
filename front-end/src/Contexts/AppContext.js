@@ -3,6 +3,7 @@ import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMa
 import React from "react"
 import { useState, useEffect } from "react"
 import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses"
+import Moment from "moment"
 
 export const AppContext = React.createContext('')
 
@@ -29,10 +30,13 @@ const useApp = () => {
                 var matchesDict = {};
                 
                 data.forEach((d) => {
-                    if (!(d.date_added in matchesDict)) {
-                        matchesDict[d.date_added] = [];
+                    var date_obj = Moment(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true)
+                    
+                    var key = date_obj.clone().startOf('day').unix()
+                    if (!(key in matchesDict)) {
+                        matchesDict[key] = [];
                     }
-                    matchesDict[d.date_added].push(d);
+                    matchesDict[key].push({date: date_obj, data: d});
                 });
                 
                 setMatches(matchesDict);

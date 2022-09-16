@@ -72,13 +72,6 @@ const EditMatchesComponent = () => {
             })
     }
 
-    function formatDate(date) {
-        const lastIndex = date.lastIndexOf('-');
-        const dateString = date.slice(0, lastIndex);
-        var d = new Date(dateString);
-        return d.toDateString();
-    }
-
     return (
         <>
             <Container>
@@ -106,36 +99,24 @@ const EditMatchesComponent = () => {
                                 </Col>
                             </Row>
                         </Form> */}
-                        <hr></hr> 
                         {Object.keys(matches).sort().reverse().map((k) => {
                            return(
                                 <div>
                                     <Row 
-                                        className='table-header'>{formatDate(k)}
+                                        className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
                                     </Row>
                                     {matches[k].map((match, i) => {
-                                        if (matches[k].length === i + 1) {
-                                            return(
-                                                <div>
-                                                <Row>
-                                                    <Col xs={5}>{formatPlayers(match)}</Col>
-                                                    <Col xs={5}><p>{formatScores(match.score)}</p></Col>
-                                                    <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
-                                                </Row>
-                                                </div>
-                                            )
-                                        } else {
                                             return (
                                                 <div>
                                                  <Row>
-                                                    <Col xs={5}>{formatPlayers(match)}</Col>
-                                                    <Col xs={5}><p>{formatScores(match.score)}</p></Col>
-                                                    <Col xs={5} onClick={(e) => postDeleteMatch(e, match.id)}> <Button className="delete-button">Delete</Button></Col>
+                                                <Col xs={1}>{match.date.local().format('H:mm')}</Col>
+                                                <Col xs={5}>{formatPlayers(match.data)}</Col>
+                                                <Col xs={2}><p>{formatScores(match.data.score)}</p></Col>
+                                                <Col xs={2} onClick={(e) => postDeleteMatch(e, match.data.id)}> <Button className="delete-button">Delete</Button></Col>
                                                 </Row>
-                                                <hr></hr>
+                                            {matches[k].length === i + 1 ? <></> : <hr></hr>}
                                                 </div>
                                             )
-                                        }
                                     })}
                                 </div>
                            )

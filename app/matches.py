@@ -12,8 +12,8 @@ class Matches(db.Model):
   winners = db.Column(db.ARRAY(db.Integer()))
   score = db.Column(db.ARRAY(db.Integer()))
   category = db.Column(db.String())
-  date_added = db.Column(db.Date())
-  last_edit = db.Column(db.Date())
+  date_added = db.Column(db.TIMESTAMP())
+  last_edit = db.Column(db.TIMESTAMP())
 
 
   def __repr__(self):
@@ -38,7 +38,7 @@ class Matches(db.Model):
         Matches.validateEvent(event)
         match.event = event
 
-      if (players is not None):
+      if (not all(player is None for player in players)):
         Matches.validatePlayers(players)
         match.players = players
 
