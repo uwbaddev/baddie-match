@@ -102,11 +102,10 @@ const ResultsPage = () => {
                                         className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
                                     </Row>
                                     {matches[k].map((match, i) => {
-                                        console.log(match.date.local(), match.date.format())
                                         return (
                                             <div>
                                             <Row>
-                                                <Col xs={2}>{match.date.local().format('HH:mm')}</Col>
+                                                <Col xs={2}>{match.date.format('h:mm a')}</Col>
                                                 <Col xs={6}>{formatPlayers(match.data)}</Col>
                                                 <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
                                             </Row>

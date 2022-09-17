@@ -30,8 +30,8 @@ const useApp = () => {
                 var matchesDict = {};
                 
                 data.forEach((d) => {
-                    var date_obj = Moment(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true)
-                    
+                    var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
+
                     var key = date_obj.clone().startOf('day').unix()
                     if (!(key in matchesDict)) {
                         matchesDict[key] = [];
@@ -39,6 +39,14 @@ const useApp = () => {
                     matchesDict[key].push({date: date_obj, data: d});
                 });
                 
+                for (var day in matchesDict) {
+                    matchesDict[day].sort((a, b) => {
+                        if (a.date.unix() > b.date.unix()) return -1
+                        else if (a.date.unix() < b.date.unix()) return 1
+                        else return 0
+                    })
+                }
+
                 setMatches(matchesDict);
             });
 

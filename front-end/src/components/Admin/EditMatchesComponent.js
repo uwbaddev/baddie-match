@@ -109,7 +109,7 @@ const EditMatchesComponent = () => {
                                             return (
                                                 <div>
                                                  <Row>
-                                                <Col xs={2}>{match.date.local().format('H:mm')}</Col>
+                                                <Col xs={2}>{match.date.format('h:mm a')}</Col>
                                                 <Col xs={6}>{formatPlayers(match.data)}</Col>
                                                 <Col xs={2}><p>{formatScores(match.data.score)}</p></Col>
                                                 <Col xs={2} onClick={(e) => postDeleteMatch(e, match.data.id)}> <Button className="delete-button">Delete</Button></Col>
