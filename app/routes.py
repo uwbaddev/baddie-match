@@ -121,6 +121,7 @@ def categoryHandler(id):
 @cross_origin()
 @app.route("/api/matches", methods = ["GET"])
 def getMatches():
+    app.logger.debug('This endpoint was hit!')
     matches = Matches.query.all()
     return json.dumps([m.serialize() for m in matches])
 
