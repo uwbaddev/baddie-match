@@ -30,8 +30,8 @@ def createTables():
             winners INTEGER[],
             score INTEGER[],
             category VARCHAR(255),
-            date_added DATE,
-            last_edit DATE
+            date_added TIMESTAMP,
+            last_edit TIMESTAMP
         )
         """,
         """
