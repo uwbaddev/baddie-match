@@ -63,7 +63,7 @@ const MixedForm = () => {
     function handleMatchDataChange(evt) {
         if (evt.target.name == 'score') {
             let localObj = matchObj;
-            localObj.score[evt.target.id] = evt.target.value;
+            localObj.score[evt.target.id] = parseInt(evt.target.value);
             setMatchObj(localObj);
         }
         else {
