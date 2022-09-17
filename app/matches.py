@@ -121,7 +121,7 @@ class Matches(db.Model):
   def validateEvent(event):
     if event is None:
       raise Exception('event cannot be null')
-    if not ((event == 'Doubles') | (event == 'Singles')):
+    if not ((event == 'Doubles') | (event == 'Singles') | (event == 'Mixed')):
       raise Exception('event must be Doubles or Singles. Recieved: ' + event)
 
   def validateScore(score):

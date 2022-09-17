@@ -51,12 +51,19 @@ const MixedForm = () => {
             },
             body: JSON.stringify(matchObj)
         }).then(response => {
-            setBannerMessage("Match Submitted")
-            var node = document.getElementById("match-form");
-            ReactDOM.findDOMNode(node).reset();
+            if (response.status === 500) {
+                response.text().then((text) => {
+                    setBannerMessage("Error: " + text);
+                });
+            } else {
+                response.text().then((text) => {
+                    setBannerMessage(text);
+                });
+                var node = document.getElementById("match-form");
+                ReactDOM.findDOMNode(node).reset();
+            }
         }).catch(error => {
-            console.log("Failed")
-            console.error('Error: ', error);
+            console.log(error);
         })
     }
 
