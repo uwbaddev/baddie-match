@@ -37,8 +37,3 @@ def getWinPercentages():
         })
 
     return json.dumps(player_results)
-
-            
-                
-        
-
