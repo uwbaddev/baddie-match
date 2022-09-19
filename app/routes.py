@@ -221,6 +221,8 @@ def getAllWinPercentages():
                         s_loss +=1
 
             player_results.append({
+                "id": p["id"], 
+                "name": p["first_name"] + " " + p["last_name"],
                 "singles_wins": s_win,
                 "singles_losses": s_loss,
                 "doubles_wins": d_win,
