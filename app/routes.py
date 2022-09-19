@@ -204,18 +204,18 @@ def getAllWinPercentages():
             d_loss, s_loss, m_loss = 0, 0, 0
             
             for m in matches:
-                if m.event == "Doubles":
-                    if p["id"] in m.winners:
+                if m["event"] == "Doubles":
+                    if p["id"] in m["winners"]:
                         d_win += 1
                     else:
                         d_loss += 1
-                elif m.event == "Mixed":
-                    if p["id"] in m.winners:
+                elif m["event"] == "Mixed":
+                    if p["id"] in m["winners"]:
                         m_win += 1
                     else:
                         m_loss += 1
                 else:
-                    if p["id"] in m.winners:
+                    if p["id"] in m["winners"]:
                         s_win += 1
                     else:
                         s_loss +=1
