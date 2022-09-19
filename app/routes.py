@@ -2,6 +2,7 @@ from app import app, db
 from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
+from app.stats import getWinPercentages
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import os, json
@@ -189,6 +190,16 @@ def addMatch():
     except Exception as e:
         return str(e), 500
 
+################################################################################
+# Player stats
+################################################################################
+@cross_origin()
+@app.route("/api/players/stats", methods = ["GET"])
+def getAllWinPercentages():
+    try:
+        return getWinPercentages(), 200
+    except Exception as e:
+            return str(e), 500
 
 if __name__ == '__main__':
     app.run()
