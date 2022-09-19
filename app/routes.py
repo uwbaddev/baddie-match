@@ -197,9 +197,9 @@ def addMatch():
 def getAllWinPercentages():
     try:
         player_results = []
-        players = Players.get_all_players()
+        players = json.load(Players.get_all_players())
         for p in players:
-            matches = Matches.getMatchesWithPlayer(p.id)
+            matches = json.load(Matches.getMatchesWithPlayer(p.id))
             d_win, s_win, m_win = 0, 0, 0
             d_loss, s_loss, m_loss = 0, 0, 0
             
