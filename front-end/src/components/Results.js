@@ -63,13 +63,6 @@ const ResultsPage = () => {
         return scoreString;
     }
 
-    function formatDate(date) {
-        const lastIndex = date.lastIndexOf('-');
-        const dateString = date.slice(0, lastIndex);
-        var d = new Date(dateString);
-        return d.toDateString();
-    }
-
     return (
         <>
             <Container>
@@ -103,36 +96,26 @@ const ResultsPage = () => {
                             </Row>
                         </Form> */}
                         {Object.keys(matches).sort().reverse().map((k) => {
-                           return(
+                            return(
                                 <div>
                                     <Row 
-                                        className='table-header'>{formatDate(k)}
+                                        className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
                                     </Row>
                                     {matches[k].map((match, i) => {
-                                        if (matches[k].length === i + 1) {
-                                            return(
-                                                <div>
-                                                <Row>
-                                                    <Col xs={6}>{formatPlayers(match)}</Col>
-                                                    <Col xs={6}><p>{formatScores(match.score)}</p></Col>
-                                                </Row>
-                                                </div>
-                                            )
-                                        } else {
-                                            return (
-                                                <div>
-                                                <Row>
-                                                    <Col xs={6}>{formatPlayers(match)}</Col>
-                                                    <Col xs={6}><p>{formatScores(match.score)}</p></Col>
-                                                </Row>
-                                                <hr></hr>
-                                                </div>
-                                            )
-                                        }
+                                        return (
+                                            <div>
+                                            <Row>
+                                                <Col xs={2}>{match.date.format('h:mm a')}</Col>
+                                                <Col xs={6}>{formatPlayers(match.data)}</Col>
+                                                <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
+                                            </Row>
+                                            {matches[k].length === i + 1 ? <></> : <hr></hr>}
+                                            </div>
+                                        )
                                     })}
                                 </div>
-                           )
-                        })}
+                            )}
+                        )}
                     </>
                 )}
             </Container>
