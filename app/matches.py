@@ -117,9 +117,9 @@ class Matches(db.Model):
       if diff == 0:
         return None
       if diff > 0:
-        team1score = 999
+        team1score = 69
       else:
-        team2score = 999
+        team2score = 69
 
     if (event == 'Singles'):
       return [players[0]] if team1score > team2score else [players[1]]
