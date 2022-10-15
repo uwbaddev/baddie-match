@@ -108,11 +108,23 @@ class Matches(db.Model):
     elif (s[4] < s[5]):
       team2score += 1
 
+    if team1score == team2score:
+      team1_totalscore = s[0] + s[2]
+      team2_totalscore = s[1] + s[3]
+      diff = team1_totalscore - team2_totalscore
+
+      # If score diff is 0, then we the winner is None (draw)
+      if diff == 0:
+        return None
+      if diff > 0:
+        team1score = 69
+      else:
+        team2score = 69
+
     if (event == 'Singles'):
       return [players[0]] if team1score > team2score else [players[1]]
     else:
       return [players[0], players[1]] if team1score > team2score else [players[2], players[3]]  
-
   
   def validatePlayers(players):
     if (len(players) != len(set(players))):
