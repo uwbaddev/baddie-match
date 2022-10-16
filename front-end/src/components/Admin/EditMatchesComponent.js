@@ -15,9 +15,14 @@ const EditMatchesComponent = () => {
 
     // TODO: someone with Reaact experience pls do this better
     function formatPlayerSingles(match, index) {
-        let winner = match.winners[0]
         let player = players.find(x => x.id === match.players[index]).first_name
 
+        if (match.winners === null) {
+            return player
+        }
+
+        let winner = match.winners[0]
+        
         if (winner === match.players[index]) {
             return (<b>{player}</b>)
         }
@@ -29,6 +34,10 @@ const EditMatchesComponent = () => {
         let player2 = players.find(x => x.id === match.players[index2]).first_name
 
         let playerString = player1 + '/' + player2
+
+        if (match.winners === null) {
+            return playerString
+        }
 
         if (match.winners.includes(match.players[index1])) {
             return (<b>{playerString}</b>)

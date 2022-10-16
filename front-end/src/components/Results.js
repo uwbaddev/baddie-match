@@ -34,6 +34,10 @@ const ResultsPage = () => {
 
         let playerString = player1 + '/' + player2
 
+        if (match.winners === null) {
+            return playerString
+        }
+        
         if (match.winners.includes(match.players[index1])) {
             return (<b>{playerString}</b>)
         }
