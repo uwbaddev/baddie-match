@@ -1,10 +1,10 @@
-from app import app, db
 from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import os, json
+from app.main import db, app
 
 @cross_origin()
 @app.route("/")
