@@ -229,7 +229,7 @@ def getAllWinPercentages():
                 "singles_wins": s_win,
                 "singles_losses": s_loss,
                 "doubles_wins": d_win,
-                "doubles_loses": d_loss,
+                "doubles_losses": d_loss,
                 "mixed_wins": m_win,
                 "mixed_losses": m_loss,
             })
