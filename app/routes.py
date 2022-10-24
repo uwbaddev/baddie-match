@@ -203,11 +203,10 @@ def getAllWinPercentages():
             d_win, s_win, m_win = 0, 0, 0
             d_loss, s_loss, m_loss = 0, 0, 0
 
-            winners = m["winners"]
-            if winners is None:
-                continue
-            
             for m in matches:
+                winners = m["winners"]
+                if winners is None:
+                    continue
                 if m["event"] == "Doubles":
                     if p["id"] in winners:
                         d_win += 1
