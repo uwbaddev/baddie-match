@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import LandingPage from '../components/LandingPage';
 import ResultsPage from '../components/Results';
 import Admin from '../components/Admin/Admin';
+import Players from '../components/Players';
 
 
 const MainRouter = () => {
@@ -16,6 +17,7 @@ const MainRouter = () => {
                     <Route exact path='/report' element={ReportMatchComponent()} />
                     <Route exact path='/results' element={ResultsPage()} />
                     <Route exact path='/admin' element={Admin()} />
+                    <Route exact path='/players' element={Players()} />
                 </Routes>
             </BrowserRouter>
         </>
