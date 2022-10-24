@@ -48,13 +48,13 @@ The backend is created using [Flask](https://flask.palletsprojects.com/en/2.0.x/
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-FLASK_APP=app.py flask run
+FLASK_APP=app.main flask run
 ```
 **Windows**
 ```
 python3 -m venv venv
 venv\scripts\activate
 venv\scripts\pip.exe install -r requirements.txt
-setx FLASK_APP "app.py"
+setx FLASK_APP "app.main"
 flask run
 ```
