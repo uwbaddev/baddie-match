@@ -200,24 +200,26 @@ def getAllWinPercentages():
         players = json.loads(Players.get_all_players())
         for p in players:
             matches = json.loads(Matches.getMatchesWithPlayer(p["id"]))
-            if matches is None:
-                return
             d_win, s_win, m_win = 0, 0, 0
             d_loss, s_loss, m_loss = 0, 0, 0
+
+            winners = m["winners"]
+            if winners is None:
+                continue
             
             for m in matches:
                 if m["event"] == "Doubles":
-                    if p["id"] in m["winners"]:
+                    if p["id"] in winners:
                         d_win += 1
                     else:
                         d_loss += 1
                 elif m["event"] == "Mixed":
-                    if p["id"] in m["winners"]:
+                    if p["id"] in winners:
                         m_win += 1
                     else:
                         m_loss += 1
                 else:
-                    if p["id"] in m["winners"]:
+                    if p["id"] in winners:
                         s_win += 1
                     else:
                         s_loss +=1
