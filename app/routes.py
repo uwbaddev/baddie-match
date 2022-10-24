@@ -233,7 +233,7 @@ def getAllWinPercentages():
 
         return json.dumps(player_results), 200
     except Exception as e:
-            return str(e), 500
+            return e, 500
 
 if __name__ == '__main__':
     app.run()
