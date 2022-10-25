@@ -45,7 +45,7 @@ const AddPlayerComponent = () => {
             },
             body: JSON.stringify(playerObj)
         }).then(() => {
-            setBannerMessage("Match Submitted")
+            setBannerMessage("Player Submitted")
         }).catch(error => {
             console.log("Failed")
             console.error('Error: ', error);
