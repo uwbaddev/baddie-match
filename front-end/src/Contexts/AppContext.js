@@ -1,5 +1,5 @@
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider"
-import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl } from "../API/API"
+import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl } from "../API/API"
 import React from "react"
 import { useState, useEffect } from "react"
 import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses"
@@ -11,6 +11,9 @@ const useApp = () => {
     const [players, setPlayers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [matches, setMatches] = useState([]);
+    const [singlesRankings, setSinglesRankings] = useState([]);
+    const [doublesRankings, setDoublesRankings] = useState([]);
+    const [mixedRankings, setMixedRankings] = useState([]);
 
     useEffect(() => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
@@ -50,6 +53,45 @@ const useApp = () => {
                 setMatches(matchesDict);
             });
 
+        const getStats = (category) => {
+            queryStats()
+            .then(data => data.map(s => {
+                let percentage = 0;
+                let category_wins = category + '_wins';
+                let category_losses = category + '_losses';
+                if (s[category_wins] + s[category_losses] != 0) {
+                    percentage = Math.round((s[category_wins] / (s[category_wins] + s[category_losses])) * 100);
+                }
+                return {
+                    name: s.name,
+                    percentage: percentage,
+                    wins: s[category_wins],
+                    losses: s[category_losses],
+                }
+            }))
+            .then(results => {
+                var items = Object.keys(results).map(function(key) {
+                    return [key, results[key]];
+                });
+                items.sort(function(first, second) {
+                    return second[1].percentage - first[1].percentage;
+                });
+                return items;
+            })
+            .then(res => { 
+                if (category === 'singles') {
+                    setSinglesRankings(res) 
+                } else if (category === 'doubles') {
+                    setDoublesRankings(res) 
+                } else {
+                    setMixedRankings(res) 
+                }
+            })
+        };
+        getStats('singles');
+        getStats('doubles');
+        getStats('mixed');
+        
     }, []);
 
     const queryPlayerResults = (id) => fetch(PlayerMatchesUrl(id), { method: 'GET' }).then(response => response.json())
@@ -60,18 +102,24 @@ const useApp = () => {
 
     const queryCategory = (id) => fetch(CategoryId, { method: 'GET' }).then(response => response.json())
 
+    const queryStats = () => fetch(GetStatsUrl, { method: 'GET' }).then(response => response.json())
+
 
     return {
         //constants across app
         categories,
         players,
         matches,
+        singlesRankings,
+        doublesRankings,
+        mixedRankings,
 
         //usable functions for app
         queryPlayerResults,
         queryMatch,
         queryPlayer,
-        queryCategory
+        queryCategory,
+        queryStats
     }
 }
 

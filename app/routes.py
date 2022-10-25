@@ -1,3 +1,4 @@
+from sqlalchemy import false
 from app.categories import Categories
 from app.players import Players
 from app.matches import Matches
@@ -202,23 +203,34 @@ def getAllWinPercentages():
             matches = json.loads(Matches.getMatchesWithPlayer(p["id"]))
             d_win, s_win, m_win = 0, 0, 0
             d_loss, s_loss, m_loss = 0, 0, 0
-            
+
             for m in matches:
+                is_team_1 = m["players"][0] == p["id"] if m["event"] == 'Singles' else m["players"][0] == p["id"] or m["players"][1] == p["id"]
+                wins, losses = 0, 0
+                for i in range(3):
+                    first = i * 2
+                    second = i * 2 + 1
+                    if p["score"][first] == 0 and p["score"][second] == 0: continue
+                    if is_team_1:
+                        if p["score"][first] > p["score"][second]:
+                            wins += 1 
+                        else:
+                            losses += 1
+                    else:
+                        if p["score"][first] > p["score"][second]:
+                            losses += 1 
+                        else:
+                            wins += 1
+
                 if m["event"] == "Doubles":
-                    if p["id"] in m["winners"]:
-                        d_win += 1
-                    else:
-                        d_loss += 1
+                    d_win += wins
+                    d_loss += losses
                 elif m["event"] == "Mixed":
-                    if p["id"] in m["winners"]:
-                        m_win += 1
-                    else:
-                        m_loss += 1
+                    m_win += wins
+                    m_loss += losses
                 else:
-                    if p["id"] in m["winners"]:
-                        s_win += 1
-                    else:
-                        s_loss +=1
+                    s_win += wins
+                    s_loss += losses
 
             player_results.append({
                 "id": p["id"], 
@@ -226,14 +238,14 @@ def getAllWinPercentages():
                 "singles_wins": s_win,
                 "singles_losses": s_loss,
                 "doubles_wins": d_win,
-                "doubles_loses": d_loss,
+                "doubles_losses": d_loss,
                 "mixed_wins": m_win,
                 "mixed_losses": m_loss,
             })
 
         return json.dumps(player_results), 200
     except Exception as e:
-            return e, 500
+            return str(e), 500
 
 if __name__ == '__main__':
     app.run()
