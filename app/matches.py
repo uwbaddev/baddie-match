@@ -80,6 +80,8 @@ class Matches(db.Model):
     Matches.validatePlayersAndEvents(playersInMatch, event)
     Matches.validatePlayers(playersInMatch)
 
+    score = [ int(s) for s in score ]
+
     match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,

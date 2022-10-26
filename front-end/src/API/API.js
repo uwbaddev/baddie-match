@@ -1,4 +1,4 @@
-export const DomainName = "https://baddie-match.herokuapp.com/api";
+export const DomainName = "http://127.0.0.1:5000/api";
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
