@@ -1,8 +1,8 @@
 import requests 
 from app.main import app
-from app.players import Players
-from app.matches import Matches
-from app.categories import Categories
+from app.src.players import Players
+from app.src.matches import Matches
+from app.src.categories import Categories
 import os
 import sys
 from dotenv import load_dotenv
@@ -58,7 +58,7 @@ def add_matches():
     matches_added = 0
 
     for match in response:
-        print("queuing match: " + str(match['id']))
+        #print("queuing match: " + str(match['id']))
         match=Matches(
             id = match['id'],
             event=match['event'],

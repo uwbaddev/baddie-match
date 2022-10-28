@@ -2,6 +2,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__, static_url_path='/',
                   static_folder="../front-end/build",
@@ -13,4 +16,4 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-from app import routes
+from app.src import routes
