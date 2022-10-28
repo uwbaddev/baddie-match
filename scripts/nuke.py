@@ -42,7 +42,7 @@ def nuke_categories():
     try:
         num_rows_deleted = db.session.query(Categories).delete()
         db.session.commit()
-        print(str(num_rows_deleted) + " rows deleted from matches db")
+        print(str(num_rows_deleted) + " rows deleted from categories db")
     except Exception as e:
         db.session.rollback()
         print(e)
