@@ -5,6 +5,7 @@ import LandingPage from '../components/LandingPage';
 import ResultsPage from '../components/Results';
 import Admin from '../components/Admin/Admin';
 import Players from '../components/Players';
+import EloPage from '../components/EloPage';
 
 
 const MainRouter = () => {
@@ -18,6 +19,7 @@ const MainRouter = () => {
                     <Route exact path='/results' element={ResultsPage()} />
                     <Route exact path='/admin' element={Admin()} />
                     <Route exact path='/players' element={Players()} />
+                    <Route exact path='/elo' element={EloPage()} />
                 </Routes>
             </BrowserRouter>
         </>
