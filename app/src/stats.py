@@ -1,39 +1,54 @@
-import app.src.players as Players
-import app.src.matches as Matches
+from app.src.players import Players
+from app.src.matches import Matches
 import json
 
-def getWinPercentages():
-    player_results = []
-    players = Players.get_all_players()
-    for p in players:
-        matches = Matches.getMatchesWithPlayer(p.id)
-        d_win, s_win, m_win = 0, 0, 0
-        d_loss, s_loss, m_loss = 0, 0, 0
-        
-        for m in matches:
-            if m.event == "Doubles":
-                if p.id in m.winners:
-                    d_win += 1
-                else:
-                    d_loss += 1
-            elif m.event == "Mixed":
-                if p.id in m.winners:
-                    m_win += 1
-                else:
-                    m_loss += 1
-            else:
-                if p.id in m.winners:
-                    s_win += 1
-                else:
-                    s_loss +=1
+class Stats:
+    def getWinPercentages():
+        player_results = []
+        players = json.loads(Players.get_all_players())
+        for p in players:
+            matches = json.loads(Matches.getMatchesWithPlayer(p["id"]))
+            d_win, s_win, m_win = 0, 0, 0
+            d_loss, s_loss, m_loss = 0, 0, 0
 
-        player_results.append({
-            "singles_wins": s_win,
-            "singles_losses": s_loss,
-            "doubles_wins": d_win,
-            "doubkes_loses": d_loss,
-            "mixed_wins": m_win,
-            "mixed_losses": m_loss,
-        })
+            for m in matches:
+                is_team_1 = (m["players"][0] == p["id"]) if (m["event"] == 'Singles') else (m["players"][0] == p["id"] or m["players"][1] == p["id"])
+                
+                wins, losses = 0, 0
+                for i in range(3):
+                    first = i * 2
+                    second = i * 2 + 1
+                    if m["score"][first] == 0 and m["score"][second] == 0: continue
+                    if is_team_1:
+                        if m["score"][first] > m["score"][second]:
+                            wins += 1 
+                        else:
+                            losses += 1
+                    else:
+                        if m["score"][first] > m["score"][second]:
+                            losses += 1 
+                        else:
+                            wins += 1
 
-    return json.dumps(player_results)
+                if m["event"] == "Doubles":
+                    d_win += wins
+                    d_loss += losses
+                elif m["event"] == "Mixed":
+                    m_win += wins
+                    m_loss += losses
+                else:
+                    s_win += wins
+                    s_loss += losses
+
+            player_results.append({
+                "id": p["id"], 
+                "name": p["first_name"] + " " + p["last_name"],
+                "singles_wins": s_win,
+                "singles_losses": s_loss,
+                "doubles_wins": d_win,
+                "doubles_losses": d_loss,
+                "mixed_wins": m_win,
+                "mixed_losses": m_loss,
+            })
+        return json.dumps(player_results), 200
+
