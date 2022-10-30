@@ -1,9 +1,10 @@
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider"
-import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl } from "../API/API"
+import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, EloUrl } from "../API/API"
 import React from "react"
 import { useState, useEffect } from "react"
 import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses"
 import Moment from "moment"
+import { getOverlayDirection } from "react-bootstrap/esm/helpers"
 
 export const AppContext = React.createContext('')
 
@@ -14,6 +15,8 @@ const useApp = () => {
     const [singlesRankings, setSinglesRankings] = useState([]);
     const [doublesRankings, setDoublesRankings] = useState([]);
     const [mixedRankings, setMixedRankings] = useState([]);
+    const [singlesElo, setSinglesElo] = useState([]);
+    const [doublesElo, setDoublesElo] = useState([]);
 
     useEffect(() => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
@@ -91,7 +94,20 @@ const useApp = () => {
         getStats('singles');
         getStats('doubles');
         getStats('mixed');
-        
+    
+        const getElo = (event) => {
+            queryElo(event)
+            .then(data => {
+                if (event === 'singles') {
+                    setSinglesElo(data);
+                    
+                } else {
+                    setDoublesElo(data);
+                }
+            })
+        };
+        getElo('singles');
+        getElo('doubles');
     }, []);
 
     const queryPlayerResults = (id) => fetch(PlayerMatchesUrl(id), { method: 'GET' }).then(response => response.json())
@@ -104,6 +120,7 @@ const useApp = () => {
 
     const queryStats = () => fetch(GetStatsUrl, { method: 'GET' }).then(response => response.json())
 
+    const queryElo = (event) => fetch(EloUrl(event), { method: 'GET' }).then(response => response.json())
 
     return {
         //constants across app
@@ -113,13 +130,16 @@ const useApp = () => {
         singlesRankings,
         doublesRankings,
         mixedRankings,
+        singlesElo,
+        doublesElo,
 
         //usable functions for app
         queryPlayerResults,
         queryMatch,
         queryPlayer,
         queryCategory,
-        queryStats
+        queryStats, 
+        queryElo
     }
 }
 
