@@ -1,5 +1,5 @@
-import players as Players
-import matches as Matches
+import app.src.players as Players
+import app.src.matches as Matches
 import json
 
 def getWinPercentages():
