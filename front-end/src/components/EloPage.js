@@ -70,20 +70,6 @@ const EloPage = () => {
         </ListGroup>
     }
 
-    const Rankings = (event) => {
-        return <ListGroup as="ol" numbered>
-            {event.filter(r => r[1].wins + r[1].losses > 1).slice(0, 10).map((r, i) => {
-                return <ListGroup.Item>
-                    <Row>
-                        <Col xs={6}>{i + 1}. {r[1].name}</Col>
-                        <Col xs={6}>{r[1].percentage}% (W: {r[1].wins}, L: {r[1].losses})</Col>
-                    </Row>
-                </ListGroup.Item>
-            })
-            }
-        </ListGroup>
-    }
-
     return (
         <>
             <Container>
