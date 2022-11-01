@@ -70,7 +70,7 @@ def playerHandler(id):
 @cross_origin()              
 @app.route("/api/category", methods = ["POST"])
 def newCategory():
-    name = request.json.get("name")
+    name = request.form.get("name")
     try:
         category=Categories(
             name=name
