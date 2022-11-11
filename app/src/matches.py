@@ -2,7 +2,9 @@ import json
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app.main import app
+
+db = SQLAlchemy(app)
 
 class Matches(db.Model):
   __tablename__ = 'matches'
