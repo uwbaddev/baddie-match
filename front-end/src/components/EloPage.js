@@ -44,12 +44,8 @@ const EloPage = () => {
             player['sigma'] = player['singles_rating']['sigma']
         })
         elo.sort((a, b) => {
-            return b['single_elo'] - a['singles_elo']
-        })
-        elo.map((player) => {
-            console.log(player['name'])
-        })
-        
+            return b['mu'] - a['mu']
+        })        
         let i = 0
         return <ListGroup as="ol" numbered>
             {
@@ -57,9 +53,8 @@ const EloPage = () => {
                     i++
                     return <ListGroup.Item>
                         <Row>
-                            <Col xs={4}>{i + '. ' + player['name']}</Col>
-                            <Col xs={2}>{player['singles_elo'].toFixed(0)}</Col>
-                            <Col xs={2}>{player['mu'].toFixed(3)}</Col>
+                            <Col xs={5}>{i + '. ' + player['name']}</Col>
+                            <Col xs={3}>{player['mu'].toFixed(3)}</Col>
                             <Col xs={2}>{player['sigma'].toFixed(3)}</Col>
                             <Col xs={2}>{player['singles_win_pct'].toFixed(3)}</Col>
 
@@ -87,9 +82,8 @@ const EloPage = () => {
                                 <div className='table-header'>Singles Elo</div>
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col xs={4}> <b>Name</b> </Col>
-                                        <Col xs={2}> <b>Elo</b> </Col>
-                                        <Col xs={2}> <b>{'\u03BC'}</b> </Col>
+                                        <Col xs={5}> <b>Name</b> </Col>
+                                        <Col xs={3}> <b>{'\u03BC'}</b> </Col>
                                         <Col xs={2}> <b>{'\u03C3'}</b> </Col>
                                         <Col xs={2}> <b>Win %</b></Col>
                                     </Row>
