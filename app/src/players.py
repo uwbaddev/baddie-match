@@ -1,7 +1,9 @@
 import json
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app.main import app
+
+db = SQLAlchemy(app)
 
 class Players(db.Model):
     #todo find out how to make non-nullable

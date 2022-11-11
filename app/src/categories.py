@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
+from app.main import app
+
+db = SQLAlchemy(app)
 
 class Categories(db.Model):
   __tablename__ = 'categories'
