@@ -1,20 +1,18 @@
 from __future__ import division
-import requests
 import trueskill as ts
 import datetime
 from operator import itemgetter
 import os
 import pandas as pd
 from app.main import app
+from app.src.players import Players
+from app.src.matches import Matches
+import json
 
 # todo:
 # need to change the schema of player model, make elo attributes a part of the schema
-# refactor get_data to pull from db instead of going through web api
 
 class Player_elo:
-    singles_elo = None
-    doubles_elo = None
-    
     def expected(A, B):
         """
         Calculate expected score of A in a match against B
@@ -160,21 +158,13 @@ class Player_elo:
 
             return (player_stats)
 
-    def get_data(s): 
-        URL = os.environ['PROD_API_URL'] + s
-        request = requests.get(url = URL)
-
-        if (request.status_code != 200):
-            print("Error: " + URL + " returned status: " + str(request.status_code))
-            return []
-
-        return request.json()
-
-
-    def get_df_stats(): 
-        matches = Player_elo.get_data('matches')
-        players = Player_elo.get_data('players')
-
+    def get_df_stats():
+        players = json.loads(Players.get_all_players())
+        all_matches = Matches.query.all()
+    
+        matches = json.dumps([m.serialize() for m in all_matches])
+        matches = json.loads(matches)
+ 
         player_stats = Player_elo.initialize_player_stat_dict(players)
         
         # get recent matches
@@ -193,28 +183,19 @@ class Player_elo:
         df_player_stats = pd.DataFrame.from_dict(player_stats, orient='index', dtype=None, columns=stat_columns)
         return df_player_stats
 
-    def update_doubles_elo():
-        app.logger.info("updating doubles elo")
+    def get_doubles_elo():
         df_player_stats = Player_elo.get_df_stats()
         df_doubles_ranks = df_player_stats[df_player_stats['doubles_games_played'] >= 1]
         df_doubles_ranks['doubles_win_pct'] =  df_doubles_ranks['doubles_wins']/df_doubles_ranks['doubles_games_played']
         df_doubles_ranks = df_doubles_ranks.sort_values(by=['doubles_rating'], ascending = False)
-        Player_elo.doubles_elo = df_doubles_ranks[['name', 'doubles_rating', 'doubles_games_played', 'doubles_wins', 'doubles_losses', 'doubles_win_pct']]
-        
-    def update_singles_elo():
-        app.logger.info("updating singles elo")
+        df_doubles_ranks = df_doubles_ranks[['name', 'doubles_rating', 'doubles_games_played', 'doubles_wins', 'doubles_losses', 'doubles_win_pct']]
+        return df_doubles_ranks.to_json(None, 'records'), 200
+
+    def get_singles_elo():
         df_player_stats = Player_elo.get_df_stats()
         df_singles_ranks = df_player_stats[df_player_stats['singles_games_played'] >= 1]
         df_singles_ranks['singles_win_pct'] =  df_singles_ranks['singles_wins']/df_singles_ranks['singles_games_played']
         df_singles_ranks = df_singles_ranks.sort_values(by=['singles_elo'], ascending = False)
-        Player_elo.singles_elo =  df_singles_ranks[['name', 'singles_elo', 'singles_rating', 'singles_games_played', 'singles_wins', 'singles_losses', 'singles_win_pct']]
-        
-    def get_doubles_elo():
-        if Player_elo.doubles_elo is None:
-            Player_elo.update_doubles_elo()
-        return Player_elo.doubles_elo.to_json(None, 'records'), 200
+        df_singles_ranks = df_singles_ranks[['name', 'singles_elo', 'singles_rating', 'singles_games_played', 'singles_wins', 'singles_losses', 'singles_win_pct']]
+        return df_singles_ranks.to_json(None, 'records'), 200
 
-    def get_singles_elo():
-        if Player_elo.singles_elo is None:
-            Player_elo.update_singles_elo()
-        return Player_elo.singles_elo.to_json(None, 'records'), 200

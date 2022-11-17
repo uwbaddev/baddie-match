@@ -13,4 +13,3 @@ setuptools==65.5.0
 wheel==0.37.1
 pandas==1.5.1
 trueskill==0.4.5
-APScheduler==3.9.1

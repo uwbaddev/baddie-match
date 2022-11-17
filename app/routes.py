@@ -7,10 +7,6 @@ from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
 from app.main import db, app
-import time
-import atexit
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 
 @cross_origin()
@@ -210,13 +206,6 @@ def getAllWinPercentages():
 ################################################################################
 # ELO
 ################################################################################
-# scheduler to update elo
-scheduler = BackgroundScheduler()
-trigger = CronTrigger(day_of_week="mon-sun", hour=23)
-scheduler.add_job(func=Player_elo.update_singles_elo, trigger=trigger)
-scheduler.add_job(func=Player_elo.update_doubles_elo, trigger=trigger)
-scheduler.start()
-
 @cross_origin()
 @app.route("/api/elo/singles", methods = ["GET"])
 def getSinglesElo():
