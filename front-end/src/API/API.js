@@ -1,4 +1,9 @@
-export const DomainName = "https://baddie-match.herokuapp.com/api";
+const dotenv = require('dotenv')
+dotenv.config({ path: '../.env' })
+
+console.log("DomainName: " + process.env.DomainName)
+
+export const DomainName = process.env.DomainName;
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
