@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes: 
+      - .:/user/src/app
+    working_dir: /user/src/app
+    command: npm run dev
+    environment:
+      - FLASK_APP=app.main
+      - APP_CONFIG_FILE=/user/src/config.py
+      - DomainName=http://127.0.0.1:5000/api
+    ports:
+      - '8000:3000'
