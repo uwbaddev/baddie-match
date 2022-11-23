@@ -12,5 +12,6 @@ WORKDIR /user/src/
 COPY "config.py" /user/src/ 
 # CMD ["flask", "run"]
 # CMD ["python", "-m", "main"]
+CMD ["python" "-m" "flask" "run" "--host=0.0.0.0"]
 EXPOSE 5000
 
