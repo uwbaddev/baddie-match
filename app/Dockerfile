@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+FROM python:3.8-slim-buster
+ENV WORKDIR=/user/src/app
+RUN mkdir -p $WORKDIR
+
+COPY requirements.txt .
+RUN apt-get update 
+RUN apt-get -y install libpq-dev gcc 
+RUN pip3 install -r requirements.txt
+COPY . $WORKDIR
+WORKDIR /user/src/
+COPY "config.py" /user/src/ 
+# CMD ["flask", "run"]
+# CMD ["python", "-m", "main"]
+EXPOSE 5000
+
