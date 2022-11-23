@@ -1,9 +1,4 @@
-const dotenv = require('dotenv')
-dotenv.config({ path: '../.env' })
-
-console.log("DomainName: " + process.env.DomainName)
-
-export const DomainName = process.env.DomainName;
+export const DomainName = process.env.REACT_APP_DOMAIN_NAME;
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
