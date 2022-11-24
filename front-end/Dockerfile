@@ -3,7 +3,6 @@ FROM node:16-alpine AS builder
 RUN apk add --no-cache python3 g++ make
 WORKDIR /app
 COPY package.json .
-COPY package-lock.json .
 RUN npm install --production
 COPY . .
 RUN npm run build
