@@ -1,2 +1,2 @@
 #!/bin/sh
-gunicorn --chdir app app:app -b 0.0.0.0:5000
+gunicorn app.main:app -b 0.0.0.0:5000
