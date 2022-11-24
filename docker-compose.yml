@@ -7,7 +7,8 @@ services:
     volumes: 
       - ./app:/user/src/app
     working_dir: /user/src/
-    command: python -m flask run --host=0.0.0.0 
+    command: python -m app.main
+    # command: python -m flask run --host=0.0.0.0 
     env_file:
       - ./.env
     environment:

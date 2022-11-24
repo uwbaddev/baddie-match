@@ -2,7 +2,6 @@
 FROM python:3.8-slim-buster
 ENV WORKDIR=/user/src/app
 RUN mkdir -p $WORKDIR
-
 COPY requirements.txt .
 RUN apt-get update 
 RUN apt-get -y install libpq-dev gcc 
@@ -10,6 +9,7 @@ RUN pip3 install -r requirements.txt
 COPY . $WORKDIR
 WORKDIR /user/src/
 COPY "config.py" /user/src/ 
-CMD ["python",  "-m", "app.main"]
+COPY "gunicorn.sh" /user/src/ 
+ENTRYPOINT ["./gunicorn.sh"]
 EXPOSE 5000
 
