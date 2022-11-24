@@ -12,3 +12,4 @@ python-dotenv==0.19.2
 wheel==0.37.1
 pandas==1.5.1
 trueskill==0.4.5
+waitress==2.1.2

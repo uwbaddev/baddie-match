@@ -1,7 +1,9 @@
 version: '3'
 services:
   app:
-    build: ./app
+    build: 
+      context: ./app
+      dockerfile: ./app/Dockerfile.development
     volumes: 
       - ./app:/user/src/app
     working_dir: /user/src/
@@ -11,6 +13,8 @@ services:
     environment:
       - FLASK_APP=app.main
       - APP_CONFIG_FILE=/user/src/config.py
+
+      # Overides .env file 
       # - APP_SETTINGS="config.DevelopmentConfig"
       # - DATABASE_URL="postgresql://postgres:postgres@host.docker.internal:5432/postgres"
       # - DATABASE_HOST="localhost"
@@ -21,20 +25,34 @@ services:
       # - DomainName="http://127.0.0.1:5000/api"
     ports:
       - '5000:5000'
-
+    depends_on:
+      - db
 
   web:
-    build: ./front-end
+    build: 
+      context: ./front-end
+      dockerfile: ./front-end/Dockerfile.development
     volumes: 
       - ./front-end:/user/src/app
     working_dir: /user/src/app
     command: npm run dev2
     environment:
-      - FLASK_APP=app.main
-      - APP_CONFIG_FILE=/user/src/config.py
       - REACT_APP_DOMAIN_NAME=http://127.0.0.1:5000/api
     ports:
       - '8000:3000'
-
-    
-    
+  
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5800
+    command: -p 5800
+    ports:
+      - '5800:5800'
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
