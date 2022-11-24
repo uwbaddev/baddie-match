@@ -3,7 +3,7 @@ services:
   app:
     build: 
       context: ./app
-      dockerfile: ./app/Dockerfile.development
+      dockerfile: ./Dockerfile.development
     volumes: 
       - ./app:/user/src/app
     working_dir: /user/src/
@@ -31,15 +31,18 @@ services:
   web:
     build: 
       context: ./front-end
-      dockerfile: ./front-end/Dockerfile.development
+      dockerfile: ./Dockerfile.development
     volumes: 
       - ./front-end:/user/src/app
+      - /user/src/app/node_modules
     working_dir: /user/src/app
     command: npm run dev2
     environment:
       - REACT_APP_DOMAIN_NAME=http://127.0.0.1:5000/api
     ports:
       - '8000:3000'
+    stdin_open: true
+    tty: true 
   
   db:
     image: postgres:14.1-alpine
