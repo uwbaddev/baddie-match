@@ -1,4 +1,12 @@
-export const DomainName = process.env.REACT_APP_DOMAIN_NAME;
+function getDomainName() {
+    if (process.env.REACT_APP_DOMAIN_NAME === "") {
+        return "https://baddie-app.onrender.com/api"
+    } else  {
+        return process.env.REACT_APP_DOMAIN_NAME
+    }
+}
+
+export const DomainName = getDomainName();
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;

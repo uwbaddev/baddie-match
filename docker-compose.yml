@@ -7,8 +7,7 @@ services:
     volumes: 
       - ./app:/user/src/app
     working_dir: /user/src/
-    command: python -m app.main
-    # command: python -m flask run --host=0.0.0.0 
+    command: python -m flask run --host=0.0.0.0 
     env_file:
       - ./.env
     environment:
@@ -32,14 +31,14 @@ services:
   web:
     build: 
       context: ./front-end
-      dockerfile: ./Dockerfile.development
+      # dockerfile: ./Dockerfile.development
     volumes: 
       - ./front-end:/user/src/app
       - /user/src/app/node_modules
     working_dir: /user/src/app
-    command: npm run dev2
+    # command: npm run dev2
     environment:
-      - REACT_APP_DOMAIN_NAME=http://127.0.0.1:5000/api
+      - REACT_APP_DOMAIN_NAME="http://127.0.0.1:5000/api"
     ports:
       - '8000:3000'
     stdin_open: true
