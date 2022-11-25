@@ -6,7 +6,7 @@ export function getDomainName() {
     }
 }
 
-export const DomainName = "https://app-production-4e43.up.railway.app/";
+export const DomainName = "https://app-production-4e43.up.railway.app/api";
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
