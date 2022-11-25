@@ -2,7 +2,7 @@ export function getDomainName() {
     if (process.env.REACT_APP_DOMAIN_NAME !== 'undefined') {
         return process.env.REACT_APP_DOMAIN_NAME
     } else  {
-        return "app-production-4e43.up.railway.app/api"
+        return "https://app-production-4e43.up.railway.app/api"
     }
 }
 
