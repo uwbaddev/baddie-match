@@ -1,12 +1,4 @@
-// export function getDomainName() {
-//     if (process.env.REACT_APP_DOMAIN_NAME !== 'undefined') {
-//         return process.env.REACT_APP_DOMAIN_NAME
-//     } else  {
-//         return "https://baddie-app.onrender.com/api"
-//     }
-// }
-
-export const DomainName = "https://baddie-app.onrender.com/api";
+export const DomainName = process.env.REACT_APP_DOMAIN_NAME || "https://baddie-match.herokuapp.com/api";
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;

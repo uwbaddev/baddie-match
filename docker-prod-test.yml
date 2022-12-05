@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - FLASK_APP=app.main
+      - APP_CONFIG_FILE=/user/src/config.py
+
+      # Overides .env file 
+      # - APP_SETTINGS="config.DevelopmentConfig"
+      # - DATABASE_URL="postgresql://postgres:postgres@host.docker.internal:5432/postgres"
+      # - DATABASE_HOST="localhost"
+      # - DATABASE_NAME="postgres"
+      # - DATABASE_USER="postgres"
+      # - DATABASE_PASSWORD="postgres"
+      # - PROD_API_URL="http://uwbadminton.live/api/"
+      # - DomainName="http://127.0.0.1:5000/api"
+    ports:
+      - '5000:5000'
