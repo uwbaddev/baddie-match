@@ -20,5 +20,5 @@ COPY "./app/config.py" /user/src/
 COPY "./app/gunicorn.sh" /user/src/
 COPY --from=builder /fe/build /user/src/build
 ENTRYPOINT ["./gunicorn.sh"]
-EXPOSE 5000
+EXPOSE $PORT
 
