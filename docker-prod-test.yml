@@ -1,0 +1,36 @@
+version: '3'
+
+# Builds the production image locally for testing
+
+#########################################################
+# WARNING: 
+# THE RESULTING UI WILL POINT TOWARDS PRODUCTION, AND ALL
+# ACTIONS PERFORMED WILL BE DESTRUCTIVE
+#########################################################
+
+# Use only for testing configurations
+# Usage:
+# docker-compose -f docker-prod-test build
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - FLASK_APP=app.main
+      - APP_CONFIG_FILE=/user/src/config.py
+      - PORT=5000
+
+      # Overides .env file 
+      # - APP_SETTINGS="config.DevelopmentConfig"
+      # - DATABASE_URL="postgresql://postgres:postgres@host.docker.internal:5432/postgres"
+      # - DATABASE_HOST="localhost"
+      # - DATABASE_NAME="postgres"
+      # - DATABASE_USER="postgres"
+      # - DATABASE_PASSWORD="postgres"
+      # - PROD_API_URL="http://uwbadminton.live/api/"
+    ports:
+      - '5000:5000'

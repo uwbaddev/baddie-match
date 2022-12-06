@@ -19,7 +19,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev" : "CHOKIDAR_USEPOLLING=true react-scripts start"
+    "dev": "CHOKIDAR_USEPOLLING=true react-scripts start",
+    "dev2": "WATCHPACK_POLLING=true react-scripts start"
   },
   "eslintConfig": {
     "extends": [

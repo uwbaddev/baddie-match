@@ -3,3 +3,7 @@
 venv/
 .env
 __pycache__/
+db/
+*build*
+front-end/build/
+*.pyc

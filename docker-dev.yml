@@ -1,0 +1,71 @@
+version: '3'
+
+# Builds Dev environment, with hotloading.
+# Usage: docker-compose -f docker-dev.yml up -d
+
+# UI -> localhost:8000
+# Backend -> localhost:5000
+# db -> localhost:5800 
+
+services:
+  app:
+    build: 
+      context: ./app
+      dockerfile: ./Dockerfile.dev
+    volumes: 
+      - ./app:/user/src/app
+    working_dir: /user/src/
+    command: python -m flask run --host=0.0.0.0 
+    env_file:
+      - ./.env
+    environment:
+      - FLASK_APP=app.main
+      - APP_CONFIG_FILE=/user/src/config.py
+      - FLASK_DEBUG=1
+      - FLASK_ENV=development
+
+      # Overides .env file 
+      # - APP_SETTINGS="config.DevelopmentConfig"
+      # - DATABASE_URL="postgresql://postgres:postgres@host.docker.internal:5432/postgres"
+      # - DATABASE_HOST="localhost"
+      # - DATABASE_NAME="postgres"
+      # - DATABASE_USER="postgres"
+      # - DATABASE_PASSWORD="postgres"
+      # - PROD_API_URL="http://uwbadminton.live/api/"
+      # - DomainName="http://127.0.0.1:5000/api"
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+
+  web:
+    build: 
+      context: ./front-end
+      dockerfile: ./Dockerfile.dev
+    volumes: 
+      - ./front-end:/user/src/app
+      - /user/src/app/node_modules
+    working_dir: /user/src/app
+    command: npm run dev2
+    environment:
+      - REACT_APP_DOMAIN_NAME=http://127.0.0.1:5000/api
+    ports:
+      - '8000:3000'
+    stdin_open: true
+    tty: true 
+  
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5800
+    command: -p 5800
+    ports:
+      - '5800:5800'
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
