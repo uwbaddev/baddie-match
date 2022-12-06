@@ -1,4 +1,8 @@
 # syntax=docker/dockerfile:1
+
+# Creates our Production Image 
+
+# Create front-end static build
 FROM node:16-alpine AS builder
 RUN apk add --no-cache python3 g++ make
 WORKDIR /fe
@@ -7,6 +11,7 @@ RUN npm install --production
 COPY ./front-end .
 RUN npm run build
 
+# Create Backend, with and move static build into /build dir
 FROM python:3.8-slim-buster
 ENV WORKDIR=/user/src/app
 RUN mkdir -p $WORKDIR
@@ -20,5 +25,7 @@ COPY "./app/config.py" /user/src/
 COPY "./app/gunicorn.sh" /user/src/
 COPY --from=builder /fe/build /user/src/build
 ENTRYPOINT ["./gunicorn.sh"]
+
+# Port is supplied by heroku
 EXPOSE $PORT
 

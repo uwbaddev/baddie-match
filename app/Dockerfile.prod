@@ -1,4 +1,6 @@
 # syntax=docker/dockerfile:1
+
+# Creates a stadalone production build of the backend, with no static assets
 FROM python:3.8-slim-buster
 ENV WORKDIR=/user/src/app
 RUN mkdir -p $WORKDIR
