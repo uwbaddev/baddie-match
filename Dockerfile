@@ -11,7 +11,7 @@ RUN npm install --production
 COPY ./front-end .
 RUN npm run build
 
-# Create Backend, with and move static build into /build dir
+# Create Backend, and move static build into /build dir
 FROM python:3.8-slim-buster
 ENV WORKDIR=/user/src/app
 RUN mkdir -p $WORKDIR
