@@ -3,6 +3,10 @@ version: '3'
 # Builds Dev environment, with hotloading.
 # Usage: docker-compose -f docker-dev.yml up -d
 
+# UI -> localhost:8000
+# Backend -> localhost:5000
+# db -> localhost:5800 
+
 services:
   app:
     build: 
