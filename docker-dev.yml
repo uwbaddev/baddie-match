@@ -9,6 +9,8 @@ version: '3'
 
 services:
   app:
+    image: app:dev
+    container_name: app
     build: 
       context: ./app
       dockerfile: ./Dockerfile.dev
@@ -39,6 +41,8 @@ services:
       - db
 
   web:
+    image: web:dev
+    container_name: web
     build: 
       context: ./front-end
       dockerfile: ./Dockerfile.dev
@@ -55,6 +59,7 @@ services:
     tty: true 
   
   db:
+    container_name: db
     image: postgres:14.1-alpine
     restart: always
     environment:
