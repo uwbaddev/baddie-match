@@ -1,73 +1,61 @@
 import json
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
 
-from app.main import app
+from app.model.match_model import MatchModel
 
-db = SQLAlchemy(app)
+class MatchService():
+  match_model = None
 
-class MatchModel(db.Model):
-  __tablename__ = 'matches'
+  def __init__(self):
+    self.match_model = MatchModel()
 
-  id = db.Column(db.Integer, primary_key=True)
-  event = db.Column(db.String())
-  players = db.Column(db.ARRAY(db.Integer()))
-  winners = db.Column(db.ARRAY(db.Integer()))
-  score = db.Column(db.ARRAY(db.Integer())) 
-  category = db.Column(db.String())
-  date_added = db.Column(db.TIMESTAMP())
-  last_edit = db.Column(db.TIMESTAMP())
-
-
-  def __repr__(self):
-    return '<Matches %r>' % self.id
-  
-
-  def findById(id):
-      match = MatchModel.query.get(id)
-      if (match is None):
-        return None
-      else:
-        return match
+  def findById(self, id):
+    try:
+      match = self.match_model.findById(id)
+    except Exception as e:
+        return str(e), 500
+      
+    if match is None: 
+      return f"No match Found with id {id}", 404
 
 
   def update(id, event, players, score, category):
       if (id is None):
         raise Exception('id cannot be null')
       
-      match = MatchModel.query.get(id)
+      match = Matches.query.get(id)
 
       if (event is not None):
-        MatchModel.validateEvent(event)
+        Matches.validateEvent(event)
         match.event = event
 
       if (not all(player is None for player in players)):
-        MatchModel.validatePlayers(players)
+        Matches.validatePlayers(players)
         match.players = players
 
       if (score is not None):
-        MatchModel.validateScore(score)
+        Matches.validateScore(score)
         match.score = score
-        match.winner = MatchModel.getWinner(score, players, event)
+        match.winner = Matches.getWinner(score, players, event)
 
       if (category is not None):
         match.category = category
 
       match.last_edit = datetime.today()
 
-      MatchModel.validatePlayersAndEvents(match.players, match.event)
+      Matches.validatePlayersAndEvents(match.players, match.event)
 
       db.session.commit()
   
 
   def delete(id):
-    db.session.query(MatchModel).filter(MatchModel.id==id).delete()
+    db.session.query(Matches).filter(Matches.id==id).delete()
     db.session.commit()
 
 
   def getMatchesWithPlayer(id):
     id = int(id)
-    all_matches = MatchModel.query.all()
+    all_matches = Matches.query.all()
     to_return = []
     for match in all_matches:
       for playerId in match.players:
@@ -77,19 +65,19 @@ class MatchModel(db.Model):
 
 
   def createMatch(event, playersInMatch, score, category):
-    MatchModel.validateEvent(event)
-    MatchModel.validateScore(score)
-    MatchModel.validatePlayersAndEvents(playersInMatch, event)
-    MatchModel.validatePlayers(playersInMatch)
+    Matches.validateEvent(event)
+    Matches.validateScore(score)
+    Matches.validatePlayersAndEvents(playersInMatch, event)
+    Matches.validatePlayers(playersInMatch)
 
-    match=MatchModel (
+    match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
       score = score,
       category = category,
       date_added = datetime.today(),
       last_edit = datetime.today(),
-      winners = MatchModel.getWinner(score, playersInMatch, event)
+      winners = Matches.getWinner(score, playersInMatch, event)
     )
     db.session.add(match)
     db.session.commit()
