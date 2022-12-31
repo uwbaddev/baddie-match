@@ -33,14 +33,15 @@ def getplayers():
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
 def newPlayer():
-
     player_schema = PlayerSchema()
-    result = player_schema.loads(request.get_data([0, 1, 0]))
+    
     try: 
+        result = player_schema.loads(request.get_data())
         db.session.add(result)
         db.session.commit()
-        return "yes", 200
-    
+        return result.serialize(), 200
+    except ValidationError as e:
+        
     except Exception as e:
         return str(e), 500
 
