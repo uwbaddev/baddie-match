@@ -181,6 +181,7 @@ class Player_elo:
         'singles_score_deltas', 'list_of_doubles_score_deltas', 'singles_elo']
 
         df_player_stats = pd.DataFrame.from_dict(player_stats, orient='index', dtype=None, columns=stat_columns)
+        
         return df_player_stats
 
     def get_doubles_elo():

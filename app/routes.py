@@ -3,6 +3,7 @@ from app.src.players import Players
 from app.src.matches import Matches
 from app.src.stats import Stats
 from app.src.player_elo import Player_elo
+from app.schema.schema import PlayerSchema
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
@@ -32,16 +33,30 @@ def getplayers():
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
 def newPlayer():
-    first_name = request.json.get("firstName")
-    last_name = request.json.get("lastName")
-    eligible_year = int(request.json.get("eligibleYear"))
-    sex = request.json.get("sex")
+
+    player_schema = PlayerSchema()
+    result = player_schema.loads(request.get_data([0, 1, 0]))
     try: 
-        (Players.createPlayer(first_name, last_name, eligible_year, sex))
-        return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
+        db.session.add(result)
+        db.session.commit()
+        return "yes", 200
     
     except Exception as e:
         return str(e), 500
+
+
+    
+
+    # first_name = request.json.get("firstName")
+    # last_name = request.json.get("lastName")
+    # eligible_year = int(request.json.get("eligibleYear"))
+    # sex = request.json.get("sex")
+    # try: 
+    #     (Players.createPlayer(first_name, last_name, eligible_year, sex))
+    #     return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
+    
+    # except Exception as e:
+    #     return str(e), 500
 
 
 @cross_origin()
