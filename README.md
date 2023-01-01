@@ -58,3 +58,11 @@ venv\scripts\pip.exe install -r requirements.txt
 setx FLASK_APP "app.main"
 flask run
 ```
+
+#### 4. Using docker
+
+Several scripts were created to help set up the local environment using Docker
+* init.sh - run first on initial setup, creates db and loads prod data
+* stop.sh - suspends docker containers to save system resources
+* restart.sh - restarts all containers
+* nuke.sh - Removes all containers, and images
