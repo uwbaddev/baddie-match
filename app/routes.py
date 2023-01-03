@@ -8,6 +8,7 @@ from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
 from app.main import db, app
+from marshmallow.exceptions import ValidationError
 
 
 @cross_origin()
@@ -34,20 +35,11 @@ def getplayers():
 @app.route("/api/player", methods = ["POST"])
 def newPlayer():
     player_schema = PlayerSchema()
+    result = player_schema.loads(request.get_data())
+    db.session.add(result)
+    db.session.commit()
+    return result.serialize(), 200
     
-    try: 
-        result = player_schema.loads(request.get_data())
-        db.session.add(result)
-        db.session.commit()
-        return result.serialize(), 200
-    except ValidationError as e:
-        
-    except Exception as e:
-        return str(e), 500
-
-
-    
-
     # first_name = request.json.get("firstName")
     # last_name = request.json.get("lastName")
     # eligible_year = int(request.json.get("eligibleYear"))
@@ -237,6 +229,12 @@ def getDoublesElo():
         return(Player_elo.get_doubles_elo())
     except Exception as e:
         return str(e), 500
+
+
+@app.errorhandler(ValidationError)
+def handle_validation_error(e):
+    return e.normalized_messages(), 400
+
 
 if __name__ == '__main__':
     app.run()
