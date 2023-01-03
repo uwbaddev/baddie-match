@@ -39,7 +39,7 @@ def newPlayer():
     db.session.add(result)
     db.session.commit()
     return result.serialize(), 200
-    
+
     # first_name = request.json.get("firstName")
     # last_name = request.json.get("lastName")
     # eligible_year = int(request.json.get("eligibleYear"))
@@ -61,16 +61,29 @@ def playerHandler(id):
     elif (request.method == 'GET'):
         return player, 200
     elif (request.method == 'PUT'):
-        first_name = request.json.get("first_name")
-        last_name = request.json.get("last_name")
-        elegible_year = request.json.get("elegible_year")
-        sex = request.json.get("sex")
-        try:
-            return Players.update(id, first_name, last_name, elegible_year, sex)
-        except Exception as e:
-            return str(e), 500
+        player_schema = PlayerSchema()
+        result = player_schema.loads(request.get_data())
+        result.id = id 
+
+        # update 
+        db.session.merge(result)
+        db.session.commit()
+        return result.serialize(), 200
+
+
+        # first_name = request.json.get("first_name")
+        # last_name = request.json.get("last_name")
+        # elegible_year = request.json.get("elegible_year")
+        # sex = request.json.get("sex")
+        # try:
+        #     return Players.update(id, first_name, last_name, elegible_year, sex)
+        # except Exception as e:
+        #     return str(e), 500
     else:
         Players.delete(id)
+
+        # db.session.query(Players).filter(Players.id==id).delete()
+        # db.session.commit()
         return "success", 200
 
 

@@ -14,6 +14,8 @@ class PlayerSchema(Schema):
     @post_load
     def create_player(self, data, **kwargs):
         return Players(**data)
+    
+        
 
 
 #
