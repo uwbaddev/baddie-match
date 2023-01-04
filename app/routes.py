@@ -28,7 +28,7 @@ def not_found(e):
 @cross_origin()
 @app.route("/api/players", methods = ["GET"])
 def get_players():
-    return Players.get_all_players(), 200
+    return get_all(Players)
 
 
 @cross_origin()
@@ -52,12 +52,8 @@ def player_handler(id):
         return player, 200
 
     elif (request.method == 'PUT'):
-        schema = PlayerSchema()
-        result = schema.loads(request.get_data())
-        result.id = id 
-        db.session.merge(result)
-        db.session.commit()
-        return result.serialize(), 200
+        return create(PlayerSchema, request, 1, id)
+
     else:
         Players.delete(id)
         return "success", 200
@@ -70,11 +66,12 @@ def player_handler(id):
 @cross_origin()              
 @app.route("/api/category", methods = ["POST"])
 def new_category():
-    schema = CategorySchema()
-    result = schema.loads(request.get_data())
-    db.session.add(result)
-    db.session.commit()
-    return result.serialize(), 200
+    return create(CategorySchema, request)
+    # schema = CategorySchema()
+    # result = schema.loads(request.get_data())
+    # db.session.add(result)
+    # db.session.commit()
+    # return result.serialize(), 200
 
 
 @cross_origin()
@@ -87,12 +84,14 @@ def getCategories():
 @cross_origin()    
 @app.route("/api/category/<id>", methods = ["GET","DELETE","PUT"])
 def categoryHandler(id):
+
     if (request.method == 'GET'):
         category = Categories.findById(id)
         if (category is None):
             return 'No category found', 204
         else:
             return category, 200
+
     elif (request.method == 'PUT'):
         name = request.json.get("name")
         try:
@@ -217,16 +216,49 @@ def getDoublesElo():
 def handle_validation_error(e):
     return e.normalized_messages(), 400
 
-
+###########################################################################
 # to be moved into a controller/utils file directory in the future
+###########################################################################
 
-# used for base create, throws validation error and possibly db errors 
-def create(schema, request):
+
+# used for base create, throws validation error and possibly db errors :)
+def create(schema, request, update = False, id = None):
     schema = schema()
     result = schema.loads(request.get_data())
-    db.session.add(result)
+
+    if update and id: 
+        db.session.merge(result)
+        result.id = id
+
+    else: 
+        db.session.add(result)
+
     db.session.commit()
     return result.serialize(), 200
+
+# used for getting all 
+def get_all(model):
+    models = model.query.all()
+    return json.dumps([m.serialize() for m in models]), 200
+
+
+# replaces old handlers
+def model_handler(id, request, model, schema):
+    obj = model.findById(id)
+
+    if (model is None) : return 'Not found', 404
+    
+    if (request.method == 'GET'): 
+        return obj, 200
+
+    elif (request.method == 'PUT'): 
+        return create(schema, request, 1, id)
+    
+    elif (request.method == 'DELETE'):
+        db.session.query(model).filter(model.id==id).delete()
+        db.session.commit()
+        return 'success', 200
+  
 
 if __name__ == '__main__':
     app.run()
