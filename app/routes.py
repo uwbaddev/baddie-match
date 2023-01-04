@@ -35,28 +35,11 @@ def get_players():
 @app.route("/api/player", methods = ["POST"])
 def new_player():
     return create(PlayerSchema, request)
-    # schema = PlayerSchema()
-    # result = schema.loads(request.get_data())
-    # db.session.add(result)
-    # db.session.commit()
 
 @cross_origin()
 @app.route("/api/player/<id>", methods = ["DELETE", "GET", "PUT"])
 def player_handler(id):
-    player = Players.findById(id)
-
-    if (player is None):
-        return 'No player found', 204
-
-    elif (request.method == 'GET'):
-        return player, 200
-
-    elif (request.method == 'PUT'):
-        return create(PlayerSchema, request, 1, id)
-
-    else:
-        Players.delete(id)
-        return "success", 200
+    return model_handler(id, request, Players, PlayerSchema)
 
 
 ################################################################################
@@ -67,44 +50,16 @@ def player_handler(id):
 @app.route("/api/category", methods = ["POST"])
 def new_category():
     return create(CategorySchema, request)
-    # schema = CategorySchema()
-    # result = schema.loads(request.get_data())
-    # db.session.add(result)
-    # db.session.commit()
-    # return result.serialize(), 200
-
 
 @cross_origin()
 @app.route("/api/categories", methods = ["GET"])
-def getCategories():
-    categories = Categories.query.all()
-    return json.dumps([c.serialize() for c in categories])
-
+def get_categories():
+    return get_all(Categories)
 
 @cross_origin()    
 @app.route("/api/category/<id>", methods = ["GET","DELETE","PUT"])
-def categoryHandler(id):
-
-    if (request.method == 'GET'):
-        category = Categories.findById(id)
-        if (category is None):
-            return 'No category found', 204
-        else:
-            return category, 200
-
-    elif (request.method == 'PUT'):
-        name = request.json.get("name")
-        try:
-            return Categories.update(id, name)
-        except Exception as e:
-            return str(e), 500
-
-
-    else: 
-        if (Categories.findById(id) is None):
-            return 'fail', 204
-        Categories.delete(id)
-        return "success", 200
+def categor_handler(id):
+    return model_handler(id, request, Categories, CategorySchema)
 
 ################################################################################
 #matches 
@@ -112,46 +67,19 @@ def categoryHandler(id):
     
 @cross_origin()
 @app.route("/api/matches", methods = ["GET"])
-def getMatches():
+def get_matches():
     app.logger.debug('This endpoint was hit!')
-    matches = Matches.query.all()
-    return json.dumps([m.serialize() for m in matches])
+    return get_all(Matches)
 
 @cross_origin()
 @app.route("/api/match/<id>", methods = ["DELETE", "GET", "PUT"])
-def matchHandler(id):
-    match = Matches.findById(id)
-    if (match is None):
-        return 'No match found', 204
+def match_handler(id):
+    return model_handler(id, request, Matches, MatchSchema)
 
-    elif (request.method == 'GET'):
-        return match, 200
-
-    elif (request.method == 'PUT'):
-        event = request.json.get("event")
-        score = request.json.get("score")
-        category = request.json.get("category")
-        players = [request.json.get("player1Id"), request.json.get("player2Id")]
-
-        if (event != "Singles"):
-            players.append(request.json.get("player3Id"))
-            players.append(request.json.get("player4Id"))
-
-        try:
-            Matches.update(id, event, players, score, category)
-            return 'success', 201
-
-        except Exception as e:
-            db.session.rollback()
-            return str(e), 500
-
-    else:
-        try:
-            Matches.delete(id)
-            return "success", 200
-
-        except Exception as e:
-            return str(e), 500
+@cross_origin()
+@app.route("/api/match", methods = ["POST"])
+def addMatch():
+    return create(MatchSchema, request)
 
 @cross_origin()
 @app.route("/api/match/player/<id>", methods = ["GET"])
@@ -162,24 +90,6 @@ def getMatchesWithPlayer(id):
     except Exception as e:
             return str(e), 500
 
-@cross_origin()
-@app.route("/api/match", methods = ["POST"])
-def addMatch():
-    try: 
-        event = request.json.get("event")
-        score  = request.json.get("score")
-        category = request.json.get("category")
-        players = [request.json.get("player1Id"), request.json.get("player2Id")]
-
-        if (event != "Singles"):
-            players.append(request.json.get("player3Id"))
-            players.append(request.json.get("player4Id"))
-
-        (Matches.createMatch(event, players, score, category))
-        return 'Match was added', 200    
-    
-    except Exception as e:
-        return str(e), 500
 
 ################################################################################
 # Player stats
@@ -212,14 +122,18 @@ def getDoublesElo():
         return str(e), 500
 
 
+###########################################################################
+# Error handling: to be moved to standalone in the future, with custom exceptions 
+###########################################################################
+
 @app.errorhandler(ValidationError)
 def handle_validation_error(e):
     return e.normalized_messages(), 400
 
 ###########################################################################
 # to be moved into a controller/utils file directory in the future
+# these methods can live of a base controller/util/model class eventually
 ###########################################################################
-
 
 # used for base create, throws validation error and possibly db errors :)
 def create(schema, request, update = False, id = None):
@@ -227,8 +141,8 @@ def create(schema, request, update = False, id = None):
     result = schema.loads(request.get_data())
 
     if update and id: 
-        db.session.merge(result)
         result.id = id
+        db.session.merge(result)
 
     else: 
         db.session.add(result)
@@ -246,7 +160,7 @@ def get_all(model):
 def model_handler(id, request, model, schema):
     obj = model.findById(id)
 
-    if (model is None) : return 'Not found', 404
+    if (model is None): return 'Not found', 404
     
     if (request.method == 'GET'): 
         return obj, 200
