@@ -3,7 +3,6 @@ from app.src.players import Players
 from app.src.categories import Categories
 from app.src.matches import Matches
 
-
 #
 class PlayerSchema(Schema):
     first_name = fields.Str()
@@ -15,9 +14,6 @@ class PlayerSchema(Schema):
     def create_player(self, data, **kwargs):
         return Players(**data)
     
-        
-
-
 #
 class CategorySchema(Schema):
     name = fields.Str()

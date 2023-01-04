@@ -3,7 +3,7 @@ from app.src.players import Players
 from app.src.matches import Matches
 from app.src.stats import Stats
 from app.src.player_elo import Player_elo
-from app.schema.schema import PlayerSchema
+from app.schema.schema import *
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
@@ -27,63 +27,39 @@ def not_found(e):
 
 @cross_origin()
 @app.route("/api/players", methods = ["GET"])
-def getplayers():
+def get_players():
     return Players.get_all_players(), 200
 
 
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
-def newPlayer():
-    player_schema = PlayerSchema()
-    result = player_schema.loads(request.get_data())
-    db.session.add(result)
-    db.session.commit()
-    return result.serialize(), 200
-
-    # first_name = request.json.get("firstName")
-    # last_name = request.json.get("lastName")
-    # eligible_year = int(request.json.get("eligibleYear"))
-    # sex = request.json.get("sex")
-    # try: 
-    #     (Players.createPlayer(first_name, last_name, eligible_year, sex))
-    #     return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
-    
-    # except Exception as e:
-    #     return str(e), 500
-
+def new_player():
+    return create(PlayerSchema, request)
+    # schema = PlayerSchema()
+    # result = schema.loads(request.get_data())
+    # db.session.add(result)
+    # db.session.commit()
 
 @cross_origin()
 @app.route("/api/player/<id>", methods = ["DELETE", "GET", "PUT"])
-def playerHandler(id):
+def player_handler(id):
     player = Players.findById(id)
+
     if (player is None):
         return 'No player found', 204
+
     elif (request.method == 'GET'):
         return player, 200
-    elif (request.method == 'PUT'):
-        player_schema = PlayerSchema()
-        result = player_schema.loads(request.get_data())
-        result.id = id 
 
-        # update 
+    elif (request.method == 'PUT'):
+        schema = PlayerSchema()
+        result = schema.loads(request.get_data())
+        result.id = id 
         db.session.merge(result)
         db.session.commit()
         return result.serialize(), 200
-
-
-        # first_name = request.json.get("first_name")
-        # last_name = request.json.get("last_name")
-        # elegible_year = request.json.get("elegible_year")
-        # sex = request.json.get("sex")
-        # try:
-        #     return Players.update(id, first_name, last_name, elegible_year, sex)
-        # except Exception as e:
-        #     return str(e), 500
     else:
         Players.delete(id)
-
-        # db.session.query(Players).filter(Players.id==id).delete()
-        # db.session.commit()
         return "success", 200
 
 
@@ -93,19 +69,12 @@ def playerHandler(id):
               
 @cross_origin()              
 @app.route("/api/category", methods = ["POST"])
-def newCategory():
-    name = request.form.get("name")
-    try:
-        category=Categories(
-            name=name
-        )
-        db.session.add(category)
-        db.session.commit()
-        print("success!")
-        
-        return "Inserted {name} into categories".format(name=name), 201
-    except Exception as e:
-        return str(e), 500
+def new_category():
+    schema = CategorySchema()
+    result = schema.loads(request.get_data())
+    db.session.add(result)
+    db.session.commit()
+    return result.serialize(), 200
 
 
 @cross_origin()
@@ -248,6 +217,16 @@ def getDoublesElo():
 def handle_validation_error(e):
     return e.normalized_messages(), 400
 
+
+# to be moved into a controller/utils file directory in the future
+
+# used for base create, throws validation error and possibly db errors 
+def create(schema, request):
+    schema = schema()
+    result = schema.loads(request.get_data())
+    db.session.add(result)
+    db.session.commit()
+    return result.serialize(), 200
 
 if __name__ == '__main__':
     app.run()
