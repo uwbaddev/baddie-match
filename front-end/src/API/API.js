@@ -10,3 +10,5 @@ export const CategoryId = (id) => `${DomainName}/category/${id}`
 export const CreatePlayerUrl = `${DomainName}/player`;
 export const GetStatsUrl = `${DomainName}/players/stats`
 export const EloUrl = (event) => `${DomainName}/elo/${event}`
+export const MatchPageUrl = (page) => `${DomainName}/matches/${page}`
+export const GetMatchesCount = `${DomainName}/matches/count`

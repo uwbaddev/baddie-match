@@ -1,19 +1,62 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
-import { MatchUrl } from "../API/API"
+import { GetMatchesCount } from "../API/API"
+import Moment from "moment"
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 
 const ResultsPage = () => {
     // const [results, setResults] = useState({});
-    const { players, matches, queryPlayerResults } = useContext(AppContext)
+    const { players, queryPlayerResults, queryMatchPage } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
-    // const [matches, setMatches] = useState([])
+    const [matches, setMatches] = useState([])
+    const [matchCount, setMatchCount] = useState(null);
+    const [pageCount, setPageCount] = useState(null);
+    const [activePage, setActivePage] = useState(1);
 
-   /*  function getResults(id) {
-        queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
-    } */
+    function queryThenFormatMatches(number) {
+        queryMatchPage(number)
+            .then(data => {
+                var matchesDict = {};
 
-    // TODO: someone with Reaact experience pls do this better
+                data.forEach((d) => {
+                    var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
+
+                    var key = date_obj.clone().startOf('day').unix()
+                    if (!(key in matchesDict)) {
+                        matchesDict[key] = [];
+                    }
+                    matchesDict[key].push({ date: date_obj, data: d });
+                });
+
+                for (var day in matchesDict) {
+                    matchesDict[day].sort((a, b) => {
+                        if (a.date.unix() > b.date.unix()) return -1
+                        else if (a.date.unix() < b.date.unix()) return 1
+                        else return 0
+                    })
+                }
+
+                setMatches(matchesDict);
+            })
+    }
+
+    useEffect(() => {
+        fetch(GetMatchesCount, { method: 'GET' }).then(response => response.json())
+            .then(data => { setMatchCount(parseInt(data)); setPageCount(parseInt(data) / 10 + 1) });
+        queryThenFormatMatches(1)
+    }, [])
+
+    /*  function getResults(id) {
+         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
+     } */
+
+    function handlePageChange(number) {
+        setActivePage(number);
+        queryThenFormatMatches(number);
+    }
+
+    // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
         let player = players.find(x => x.id === match.players[index]).first_name
 
@@ -37,7 +80,7 @@ const ResultsPage = () => {
         if (match.winners === null) {
             return playerString
         }
-        
+
         if (match.winners.includes(match.players[index1])) {
             return (<b>{playerString}</b>)
         }
@@ -55,7 +98,7 @@ const ResultsPage = () => {
                 <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>
             )
         }
-        
+
     }
 
     function formatScores(scores) {
@@ -79,10 +122,18 @@ const ResultsPage = () => {
                         RESULTS
                     </Col>
                 </Row>
-                { matches.length == 0 || players.length == 0 ? (
+                <PaginationControl
+                    page={activePage}
+                    between={4}
+                    total={matchCount}
+                    limit={10}
+                    changePage={(num) => handlePageChange(num)}
+                    ellipsis={1}
+                />
+                {matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */
                     <Col className='page-title'>
-                        Retreiving data, please be patient...
+                        Retrieving data, please be patient...
                     </Col>
                 ) : (
                     <>
@@ -104,26 +155,28 @@ const ResultsPage = () => {
                             </Row>
                         </Form> */}
                         {Object.keys(matches).sort().reverse().map((k) => {
-                            return(
+                            return (
                                 <div>
-                                    <Row 
+                                    <Row
                                         className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
                                     </Row>
                                     {matches[k].map((match, i) => {
                                         return (
                                             <div>
-                                            <Row>
-                                                <Col xs={2}>{match.date.format('h:mm a')}</Col>
-                                                <Col xs={6}>{formatPlayers(match.data)}</Col>
-                                                <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
-                                            </Row>
-                                            {matches[k].length === i + 1 ? <></> : <hr></hr>}
+                                                <Row>
+                                                    <Col xs={2}>{match.date.format('h:mm a')}</Col>
+                                                    <Col xs={6}>{formatPlayers(match.data)}</Col>
+                                                    <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
+                                                </Row>
+                                                {matches[k].length === i + 1 ? <></> : <hr></hr>}
                                             </div>
                                         )
                                     })}
                                 </div>
-                            )}
+                            )
+                        }
                         )}
+
                     </>
                 )}
             </Container>
