@@ -129,7 +129,8 @@ const ResultsPage = () => {
                             page={activePage}
                             between={2}
                             total={matchCount}
-                            limit={matchPerPage}
+                            //leave as magic number idk why it works :/
+                            limit={10}
                             last={true}
                             changePage={(num) => handlePageChange(num)}
                             ellipsis={1}
