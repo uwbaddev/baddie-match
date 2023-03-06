@@ -11,7 +11,6 @@ export const AppContext = React.createContext('')
 const useApp = () => {
     const [players, setPlayers] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [matches, setMatches] = useState([]);
     const [singlesRankings, setSinglesRankings] = useState([]);
     const [doublesRankings, setDoublesRankings] = useState([]);
     const [mixedRankings, setMixedRankings] = useState([]);
@@ -30,30 +29,30 @@ const useApp = () => {
             .then(response => response.json())
             .then(data => { setCategories(data) })
 
-        fetch(AllMatchesUrl, { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                var matchesDict = {};
+        // fetch(AllMatchesUrl, { method: 'GET' })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         var matchesDict = {};
 
-                data.forEach((d) => {
-                    var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
+        //         data.forEach((d) => {
+        //             var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
 
-                    var key = date_obj.clone().startOf('day').unix()
-                    if (!(key in matchesDict)) {
-                        matchesDict[key] = [];
-                    }
-                    matchesDict[key].push({ date: date_obj, data: d });
-                });
+        //             var key = date_obj.clone().startOf('day').unix()
+        //             if (!(key in matchesDict)) {
+        //                 matchesDict[key] = [];
+        //             }
+        //             matchesDict[key].push({ date: date_obj, data: d });
+        //         });
 
-                for (var day in matchesDict) {
-                    matchesDict[day].sort((a, b) => {
-                        if (a.date.unix() > b.date.unix()) return -1
-                        else if (a.date.unix() < b.date.unix()) return 1
-                        else return 0
-                    })
-                }
-                setMatches(matchesDict);
-            });
+        //         for (var day in matchesDict) {
+        //             matchesDict[day].sort((a, b) => {
+        //                 if (a.date.unix() > b.date.unix()) return -1
+        //                 else if (a.date.unix() < b.date.unix()) return 1
+        //                 else return 0
+        //             })
+        //         }
+        //         setMatches(matchesDict);
+        //     });
 
         const getStats = (category) => {
             queryStats()
@@ -127,7 +126,6 @@ const useApp = () => {
         //constants across app
         categories,
         players,
-        matches,
         singlesRankings,
         doublesRankings,
         mixedRankings,

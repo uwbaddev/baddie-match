@@ -124,28 +124,33 @@ def categoryHandler(id):
 ################################################################################
 
 
-@cross_origin()
-@app.route("/api/matches", methods=["GET"])
-def getMatches():
-    # app.logger.debug('This endpoint was hit!')
-    matches = Matches.query.all()
-    return json.dumps([m.serialize() for m in matches])
+# @cross_origin()
+# @app.route("/api/matches", methods=["GET"])
+# def getMatches():
+#     # app.logger.debug('This endpoint was hit!')
+#     matches = Matches.query.all()
+#     return json.dumps([m.serialize() for m in matches])
 
 
 @cross_origin
-@app.route('/api/matches/<page>', methods=['GET'])
-def getMatchPage(page):
+@app.route('/api/matches', methods=['GET'])
+def getMatchPage():
     # app.logger.debug('hit match pagination')
+    page = request.args.get('page')
+    matchPerPage = 10
     matches = Matches.query.all()
     matches = matches[::-1]
-    matchPage = matches[(int(page)-1)*10:int(page)*10]
-    return json.dumps([m.serialize() for m in matchPage])
-
-
-@app.route('/api/matches/count', methods=['GET'])
-def getMatchesCount():
-    matches = Matches.query.all()
-    return str(int(len(matches)))
+    matchPage = matches[(int(page)-1)*matchPerPage:int(page)*matchPerPage]
+    returnObj = {
+        'metadata':
+        {
+            'matchCount': str(int(len(matches))),
+            'pageCount': str(int(len(matches)/matchPerPage) + 1),
+            'matchPerPage': str(matchPerPage),
+        },
+        'matches': [m.serialize() for m in matchPage]
+    }
+    return returnObj
 
 
 @ cross_origin()

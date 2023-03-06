@@ -13,13 +13,13 @@ const ResultsPage = () => {
     const [matchCount, setMatchCount] = useState(null);
     const [pageCount, setPageCount] = useState(null);
     const [activePage, setActivePage] = useState(1);
+    const [matchPerPage, setMatchPerPage] = useState(null)
 
     function queryThenFormatMatches(number) {
         queryMatchPage(number)
             .then(data => {
                 var matchesDict = {};
-
-                data.forEach((d) => {
+                data.matches.forEach((d) => {
                     var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
 
                     var key = date_obj.clone().startOf('day').unix()
@@ -38,12 +38,13 @@ const ResultsPage = () => {
                 }
 
                 setMatches(matchesDict);
+                setMatchCount(data.metadata.matchCount)
+                setPageCount(data.metadata.pageCount)
+                setMatchPerPage(data.metadata.matchPerPage)
             })
     }
 
     useEffect(() => {
-        fetch(GetMatchesCount, { method: 'GET' }).then(response => response.json())
-            .then(data => { setMatchCount(parseInt(data)); setPageCount(parseInt(data) / 10 + 1) });
         queryThenFormatMatches(1)
     }, [])
 
@@ -122,14 +123,19 @@ const ResultsPage = () => {
                         RESULTS
                     </Col>
                 </Row>
-                <PaginationControl
-                    page={activePage}
-                    between={4}
-                    total={matchCount}
-                    limit={10}
-                    changePage={(num) => handlePageChange(num)}
-                    ellipsis={1}
-                />
+                <Row>
+                    <Col className='pagination'>
+                        <PaginationControl
+                            page={activePage}
+                            between={2}
+                            total={matchCount}
+                            limit={matchPerPage}
+                            last={true}
+                            changePage={(num) => handlePageChange(num)}
+                            ellipsis={1}
+                        />
+                    </Col>
+                </Row>
                 {matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */
                     <Col className='page-title'>
