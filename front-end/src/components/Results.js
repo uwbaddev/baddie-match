@@ -128,7 +128,7 @@ const ResultsPage = () => {
                         <PaginationControl
                             page={activePage}
                             between={2}
-                            total={matchCount}
+                            total={recordCount}
                             //leave as magic number idk why it works :/
                             limit={10}
                             last={true}
