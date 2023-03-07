@@ -1,4 +1,3 @@
-from audioop import cross
 from app.src.categories import Categories
 from app.src.players import Players
 from app.src.matches import Matches
@@ -124,33 +123,36 @@ def categoryHandler(id):
 ################################################################################
 
 
-# @cross_origin()
-# @app.route("/api/matches", methods=["GET"])
-# def getMatches():
-#     # app.logger.debug('This endpoint was hit!')
-#     matches = Matches.query.all()
-#     return json.dumps([m.serialize() for m in matches])
+@cross_origin()
+@app.route("/api/matches/all", methods=["GET"])
+def getMatches():
+    # app.logger.debug('This endpoint was hit!')
+    matches = Matches.query.all()
+    return json.dumps([m.serialize() for m in matches]), 200
 
 
 @cross_origin
 @app.route('/api/matches', methods=['GET'])
 def getMatchPage():
-    # app.logger.debug('hit match pagination')
-    page = request.args.get('page')
-    matchPerPage = 10
-    matches = Matches.query.all()
-    matches = matches[::-1]
-    matchPage = matches[(int(page)-1)*matchPerPage:int(page)*matchPerPage]
-    returnObj = {
-        'metadata':
-        {
-            'matchCount': str(int(len(matches))),
-            'pageCount': str(int(len(matches)/matchPerPage) + 1),
-            'matchPerPage': str(int(matchPerPage)),
-        },
-        'matches': [m.serialize() for m in matchPage]
-    }
-    return returnObj
+    try:
+        # app.logger.debug('hit match pagination')
+        page = request.args.get('page')
+        matchPerPage = 10
+        matches = Matches.query.all()
+        matches = matches[::-1]
+        matchPage = matches[(int(page)-1)*matchPerPage:int(page)*matchPerPage]
+        returnObj = {
+            'metadata':
+            {
+                'recordCount': str(len(matches)),
+                'pageCount': str(int(len(matches)/matchPerPage) + 1),
+                'recordsPerPage': str(matchPerPage),
+            },
+            'records': [m.serialize() for m in matchPage]
+        }
+        return returnObj, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @ cross_origin()

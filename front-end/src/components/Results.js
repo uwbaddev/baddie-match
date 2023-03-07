@@ -10,16 +10,16 @@ const ResultsPage = () => {
     const { players, queryPlayerResults, queryMatchPage } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
     const [matches, setMatches] = useState([])
-    const [matchCount, setMatchCount] = useState(null);
+    const [recordCount, setRecordCount] = useState(null);
     const [pageCount, setPageCount] = useState(null);
     const [activePage, setActivePage] = useState(1);
-    const [matchPerPage, setMatchPerPage] = useState(null)
+    const [recordsPerPage, setRecordsPerPage] = useState(null)
 
     function queryThenFormatMatches(number) {
         queryMatchPage(number)
             .then(data => {
                 var matchesDict = {};
-                data.matches.forEach((d) => {
+                data.records.forEach((d) => {
                     var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
 
                     var key = date_obj.clone().startOf('day').unix()
@@ -38,9 +38,9 @@ const ResultsPage = () => {
                 }
 
                 setMatches(matchesDict);
-                setMatchCount(data.metadata.matchCount)
+                setRecordCount(data.metadata.recordCount)
                 setPageCount(data.metadata.pageCount)
-                setMatchPerPage(data.metadata.matchPerPage)
+                setRecordsPerPage(data.metadata.recordsPerPage)
             })
     }
 
