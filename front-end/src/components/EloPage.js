@@ -15,9 +15,12 @@ const EloPage = () => {
             return b['mu'] - a['mu']
         })
         elo.map((player) => {
-            console.log(player['name'])
+            (player['name'])
         })
         
+    {elo.filter(player => ['singles_games_played'] > 8 && player['sigma'] < 3)}
+    
+
         let i = 0
         return <ListGroup as="ol" numbered>
             {
@@ -38,7 +41,7 @@ const EloPage = () => {
     }
 
     const singles = (elo) => {
-        console.log(elo)
+        //console.log(elo)
         elo.map((player) => {
             player['mu'] = player['singles_rating']['mu']
             player['sigma'] = player['singles_rating']['sigma']
