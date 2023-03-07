@@ -15,16 +15,21 @@ const EloPage = () => {
             return b['mu'] - a['mu']
         })
         elo.map((player) => {
-            (player['name'])
+            // (player['name'])
         })
-        
-    {elo.filter(player => ['singles_games_played'] > 8 && player['sigma'] < 3)}
-    
+        // console.log(elo)
+        const result = elo.filter((player) => {
+            return player.doubles_games_played > 8 && player.sigma < 3;
+            // console.log(player.doubles_games_played);
+        })
+        console.log(result)
+        // { elo.filter(player => ['singles_games_played'] > 8 && player['sigma'] < 3) }
+
 
         let i = 0
         return <ListGroup as="ol" numbered>
             {
-                elo.map((player) => {
+                result.map((player) => {
                     i++
                     return <ListGroup.Item>
                         <Row>
@@ -48,7 +53,7 @@ const EloPage = () => {
         })
         elo.sort((a, b) => {
             return b['mu'] - a['mu']
-        })        
+        })
         let i = 0
         return <ListGroup as="ol" numbered>
             {
@@ -92,12 +97,12 @@ const EloPage = () => {
                                     </Row>
                                 </ListGroup.Item>
                                 {singles(singlesElo)}
-                                
+
                             </Col>
                             <Col sm={12} md={12} >
                                 <div className='table-header'>Doubles Elo</div>
                                 <ListGroup.Item>
-                                <Row>
+                                    <Row>
                                         <Col xs={5}> <b>Name</b> </Col>
                                         <Col xs={3}> <b>{'\u03BC'}</b> </Col>
                                         <Col xs={2}> <b>{'\u03C3'}</b> </Col>
