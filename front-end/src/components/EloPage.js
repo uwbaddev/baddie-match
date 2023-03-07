@@ -17,13 +17,12 @@ const EloPage = () => {
         elo.map((player) => {
             // (player['name'])
         })
-        // console.log(elo)
+        
         const result = elo.filter((player) => {
             return player.doubles_games_played > 8 && player.sigma < 3;
-            // console.log(player.doubles_games_played);
         })
-        console.log(result)
-        // { elo.filter(player => ['singles_games_played'] > 8 && player['sigma'] < 3) }
+        
+       
 
 
         let i = 0
@@ -54,10 +53,15 @@ const EloPage = () => {
         elo.sort((a, b) => {
             return b['mu'] - a['mu']
         })
+
+        const result = elo.filter((player) => {
+            return player.singles_games_played > 8 && player.sigma < 3;
+        })
+
         let i = 0
         return <ListGroup as="ol" numbered>
             {
-                elo.map((player) => {
+                result.map((player) => {
                     i++
                     return <ListGroup.Item>
                         <Row>
