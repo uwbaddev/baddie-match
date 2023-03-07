@@ -15,25 +15,26 @@ const EditMatchesComponent = () => {
 
     // TODO: someone with Reaact experience pls do this better
     function formatPlayerSingles(match, index) {
-        let player = players.find(x => x.id === match.players[index]).first_name
+        let player = players.find(x => x.id === match.players[index])
+        let playerString = player.first_name + " " + player.last_name 
 
         if (match.winners === null) {
-            return player
+            return playerString
         }
 
         let winner = match.winners[0]
         
         if (winner === match.players[index]) {
-            return (<b>{player}</b>)
+            return (<b>{playerString}</b>)
         }
-        return player
+        return playerString
     }
 
     function formatPlayerDoubles(match, index1, index2) {
-        let player1 = players.find(x => x.id === match.players[index1]).first_name
-        let player2 = players.find(x => x.id === match.players[index2]).first_name
-
-        let playerString = player1 + '/' + player2
+        let player1 = players.find(x => x.id === match.players[index1])
+        let player2 = players.find(x => x.id === match.players[index2])
+        
+        let playerString = player1.first_name + " " + player1.last_name + '/' + player2.first_name + " " + player2.last_name
 
         if (match.winners === null) {
             return playerString
@@ -121,7 +122,7 @@ const EditMatchesComponent = () => {
                                                 <Col xs={2}>{match.date.format('h:mm a')}</Col>
                                                 <Col xs={6}>{formatPlayers(match.data)}</Col>
                                                 <Col xs={2}><p>{formatScores(match.data.score)}</p></Col>
-                                                <Col xs={2} onClick={(e) => postDeleteMatch(e, match.data.id)}> <Button className="delete-button">Delete</Button></Col>
+                                                <Col xs={2}><Button onClick={(e) => postDeleteMatch(e, match.data.id)} className="delete-button">Delete</Button></Col>
                                                 </Row>
                                             {matches[k].length === i + 1 ? <></> : <hr></hr>}
                                                 </div>
