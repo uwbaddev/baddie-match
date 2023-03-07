@@ -15,13 +15,20 @@ const EloPage = () => {
             return b['mu'] - a['mu']
         })
         elo.map((player) => {
-            console.log(player['name'])
+            // (player['name'])
         })
         
+        const result = elo.filter((player) => {
+            return player.doubles_games_played > 8 && player.sigma < 3;
+        })
+        
+       
+
+
         let i = 0
         return <ListGroup as="ol" numbered>
             {
-                elo.map((player) => {
+                result.map((player) => {
                     i++
                     return <ListGroup.Item>
                         <Row>
@@ -38,18 +45,23 @@ const EloPage = () => {
     }
 
     const singles = (elo) => {
-        console.log(elo)
+        //console.log(elo)
         elo.map((player) => {
             player['mu'] = player['singles_rating']['mu']
             player['sigma'] = player['singles_rating']['sigma']
         })
         elo.sort((a, b) => {
             return b['mu'] - a['mu']
-        })        
+        })
+
+        const result = elo.filter((player) => {
+            return player.singles_games_played > 8 && player.sigma < 3;
+        })
+
         let i = 0
         return <ListGroup as="ol" numbered>
             {
-                elo.map((player) => {
+                result.map((player) => {
                     i++
                     return <ListGroup.Item>
                         <Row>
@@ -89,12 +101,12 @@ const EloPage = () => {
                                     </Row>
                                 </ListGroup.Item>
                                 {singles(singlesElo)}
-                                
+
                             </Col>
                             <Col sm={12} md={12} >
                                 <div className='table-header'>Doubles Elo</div>
                                 <ListGroup.Item>
-                                <Row>
+                                    <Row>
                                         <Col xs={5}> <b>Name</b> </Col>
                                         <Col xs={3}> <b>{'\u03BC'}</b> </Col>
                                         <Col xs={2}> <b>{'\u03C3'}</b> </Col>
