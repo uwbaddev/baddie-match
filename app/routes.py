@@ -146,7 +146,7 @@ def getMatchPage():
             {
                 'recordCount': str(len(matches)),
                 'pageCount': str(int(len(matches)/recordsPerPage) + 1),
-                'recordsPerPage': str(recordsPerPage),
+                'recordsPerPage': str(recordsPerPage)
             },
             'records': [m.serialize() for m in matchPage]
         }
