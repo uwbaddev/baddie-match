@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { Col, Container, Row, Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
 import { GetMatchesCount } from "../API/API"
 import Moment from "moment"
@@ -10,13 +10,14 @@ const ResultsPage = () => {
     const { players, queryPlayerResults, queryMatchPage } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
     const [matches, setMatches] = useState([])
-    const [recordCount, setRecordCount] = useState(null);
-    const [pageCount, setPageCount] = useState(null);
+    const [recordCount, setRecordCount] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(null)
+    const [recordsPerPage, setRecordsPerPage] = useState(10)
+
 
     function queryThenFormatMatches(number) {
-        queryMatchPage(number)
+        queryMatchPage(number, recordsPerPage)
             .then(data => {
                 var matchesDict = {};
                 data.records.forEach((d) => {
@@ -40,7 +41,6 @@ const ResultsPage = () => {
                 setMatches(matchesDict);
                 setRecordCount(data.metadata.recordCount)
                 setPageCount(data.metadata.pageCount)
-                setRecordsPerPage(data.metadata.recordsPerPage)
             })
     }
 
@@ -48,9 +48,33 @@ const ResultsPage = () => {
         queryThenFormatMatches(1)
     }, [])
 
-    /*  function getResults(id) {
-         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
-     } */
+    function handlePerPageChange(number) {
+        setRecordsPerPage(number)
+        queryMatchPage(activePage, number).then(data => {
+            var matchesDict = {};
+            data.records.forEach((d) => {
+                var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
+
+                var key = date_obj.clone().startOf('day').unix()
+                if (!(key in matchesDict)) {
+                    matchesDict[key] = [];
+                }
+                matchesDict[key].push({ date: date_obj, data: d });
+            });
+
+            for (var day in matchesDict) {
+                matchesDict[day].sort((a, b) => {
+                    if (a.date.unix() > b.date.unix()) return -1
+                    else if (a.date.unix() < b.date.unix()) return 1
+                    else return 0
+                })
+            }
+
+            setMatches(matchesDict);
+            setRecordCount(data.metadata.recordCount)
+            setPageCount(data.metadata.pageCount)
+        })
+    }
 
     function handlePageChange(number) {
         setActivePage(number);
@@ -99,7 +123,6 @@ const ResultsPage = () => {
                 <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>
             )
         }
-
     }
 
     function formatScores(scores) {
@@ -135,6 +158,24 @@ const ResultsPage = () => {
                             changePage={(num) => handlePageChange(num)}
                             ellipsis={1}
                         />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className='pagination'>
+                        <DropdownButton id='perPageSelect' title={recordsPerPage}>
+                            <Dropdown.Item key='5' value='5' onClick={(event) => {
+                                handlePerPageChange(event.target.text)
+                            }}>5</Dropdown.Item>
+                            <Dropdown.Item key='10' value='10' onClick={(event) => {
+                                handlePerPageChange(event.target.text)
+                            }}>10</Dropdown.Item>
+                            <Dropdown.Item key='15' value='15' onClick={(event) => {
+                                handlePerPageChange(event.target.text)
+                            }}>15</Dropdown.Item>
+                            <Dropdown.Item key='20' value='20' onClick={(event) => {
+                                handlePerPageChange(event.target.text)
+                            }}>20</Dropdown.Item>
+                        </DropdownButton>
                     </Col>
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (

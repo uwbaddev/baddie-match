@@ -136,17 +136,16 @@ def getMatches():
 def getMatchPage():
     try:
         # app.logger.debug('hit match pagination')
-        page = request.args.get('page')
-        matchPerPage = 10
+        page = int(request.args.get('page'))
+        matchPerPage = int(request.args.get('perPage'))
         matches = Matches.query.all()
         matches = matches[::-1]
-        matchPage = matches[(int(page)-1)*matchPerPage:int(page)*matchPerPage]
+        matchPage = matches[(page-1)*matchPerPage:page*matchPerPage]
         returnObj = {
             'metadata':
             {
                 'recordCount': str(len(matches)),
-                'pageCount': str(int(len(matches)/matchPerPage) + 1),
-                'recordsPerPage': str(matchPerPage),
+                'pageCount': str(int(len(matches)/matchPerPage) + 1)
             },
             'records': [m.serialize() for m in matchPage]
         }
