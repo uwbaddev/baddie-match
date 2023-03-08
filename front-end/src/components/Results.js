@@ -48,34 +48,6 @@ const ResultsPage = () => {
         queryThenFormatMatches(1)
     }, [])
 
-    function handlePerPageChange(number) {
-        setRecordsPerPage(number)
-        queryMatchPage(activePage, number).then(data => {
-            var matchesDict = {};
-            data.records.forEach((d) => {
-                var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
-
-                var key = date_obj.clone().startOf('day').unix()
-                if (!(key in matchesDict)) {
-                    matchesDict[key] = [];
-                }
-                matchesDict[key].push({ date: date_obj, data: d });
-            });
-
-            for (var day in matchesDict) {
-                matchesDict[day].sort((a, b) => {
-                    if (a.date.unix() > b.date.unix()) return -1
-                    else if (a.date.unix() < b.date.unix()) return 1
-                    else return 0
-                })
-            }
-
-            setMatches(matchesDict);
-            setRecordCount(data.metadata.recordCount)
-            setPageCount(data.metadata.pageCount)
-        })
-    }
-
     function handlePageChange(number) {
         setActivePage(number);
         queryThenFormatMatches(number);
@@ -158,24 +130,6 @@ const ResultsPage = () => {
                             changePage={(num) => handlePageChange(num)}
                             ellipsis={1}
                         />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col className='pagination'>
-                        <DropdownButton id='perPageSelect' title={recordsPerPage}>
-                            <Dropdown.Item key='5' value='5' onClick={(event) => {
-                                handlePerPageChange(event.target.text)
-                            }}>5</Dropdown.Item>
-                            <Dropdown.Item key='10' value='10' onClick={(event) => {
-                                handlePerPageChange(event.target.text)
-                            }}>10</Dropdown.Item>
-                            <Dropdown.Item key='15' value='15' onClick={(event) => {
-                                handlePerPageChange(event.target.text)
-                            }}>15</Dropdown.Item>
-                            <Dropdown.Item key='20' value='20' onClick={(event) => {
-                                handlePerPageChange(event.target.text)
-                            }}>20</Dropdown.Item>
-                        </DropdownButton>
                     </Col>
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (
