@@ -100,7 +100,7 @@ const useApp = () => {
 
     const queryElo = (event) => fetch(EloUrl(event), { method: 'GET' }).then(response => response.json())
 
-    const queryMatchPage = (id) => fetch(MatchPageUrl(id), { method: 'GET' }).then(response => response.json())
+    const queryMatchPage = (id, perPage) => fetch(MatchPageUrl(id, perPage), { method: 'GET' }).then(response => response.json())
 
     return {
         //constants across app

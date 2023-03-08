@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { Col, Container, Row, Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
 import { GetMatchesCount } from "../API/API"
 import Moment from "moment"
@@ -10,13 +10,14 @@ const ResultsPage = () => {
     const { players, queryPlayerResults, queryMatchPage } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
     const [matches, setMatches] = useState([])
-    const [recordCount, setRecordCount] = useState(null);
-    const [pageCount, setPageCount] = useState(null);
+    const [recordCount, setRecordCount] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(null)
+    const [recordsPerPage, setRecordsPerPage] = useState(10)
 
-    function queryThenFormatMatches(number) {
-        queryMatchPage(number)
+
+    function queryThenFormatMatches(newActivePage, newRecordsPerPage) {
+        queryMatchPage(newActivePage, newRecordsPerPage)
             .then(data => {
                 var matchesDict = {};
                 data.records.forEach((d) => {
@@ -48,14 +49,10 @@ const ResultsPage = () => {
         queryThenFormatMatches(1)
     }, [])
 
-    /*  function getResults(id) {
-         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
-     } */
+    useEffect(() => {
+        queryThenFormatMatches(activePage, recordsPerPage)
+    }, [activePage, recordsPerPage])
 
-    function handlePageChange(number) {
-        setActivePage(number);
-        queryThenFormatMatches(number);
-    }
 
     // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
@@ -99,7 +96,6 @@ const ResultsPage = () => {
                 <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>
             )
         }
-
     }
 
     function formatScores(scores) {
@@ -130,11 +126,29 @@ const ResultsPage = () => {
                             between={2}
                             total={recordCount}
                             //leave as magic number idk why it works :/
-                            limit={10}
+                            limit={recordsPerPage}
                             last={true}
-                            changePage={(num) => handlePageChange(num)}
+                            changePage={(num) => setActivePage(num)}
                             ellipsis={1}
                         />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className='pagination'>
+                        <DropdownButton id='perPageSelect' title={recordsPerPage}>
+                            <Dropdown.Item key='5' value='5' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                            }}>5</Dropdown.Item>
+                            <Dropdown.Item key='10' value='10' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                            }}>10</Dropdown.Item>
+                            <Dropdown.Item key='15' value='15' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                            }}>15</Dropdown.Item>
+                            <Dropdown.Item key='20' value='20' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                            }}>20</Dropdown.Item>
+                        </DropdownButton>
                     </Col>
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (
