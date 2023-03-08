@@ -15,39 +15,37 @@ def serve():
     print(app.static_folder)
     return render_template("index.html")
 
-
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
 
 ################################################################################
-# players
+#players 
 ################################################################################
 
-
 @cross_origin()
-@app.route("/api/players", methods=["GET"])
+@app.route("/api/players", methods = ["GET"])
 def getplayers():
     return Players.get_all_players(), 200
 
 
 @cross_origin()
-@app.route("/api/player", methods=["POST"])
+@app.route("/api/player", methods = ["POST"])
 def newPlayer():
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
     eligible_year = int(request.json.get("eligibleYear"))
     sex = request.json.get("sex")
-    try:
+    try: 
         (Players.createPlayer(first_name, last_name, eligible_year, sex))
         return 'Player ' + first_name + ' ' + last_name + ' was added.', 200
-
+    
     except Exception as e:
         return str(e), 500
 
 
 @cross_origin()
-@app.route("/api/player/<id>", methods=["DELETE", "GET", "PUT"])
+@app.route("/api/player/<id>", methods = ["DELETE", "GET", "PUT"])
 def playerHandler(id):
     player = Players.findById(id)
     if (player is None):
@@ -69,35 +67,35 @@ def playerHandler(id):
 
 
 ################################################################################
-# categories
+#categories 
 ################################################################################
-
-@cross_origin()
-@app.route("/api/category", methods=["POST"])
+              
+@cross_origin()              
+@app.route("/api/category", methods = ["POST"])
 def newCategory():
     name = request.form.get("name")
     try:
-        category = Categories(
+        category=Categories(
             name=name
         )
         db.session.add(category)
         db.session.commit()
         print("success!")
-
+        
         return "Inserted {name} into categories".format(name=name), 201
     except Exception as e:
         return str(e), 500
 
 
 @cross_origin()
-@app.route("/api/categories", methods=["GET"])
+@app.route("/api/categories", methods = ["GET"])
 def getCategories():
     categories = Categories.query.all()
     return json.dumps([c.serialize() for c in categories])
 
 
-@cross_origin()
-@app.route("/api/category/<id>", methods=["GET", "DELETE", "PUT"])
+@cross_origin()    
+@app.route("/api/category/<id>", methods = ["GET","DELETE","PUT"])
 def categoryHandler(id):
     if (request.method == 'GET'):
         category = Categories.findById(id)
@@ -112,50 +110,26 @@ def categoryHandler(id):
         except Exception as e:
             return str(e), 500
 
-    else:
+
+    else: 
         if (Categories.findById(id) is None):
             return 'fail', 204
         Categories.delete(id)
         return "success", 200
 
 ################################################################################
-# matches
+#matches 
 ################################################################################
-
+    
+@cross_origin()
+@app.route("/api/matches", methods = ["GET"])
+def getMatches():
+    app.logger.debug('This endpoint was hit!')
+    matches = Matches.query.all()
+    return json.dumps([m.serialize() for m in matches])
 
 @cross_origin()
-@app.route("/api/matches/all", methods=["GET"])
-def getMatches():
-    # app.logger.debug('This endpoint was hit!')
-    matches = Matches.query.all()
-    return json.dumps([m.serialize() for m in matches]), 200
-
-
-@cross_origin
-@app.route('/api/matches', methods=['GET'])
-def getMatchPage():
-    try:
-        # app.logger.debug('hit match pagination')
-        page = int(request.args.get('page'))
-        matchPerPage = int(request.args.get('perPage'))
-        matches = Matches.query.all()
-        matches = matches[::-1]
-        matchPage = matches[(page-1)*matchPerPage:page*matchPerPage]
-        returnObj = {
-            'metadata':
-            {
-                'recordCount': str(len(matches)),
-                'pageCount': str(int(len(matches)/matchPerPage) + 1)
-            },
-            'records': [m.serialize() for m in matchPage]
-        }
-        return returnObj, 200
-    except Exception as e:
-        return str(e), 500
-
-
-@ cross_origin()
-@ app.route("/api/match/<id>", methods=["DELETE", "GET", "PUT"])
+@app.route("/api/match/<id>", methods = ["DELETE", "GET", "PUT"])
 def matchHandler(id):
     match = Matches.findById(id)
     if (match is None):
@@ -168,8 +142,7 @@ def matchHandler(id):
         event = request.json.get("event")
         score = request.json.get("score")
         category = request.json.get("category")
-        players = [request.json.get("player1Id"),
-                   request.json.get("player2Id")]
+        players = [request.json.get("player1Id"), request.json.get("player2Id")]
 
         if (event != "Singles"):
             players.append(request.json.get("player3Id"))
@@ -191,44 +164,39 @@ def matchHandler(id):
         except Exception as e:
             return str(e), 500
 
-
-@ cross_origin()
-@ app.route("/api/match/player/<id>", methods=["GET"])
+@cross_origin()
+@app.route("/api/match/player/<id>", methods = ["GET"])
 def getMatchesWithPlayer(id):
     try:
         to_return = Matches.getMatchesWithPlayer(id)
         return to_return, 200
     except Exception as e:
-        return str(e), 500
+            return str(e), 500
 
-
-@ cross_origin()
-@ app.route("/api/match", methods=["POST"])
+@cross_origin()
+@app.route("/api/match", methods = ["POST"])
 def addMatch():
-    try:
+    try: 
         event = request.json.get("event")
-        score = request.json.get("score")
+        score  = request.json.get("score")
         category = request.json.get("category")
-        players = [request.json.get("player1Id"),
-                   request.json.get("player2Id")]
+        players = [request.json.get("player1Id"), request.json.get("player2Id")]
 
         if (event != "Singles"):
             players.append(request.json.get("player3Id"))
             players.append(request.json.get("player4Id"))
 
         (Matches.createMatch(event, players, score, category))
-        return 'Match was added', 200
-
+        return 'Match was added', 200    
+    
     except Exception as e:
         return str(e), 500
 
 ################################################################################
 # Player stats
 ################################################################################
-
-
-@ cross_origin()
-@ app.route("/api/players/stats", methods=["GET"])
+@cross_origin()
+@app.route("/api/players/stats", methods = ["GET"])
 def getAllWinPercentages():
     try:
         return(Stats.getWinPercentages())
@@ -238,25 +206,21 @@ def getAllWinPercentages():
 ################################################################################
 # ELO
 ################################################################################
-
-
-@ cross_origin()
-@ app.route("/api/elo/singles", methods=["GET"])
+@cross_origin()
+@app.route("/api/elo/singles", methods = ["GET"])
 def getSinglesElo():
     try:
         return(Player_elo.get_singles_elo())
     except Exception as e:
         return str(e), 500
 
-
-@ cross_origin()
-@ app.route("/api/elo/doubles", methods=["GET"])
+@cross_origin()
+@app.route("/api/elo/doubles", methods = ["GET"])
 def getDoublesElo():
     try:
         return(Player_elo.get_doubles_elo())
     except Exception as e:
         return str(e), 500
-
 
 if __name__ == '__main__':
     app.run()
