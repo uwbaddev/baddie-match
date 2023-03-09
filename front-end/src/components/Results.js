@@ -46,7 +46,7 @@ const ResultsPage = () => {
     }
 
     useEffect(() => {
-        queryThenFormatMatches(1)
+        queryThenFormatMatches(1, 10)
     }, [])
 
     useEffect(() => {
