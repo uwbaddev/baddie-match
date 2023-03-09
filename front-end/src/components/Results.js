@@ -41,7 +41,6 @@ const ResultsPage = () => {
                 setMatches(matchesDict);
                 setRecordCount(data.metadata.recordCount)
                 setPageCount(data.metadata.pageCount)
-                setRecordsPerPage(data.metadata.recordsPerPage)
             })
     }
 
@@ -52,7 +51,6 @@ const ResultsPage = () => {
     useEffect(() => {
         queryThenFormatMatches(activePage, recordsPerPage)
     }, [activePage, recordsPerPage])
-
 
     // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
