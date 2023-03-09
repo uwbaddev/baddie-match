@@ -1,17 +1,43 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { AppContext } from "../../Contexts/AppContext";
-import { MatchUrl } from "../../API/API"
+import { AllMatchesUrl, MatchUrl } from "../../API/API"
+import Moment from "moment";
 
 const EditMatchesComponent = () => {
     // const [results, setResults] = useState({});
-    const { players, matches, queryPlayerResults } = useContext(AppContext)
+    const { players, queryPlayerResults } = useContext(AppContext)
     // const [selectedPlayer, setSelectedPlayer] = useState()
     // const [matches, setMatches] = useState([])
 
-   /*  function getResults(id) {
-        queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
-    } */
+    /*  function getResults(id) {
+         queryPlayerResults(selectedPlayer.id).then(data => setMatches(data))
+     } */
+    const [matches, setMatches] = useState([]);
+
+    useEffect(() => {
+        fetch(AllMatchesUrl, { method: 'GET' }).then(response => response.json()).then(data => {
+            var matchesDict = {};
+            data.forEach((d) => {
+                var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
+
+                var key = date_obj.clone().startOf('day').unix()
+                if (!(key in matchesDict)) {
+                    matchesDict[key] = [];
+                }
+                matchesDict[key].push({ date: date_obj, data: d });
+            });
+
+            for (var day in matchesDict) {
+                matchesDict[day].sort((a, b) => {
+                    if (a.date.unix() > b.date.unix()) return -1
+                    else if (a.date.unix() < b.date.unix()) return 1
+                    else return 0
+                })
+            }
+            setMatches(matchesDict);
+        })
+    }, [])
 
     // TODO: someone with Reaact experience pls do this better
     function formatPlayerSingles(match, index) {
@@ -23,7 +49,7 @@ const EditMatchesComponent = () => {
         }
 
         let winner = match.winners[0]
-        
+
         if (winner === match.players[index]) {
             return (<b>{playerString}</b>)
         }
@@ -57,7 +83,7 @@ const EditMatchesComponent = () => {
                 <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>
             )
         }
-        
+
     }
 
     function formatScores(scores) {
@@ -77,7 +103,7 @@ const EditMatchesComponent = () => {
         e.preventDefault();
         fetch(MatchUrl(matchId), { method: 'DELETE' })
             .then(response => {
-                console.log(response)
+                // console.log(response)
                 window.location.reload();
             })
     }
@@ -85,7 +111,7 @@ const EditMatchesComponent = () => {
     return (
         <>
             <Container>
-                { matches.length == 0 || players.length == 0 ? (
+                {matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */
                     <Col className='page-title'>
                         Retreiving data, please be patient...
@@ -110,9 +136,9 @@ const EditMatchesComponent = () => {
                             </Row>
                         </Form> */}
                         {Object.keys(matches).sort().reverse().map((k) => {
-                           return(
+                            return (
                                 <div>
-                                    <Row 
+                                    <Row
                                         className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
                                     </Row>
                                     {matches[k].map((match, i) => {
@@ -124,12 +150,12 @@ const EditMatchesComponent = () => {
                                                 <Col xs={2}><p>{formatScores(match.data.score)}</p></Col>
                                                 <Col xs={2}><Button onClick={(e) => postDeleteMatch(e, match.data.id)} className="delete-button">Delete</Button></Col>
                                                 </Row>
-                                            {matches[k].length === i + 1 ? <></> : <hr></hr>}
-                                                </div>
-                                            )
+                                                {matches[k].length === i + 1 ? <></> : <hr></hr>}
+                                            </div>
+                                        )
                                     })}
                                 </div>
-                           )
+                            )
                         })}
                     </>
                 )}
