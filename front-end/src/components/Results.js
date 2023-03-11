@@ -136,15 +136,19 @@ const ResultsPage = () => {
                         <DropdownButton id='perPageSelect' title={recordsPerPage}>
                             <Dropdown.Item key='5' value='5' onClick={(event) => {
                                 setRecordsPerPage(event.target.text)
+                                setActivePage(1)
                             }}>5</Dropdown.Item>
                             <Dropdown.Item key='10' value='10' onClick={(event) => {
                                 setRecordsPerPage(event.target.text)
+                                setActivePage(1)
                             }}>10</Dropdown.Item>
                             <Dropdown.Item key='15' value='15' onClick={(event) => {
                                 setRecordsPerPage(event.target.text)
+                                setActivePage(1)
                             }}>15</Dropdown.Item>
                             <Dropdown.Item key='20' value='20' onClick={(event) => {
                                 setRecordsPerPage(event.target.text)
+                                setActivePage(1)
                             }}>20</Dropdown.Item>
                         </DropdownButton>
                     </Col>
