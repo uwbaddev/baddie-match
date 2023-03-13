@@ -15,8 +15,9 @@ const ResultsPage = () => {
     const [activePage, setActivePage] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10)
 
-    function queryThenFormatMatches(number) {
-        queryMatchPage(number, recordsPerPage)
+
+    function queryThenFormatMatches(newActivePage, newRecordsPerPage) {
+        queryMatchPage(newActivePage, newRecordsPerPage)
             .then(data => {
                 var matchesDict = {};
                 data.records.forEach((d) => {
@@ -44,13 +45,12 @@ const ResultsPage = () => {
     }
 
     useEffect(() => {
-        queryThenFormatMatches(1)
+        queryThenFormatMatches(1, 10)
     }, [])
 
-    function handlePageChange(number) {
-        setActivePage(number);
-        queryThenFormatMatches(number);
-    }
+    useEffect(() => {
+        queryThenFormatMatches(activePage, recordsPerPage)
+    }, [activePage, recordsPerPage])
 
     // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
@@ -126,11 +126,33 @@ const ResultsPage = () => {
                             between={2}
                             total={recordCount}
                             //leave as magic number idk why it works :/
-                            limit={10}
+                            limit={recordsPerPage}
                             last={true}
-                            changePage={(num) => handlePageChange(num)}
+                            changePage={(num) => setActivePage(num)}
                             ellipsis={1}
                         />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className='pagination'>
+                        <DropdownButton id='perPageSelect' title={recordsPerPage}>
+                            <Dropdown.Item key='5' value='5' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                                setActivePage(1)
+                            }}>5</Dropdown.Item>
+                            <Dropdown.Item key='10' value='10' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                                setActivePage(1)
+                            }}>10</Dropdown.Item>
+                            <Dropdown.Item key='15' value='15' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                                setActivePage(1)
+                            }}>15</Dropdown.Item>
+                            <Dropdown.Item key='20' value='20' onClick={(event) => {
+                                setRecordsPerPage(event.target.text)
+                                setActivePage(1)
+                            }}>20</Dropdown.Item>
+                        </DropdownButton>
                     </Col>
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (
