@@ -136,16 +136,17 @@ def getMatches():
 def getMatchPage():
     try:
         # app.logger.debug('hit match pagination')
-        page = int(request.args.get('page'))
-        matchPerPage = int(request.args.get('perPage'))
+        page = int(request.args.get('page') or 1)
+        recordsPerPage = int(request.args.get('perPage') or 10)
         matches = Matches.query.all()
         matches = matches[::-1]
-        matchPage = matches[(page-1)*matchPerPage:page*matchPerPage]
+        matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
         returnObj = {
             'metadata':
             {
                 'recordCount': str(len(matches)),
-                'pageCount': str(int(len(matches)/matchPerPage) + 1)
+                'pageCount': str(int(len(matches)/recordsPerPage) + 1),
+                'recordsPerPage': str(recordsPerPage)
             },
             'records': [m.serialize() for m in matchPage]
         }
@@ -154,8 +155,8 @@ def getMatchPage():
         return str(e), 500
 
 
-@ cross_origin()
-@ app.route("/api/match/<id>", methods=["DELETE", "GET", "PUT"])
+@cross_origin()
+@app.route("/api/match/<id>", methods=["DELETE", "GET", "PUT"])
 def matchHandler(id):
     match = Matches.findById(id)
     if (match is None):
