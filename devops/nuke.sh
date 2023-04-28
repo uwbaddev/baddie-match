@@ -13,5 +13,5 @@ echo Removing all images
 docker system prune -a
 
 echo Removing DB 
-rm -r db
+sudo rm -r -f db
 
