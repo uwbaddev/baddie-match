@@ -6,6 +6,51 @@ Score and stats tracker for the Waterloo Warriors badminton team.
 
 ## Developing
 
+### Docker 
+### Setting Up the Dev Env
+1. Make a Copy of .env.sample, name it .env and move it the root dir. 
+
+2. From the root dir, run ./devops.init.sh
+
+3. When the script finishes, verify that it has been setup properly by visiting localhost:8000. 
+
+### Info: 
+- You will only need to run init.sh if you run nuke.sh or make changes to dependencies, ie: package.json or requirements.txt. This includes switching branches with different dependencies. 
+- The script will automatically populate your dev env with production data, with test_ appended to it. 
+- The frontend is hosted at localhost:8000
+- The backend is hosted at localhost:5000
+- The db is hosted at localhost:5800
+
+### Other scripts: 
+- init.sh, inits the dev env 
+- stop.sh and restart.sh, stops and starts the containers once built
+- nuke.sh, removes all docker containers, db data, and docker images. 
+
+### Troubleshooting and Common errors: 
+Q: I get a db error at the end of the init.sh script
+A: Go the terminal of the app container, and run `python3 app/scripts/createTables.py`, and `python3 -m app.scripts.add_prod_data`
+
+If all else fails, run ./devops/nuke.sh from the root, and re-run init.sh. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### OLD
 ### Frontend
 
 The frontend is built using [React.js](https://reactjs.org/). You will need [npm](https://www.npmjs.com/) to get started. After downloading, you can get the frontend server working locally by running:
