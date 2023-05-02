@@ -74,6 +74,12 @@ class Matches(db.Model):
         if (playerId == id):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
+  
+  def getMatchesBetweenPlayers(id1, id2):
+    id1 = int(id1)
+    id2 = int(id2)
+    all_matches = Matches.query.all()
+    to_return = []
 
 
   def createMatch(event, playersInMatch, score, category):

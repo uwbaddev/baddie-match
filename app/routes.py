@@ -66,6 +66,24 @@ def playerHandler(id):
     else:
         Players.delete(id)
         return "success", 200
+    
+@cross_origin()
+@app.route("/api/player/stats", methods=["GET"])
+def getPlayerStats():
+    id = request.args.get('id')
+    player = Players.findById(id)
+    record = Stats.getPlayerStats(id, player["first_name"], player["last_name"])
+    return record, 200
+
+# unfinished
+@cross_origin()
+@app.route("/api/headtohead", methods=["GET"])
+def getHeadToHead():
+    id1 = request.args.get('p1')
+    id2 = request.args.get('p2')
+    return Stats.getHeadToHead(id1, id2), 200
+
+
 
 
 ################################################################################
