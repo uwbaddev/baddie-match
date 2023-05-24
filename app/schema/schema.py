@@ -29,8 +29,8 @@ class MatchSchema(Schema):
     category = fields.Str()
     player1Id = fields.Int()
     player2Id = fields.Int()
-    player3Id = fields.Int()
-    player4Id = fields.Int()
+    player3Id = fields.Int(default=None)
+    player4Id = fields.Int(default=None)
 
     @post_load 
     def create_Match(self, data, **kwargs):

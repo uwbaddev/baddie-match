@@ -30,7 +30,6 @@ def not_found(e):
 def get_players():
     return get_all(Players)
 
-
 @cross_origin()
 @app.route("/api/player", methods = ["POST"])
 def new_player():
@@ -158,8 +157,8 @@ def get_all(model):
 
 # replaces old handlers
 def model_handler(id, request, model, schema):
-    obj = model.findById(id)
-
+    obj = model.query.get(id)
+    
     if (model is None): return 'Not found', 404
     
     if (request.method == 'GET'): 
