@@ -142,8 +142,7 @@ def getMatchPage():
         recordsPerPage = int(request.args.get('perPage') or 10)
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
         end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
-        matches = Matches.query.filter(Matches.date_added <= end).filter(Matches.date_added >= start)
-        # matches = Matches.query.all()
+        matches = Matches.getMatchesBetweenDate(start, end)
 
         matches = matches[::-1]
         matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
@@ -238,7 +237,9 @@ def addMatch():
 @ app.route("/api/players/stats", methods=["GET"])
 def getAllWinPercentages():
     try:
-        return(Stats.getWinPercentages())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Stats.getWinPercentages(start, end))
     except Exception as e:
         return str(e), 500
 
@@ -251,7 +252,9 @@ def getAllWinPercentages():
 @ app.route("/api/elo/singles", methods=["GET"])
 def getSinglesElo():
     try:
-        return(Player_elo.get_singles_elo())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Player_elo.get_singles_elo(start, end))
     except Exception as e:
         return str(e), 500
 
@@ -260,7 +263,9 @@ def getSinglesElo():
 @ app.route("/api/elo/doubles", methods=["GET"])
 def getDoublesElo():
     try:
-        return(Player_elo.get_doubles_elo())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Player_elo.get_doubles_elo(start, end))
     except Exception as e:
         return str(e), 500
 

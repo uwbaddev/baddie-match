@@ -66,9 +66,9 @@ class Matches(db.Model):
     db.session.commit()
 
 
-  def getMatchesWithPlayer(id):
+  def getMatchesWithPlayer(id, start, end):
     id = int(id)
-    all_matches = Matches.query.all()
+    all_matches = Matches.getMatchesBetweenDate(start, end)
     to_return = []
     for match in all_matches:
       for playerId in match.players:
@@ -78,6 +78,9 @@ class Matches(db.Model):
   
   def toDate(dateString): 
     return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
+  
+  def getMatchesBetweenDate(start, end):
+    return Matches.query.filter(Matches.date_added <= end).filter(Matches.date_added >= start)
 
 
   def createMatch(event, playersInMatch, score, category):
