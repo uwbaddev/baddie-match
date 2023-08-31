@@ -9,6 +9,7 @@ import json
 from app.main import db, app
 
 
+
 @cross_origin()
 @app.route("/")
 def serve():
@@ -131,6 +132,7 @@ def getMatches():
     return json.dumps([m.serialize() for m in matches]), 200
 
 
+
 @cross_origin
 @app.route('/api/matches', methods=['GET'])
 def getMatchPage():
@@ -138,7 +140,11 @@ def getMatchPage():
         # app.logger.debug('hit match pagination')
         page = int(request.args.get('page') or 1)
         recordsPerPage = int(request.args.get('perPage') or 10)
-        matches = Matches.query.all()
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        matches = Matches.query.filter(Matches.date_added <= end).filter(Matches.date_added >= start)
+        # matches = Matches.query.all()
+
         matches = matches[::-1]
         matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
         returnObj = {

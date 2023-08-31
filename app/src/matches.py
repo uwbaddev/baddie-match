@@ -3,6 +3,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 from app.main import app
+import datetime
 
 db = SQLAlchemy(app)
 
@@ -74,6 +75,9 @@ class Matches(db.Model):
         if (playerId == id):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
+  
+  def toDate(dateString): 
+    return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
 
 
   def createMatch(event, playersInMatch, score, category):
