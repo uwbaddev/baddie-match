@@ -76,8 +76,8 @@ const useApp = () => {
             })
     };
 
-    const getElo = (event) => {
-        queryElo(event)
+    const getElo = (event,start,end) => {
+        queryElo(event,start,end)
             .then(data => {
                 if (event === 'singles') {
                     setSinglesElo(data);
@@ -98,7 +98,7 @@ const useApp = () => {
 
     const queryStats = () => fetch(GetStatsUrl, { method: 'GET' }).then(response => response.json())
 
-    const queryElo = (event) => fetch(EloUrl(event), { method: 'GET' }).then(response => response.json())
+    const queryElo = (event, start, end) => fetch(EloUrl(event, start, end), { method: 'GET' }).then(response => response.json())
 
     const queryMatchPage = (id, perPage, start, end) => fetch(MatchPageUrl(id, perPage, start, end), { method: 'GET' }).then(response => response.json())
 

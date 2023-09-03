@@ -168,7 +168,7 @@ class Player_elo:
         player_stats = Player_elo.initialize_player_stat_dict(players)
         
         # get recent matches
-        matches = [match for match in matches if datetime.datetime.strptime(match['date_added'], '%Y-%m-%d-%H:%M:%S') > datetime.datetime(2022, 9, 1)]
+        # matches = [match for match in matches if datetime.datetime.strptime(match['date_added'], '%Y-%m-%d-%H:%M:%S') > datetime.datetime(2022, 9, 1)]
         # get sorted matches
         matches = sorted(matches, key=itemgetter('date_added'), reverse=False)
 
@@ -185,7 +185,7 @@ class Player_elo:
 
     def get_doubles_elo(start, end):
         df_player_stats = Player_elo.get_df_stats(start, end)
-        df_doubles_ranks = df_player_stats[df_player_stats['doubles_games_played'] >= 1]
+        df_doubles_ranks = df_player_stats
         df_doubles_ranks['doubles_win_pct'] =  df_doubles_ranks['doubles_wins']/df_doubles_ranks['doubles_games_played']
         df_doubles_ranks = df_doubles_ranks.sort_values(by=['doubles_rating'], ascending = False)
         df_doubles_ranks = df_doubles_ranks[['name', 'doubles_rating', 'doubles_games_played', 'doubles_wins', 'doubles_losses', 'doubles_win_pct']]
@@ -193,7 +193,7 @@ class Player_elo:
 
     def get_singles_elo(start, end):
         df_player_stats = Player_elo.get_df_stats(start, end)
-        df_singles_ranks = df_player_stats[df_player_stats['singles_games_played'] >= 1]
+        df_singles_ranks = df_player_stats
         df_singles_ranks['singles_win_pct'] =  df_singles_ranks['singles_wins']/df_singles_ranks['singles_games_played']
         df_singles_ranks = df_singles_ranks.sort_values(by=['singles_elo'], ascending = False)
         df_singles_ranks = df_singles_ranks[['name', 'singles_elo', 'singles_rating', 'singles_games_played', 'singles_wins', 'singles_losses', 'singles_win_pct']]
