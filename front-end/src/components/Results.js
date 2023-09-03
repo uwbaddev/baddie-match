@@ -20,7 +20,6 @@ const ResultsPage = () => {
  
 
     function queryThenFormatMatches(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd) {
-        console.log(newSeasonEnd, newSeasonEnd)
         queryMatchPage(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd)
             .then(data => {
                 var matchesDict = {};
@@ -121,8 +120,12 @@ const ResultsPage = () => {
                     <Col className='page-title'>
                         RESULTS
                     </Col>
-                </Row>
-                <Row>
+
+                <SeasonSelector 
+                        setStart = {(start) => setSeasonStart(start)}
+                        setEnd = {(end) => setSeasonEnd(end)}
+                    />
+
                     <Col className='pagination'>
                         <PaginationControl
                             page={activePage}
@@ -159,10 +162,7 @@ const ResultsPage = () => {
                     </Col>
                 </Row>
                 <Row>
-                    <SeasonSelector 
-                        setStart = {(start) => setSeasonStart(start)}
-                        setEnd = {(end) => setSeasonEnd(end)}
-                    />
+                    
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */

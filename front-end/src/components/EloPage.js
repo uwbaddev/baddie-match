@@ -15,10 +15,10 @@ const EloPage = () => {
 
 
 
-    useEffect(() => {
-        queryThenFormatSinglesElo('2023-09-01', '2024-08-31')
-        queryThenFormatDoublesElo('2023-09-01', '2024-08-31')
-    }, [])
+    // useEffect(() => {
+    //     queryThenFormatSinglesElo('2023-09-01', '2024-08-31')
+    //     queryThenFormatDoublesElo('2023-09-01', '2024-08-31')
+    // }, [])
 
     const queryThenFormatSinglesElo = (newSeasonStart, newSeasonEnd) => {
         queryElo('singles', newSeasonStart, newSeasonEnd).then(data => {
