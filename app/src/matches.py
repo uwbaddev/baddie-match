@@ -76,7 +76,7 @@ class Matches(db.Model):
     return json.dumps([m.serialize() for m in to_return])
   
   def toDate(dateString): 
-    return datetime.datetime.strptime(dateString, "%Y-%m-%d").date()
+    return datetime.strptime(dateString, "%Y-%m-%d").date()
   
   def getMatchesBetweenDate(start, end):
     return Matches.query.filter(Matches.date_added <= end).filter(Matches.date_added >= start)
