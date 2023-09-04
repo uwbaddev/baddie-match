@@ -52,7 +52,7 @@ services:
     working_dir: /user/src/app
     command: npm run dev2
     environment:
-      - REACT_APP_DOMAIN_NAME=http://127.0.0.1:5000/api
+      - REACT_APP_DOMAIN_NAME=${REACT_APP_DOMAIN_NAME}
     ports:
       - '8000:3000'
     stdin_open: true

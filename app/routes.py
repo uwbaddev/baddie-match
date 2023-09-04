@@ -9,6 +9,7 @@ import json
 from app.main import db, app
 
 
+
 @cross_origin()
 @app.route("/")
 def serve():
@@ -131,6 +132,7 @@ def getMatches():
     return json.dumps([m.serialize() for m in matches]), 200
 
 
+
 @cross_origin
 @app.route('/api/matches', methods=['GET'])
 def getMatchPage():
@@ -138,7 +140,10 @@ def getMatchPage():
         # app.logger.debug('hit match pagination')
         page = int(request.args.get('page') or 1)
         recordsPerPage = int(request.args.get('perPage') or 10)
-        matches = Matches.query.all()
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        matches = Matches.getMatchesBetweenDate(start, end)
+
         matches = matches[::-1]
         matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
         returnObj = {
@@ -232,7 +237,9 @@ def addMatch():
 @ app.route("/api/players/stats", methods=["GET"])
 def getAllWinPercentages():
     try:
-        return(Stats.getWinPercentages())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Stats.getWinPercentages(start, end))
     except Exception as e:
         return str(e), 500
 
@@ -245,7 +252,9 @@ def getAllWinPercentages():
 @ app.route("/api/elo/singles", methods=["GET"])
 def getSinglesElo():
     try:
-        return(Player_elo.get_singles_elo())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Player_elo.get_singles_elo(start, end))
     except Exception as e:
         return str(e), 500
 
@@ -254,7 +263,9 @@ def getSinglesElo():
 @ app.route("/api/elo/doubles", methods=["GET"])
 def getDoublesElo():
     try:
-        return(Player_elo.get_doubles_elo())
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(Player_elo.get_doubles_elo(start, end))
     except Exception as e:
         return str(e), 500
 
