@@ -7,3 +7,4 @@ db/
 *build*
 front-end/build/
 *.pyc
+.vscode/*
