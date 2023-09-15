@@ -4,6 +4,7 @@ import { AppContext } from "../Contexts/AppContext";
 import { GetMatchesCount } from "../API/API"
 import Moment from "moment"
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import  SeasonSelector from "./SeasonSelector"
 
 const ResultsPage = () => {
     // const [results, setResults] = useState({});
@@ -13,11 +14,13 @@ const ResultsPage = () => {
     const [recordCount, setRecordCount] = useState(0);
     const [pageCount, setPageCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(10)
+    const [recordsPerPage, setRecordsPerPage] = useState(10);
+    const [seasonStart, setSeasonStart] = useState('2023-09-01');
+    const [seasonEnd, setSeasonEnd] = useState('2024-08-31');
+ 
 
-
-    function queryThenFormatMatches(newActivePage, newRecordsPerPage) {
-        queryMatchPage(newActivePage, newRecordsPerPage)
+    function queryThenFormatMatches(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd) {
+        queryMatchPage(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd)
             .then(data => {
                 var matchesDict = {};
                 data.records.forEach((d) => {
@@ -45,12 +48,12 @@ const ResultsPage = () => {
     }
 
     useEffect(() => {
-        queryThenFormatMatches(1, 10)
+        queryThenFormatMatches(1, 10, '2023-09-01', '2024-08-31')
     }, [])
 
     useEffect(() => {
-        queryThenFormatMatches(activePage, recordsPerPage)
-    }, [activePage, recordsPerPage])
+        queryThenFormatMatches(activePage, recordsPerPage, seasonStart, seasonEnd)
+    }, [activePage, recordsPerPage, seasonStart, seasonEnd])
 
     // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
@@ -112,12 +115,17 @@ const ResultsPage = () => {
     return (
         <>
             <Container>
+                
                 <Row >
                     <Col className='page-title'>
                         RESULTS
                     </Col>
-                </Row>
-                <Row>
+
+                <SeasonSelector 
+                        setStart = {(start) => setSeasonStart(start)}
+                        setEnd = {(end) => setSeasonEnd(end)}
+                    />
+
                     <Col className='pagination'>
                         <PaginationControl
                             page={activePage}
@@ -152,6 +160,9 @@ const ResultsPage = () => {
                             }}>20</Dropdown.Item>
                         </DropdownButton>
                     </Col>
+                </Row>
+                <Row>
+                    
                 </Row>
                 {matches.length == 0 || players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */

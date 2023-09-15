@@ -3,11 +3,11 @@ from app.src.matches import Matches
 import json
 
 class Stats:
-    def getWinPercentages():
+    def getWinPercentages(start, end):
         player_results = []
         players = json.loads(Players.get_all_players())
         for p in players:
-            matches = json.loads(Matches.getMatchesWithPlayer(p["id"]))
+            matches = json.loads(Matches.getMatchesWithPlayer(p["id"], start, end))
             d_win, s_win, m_win = 0, 0, 0
             d_loss, s_loss, m_loss = 0, 0, 0
 
