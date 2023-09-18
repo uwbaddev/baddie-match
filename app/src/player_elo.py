@@ -198,4 +198,11 @@ class Player_elo:
         df_singles_ranks = df_singles_ranks.sort_values(by=['singles_elo'], ascending = False)
         df_singles_ranks = df_singles_ranks[['name', 'singles_elo', 'singles_rating', 'singles_games_played', 'singles_wins', 'singles_losses', 'singles_win_pct']]
         return df_singles_ranks.to_json(None, 'records'), 200
-
+    
+    def get_rd()
+    # for each time period
+        # calculate new RD and new rating sequentially 
+        # then when all is calculated, apply 
+        # repeat on each time period until present
+    # values to store:
+    # RD, rating, c, sigma

@@ -38,6 +38,7 @@ const EloPage = () => {
     }, [seasonStart, seasonEnd])
 
 
+    
 
     const doubles = (elo) => {
         elo.map((player) => {
@@ -73,7 +74,7 @@ const EloPage = () => {
     }
 
     const singles = (elo) => {
-        //console.log(elo)
+        console.log(elo)
         elo.map((player) => {
             player['mu'] = player['singles_rating']['mu']
             player['sigma'] = player['singles_rating']['sigma']
