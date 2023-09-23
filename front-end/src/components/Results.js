@@ -57,24 +57,27 @@ const ResultsPage = () => {
 
     // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
-        let player = players.find(x => x.id === match.players[index]).first_name
+        let player = players.find(x => x.id === match.players[index])
+        let player_name = player.first_name + ' ' + player.last_name[0]
 
         if (match.winners === null) {
-            return player
+            return player_name
         }
 
         let winner = match.winners[0]
         if (winner === match.players[index]) {
-            return (<b>{player}</b>)
+            return (<b>{player_name}</b>)
         }
-        return player
+        return player_name
     }
 
     function formatPlayerDoubles(match, index1, index2) {
-        let player1 = players.find(x => x.id === match.players[index1]).first_name
-        let player2 = players.find(x => x.id === match.players[index2]).first_name
+        let player1 = players.find(x => x.id === match.players[index1])
+        let player2 = players.find(x => x.id === match.players[index2])
+        let player1_name = player1.first_name + ' ' + player1.last_name[0]
+        let player2_name = player2.first_name + ' ' + player2.last_name[0]
 
-        let playerString = player1 + '/' + player2
+        let playerString = player1_name + '/' + player2_name
 
         if (match.winners === null) {
             return playerString
