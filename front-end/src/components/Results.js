@@ -77,7 +77,7 @@ const ResultsPage = () => {
         let player1_name = player1.first_name + ' ' + player1.last_name[0]
         let player2_name = player2.first_name + ' ' + player2.last_name[0]
 
-        let playerString = player1_name + ' / ' + player2_name
+        let playerString = player1_name + '/' + player2_name
 
         if (match.winners === null) {
             return playerString
