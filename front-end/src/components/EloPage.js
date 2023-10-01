@@ -60,7 +60,7 @@ const EloPage = () => {
                     i++
                     return <ListGroup.Item>
                         <Row>
-                            <Col xs={5}>{i + '. ' + player['name'] + player['last_name']}</Col>
+                            <Col xs={5}>{i + '. ' + player['name']}</Col>
                             <Col xs={3}>{player['mu'].toFixed(3)}</Col>
                             <Col xs={2}>{player['sigma'].toFixed(3)}</Col>
                             <Col xs={2}>{player['doubles_win_pct'].toFixed(3)}</Col>
