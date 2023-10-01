@@ -143,8 +143,7 @@ def getMatchPage():
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
         end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
         matches = Matches.getMatchesBetweenDate(start, end)
-
-        matches = matches[::-1]
+        
         matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
         returnObj = {
             'metadata':
