@@ -79,8 +79,10 @@ class Matches(db.Model):
     return datetime.strptime(dateString, "%Y-%m-%d").date()
   
   def getMatchesBetweenDate(start, end):
-    return Matches.query.filter(Matches.date_added <= end).filter(Matches.date_added >= start)
-
+    match_query = Matches.query.filter(Matches.date_added <= end) \
+      .filter(Matches.date_added >= start) \
+      .order_by(Matches.last_edit.desc())
+    return match_query.all()
 
   def createMatch(event, playersInMatch, score, category):
     Matches.validateEvent(event)
