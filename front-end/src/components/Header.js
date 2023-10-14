@@ -28,7 +28,7 @@ const Header = () => {
                                 <Nav.Link as={Link} to="/report" onClick={ () => setExpanded(false) }>REPORT MATCH</Nav.Link>
                                 <Nav.Link as={Link} to="/results" onClick={ () => setExpanded(false) }>RESULTS</Nav.Link>
                                 <Nav.Link as={Link} to="/elo" onClick={ () => setExpanded(false) }>ELO RANKINGS</Nav.Link>
-                                <Nav.Link as={Link} to="/admin" onClick={ () => setExpanded(false) }>ADMIN</Nav.Link>
+                                {/* <Nav.Link as={Link} to="/admin" onClick={ () => setExpanded(false) }>ADMIN</Nav.Link> */}
                                 <Nav.Link as={Link} to="/players" onClick={ () => setExpanded(false) }>PLAYERS</Nav.Link>
                             </Nav>
                         </Offcanvas.Body>
