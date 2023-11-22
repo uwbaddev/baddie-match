@@ -13,21 +13,25 @@ const Players = () => {
                 <Row>
                     <Col> <p className='page-title'>All Players</p></Col>
                 </Row>
-                { players.length == 0 ? (
+                {players.length == 0 ? (
                     /* if no matches yet or if there are matches but no players */
                     <Col className='page-title'>
                         Retreiving data, please be patient...
                     </Col>
                 ) : (
                     <>
-                        {players.map(p => {
-                            return (
-                                <Row>
-                                    {p.first_name} {p.last_name}
-                                </Row>
-                            )
-                        })
-                    }
+                        <Container fluid className='PlayersList'>
+                            <Row>
+                                {players.map(p => {
+                                    return (
+                                        <Col sm={6} md={6} lg={3}>
+                                            {p.first_name} {p.last_name}
+                                        </Col>
+                                    )
+                                })
+                                }
+                            </Row>
+                        </Container>
                     </>
                 )}
             </Container>
