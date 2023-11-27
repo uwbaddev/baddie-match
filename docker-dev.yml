@@ -70,7 +70,7 @@ services:
     ports:
       - '5800:5800'
     volumes: 
-      - ./db:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
 volumes:
   db:
     driver: local
