@@ -36,7 +36,13 @@
   padding-top: 0.75em;
   padding-bottom: 0.25em;
 }
-
+.even-row.row{
+  background-color: rgb(186, 180, 173, 0.5)
+}
+.odd-row.row{
+  /* background-color: #ffffff; */
+  background-color: rgb(255, 255, 255);
+}
 .forms {
   font-family: var(--main-body-font) !important;
 }
@@ -61,6 +67,7 @@
 .form-select:not(:last-of-type) {
   margin-bottom: 1em;
 }
+
 .score-col {
   width: 50px;
   box-sizing: content-box;

@@ -21,16 +21,16 @@ const Players = () => {
                 ) : (
                     <>
                         <Container fluid className='PlayersList'>
-                            <Row>
-                                {players.map(p => {
-                                    return (
-                                        <Col sm={6} md={6} lg={3}>
-                                            {p.first_name} {p.last_name}
-                                        </Col>
-                                    )
-                                })
-                                }
-                            </Row>
+                            {players.map((p, index) => {
+                                return (
+                                    <div>
+                                        <Row className={index % 2 === 0 ? 'even-row' : 'odd-row'} style={{ height: '75px'}}>
+                                            <Col>{p.first_name} {p.last_name}</Col>
+                                        </Row>
+                                    </div>
+                                )
+                            })
+                            }
                         </Container>
                     </>
                 )}
