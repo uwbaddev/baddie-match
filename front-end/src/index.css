@@ -37,11 +37,26 @@
   padding-bottom: 0.25em;
 }
 .even-row.row{
-  background-color: rgb(186, 180, 173, 0.5)
+  background-color: rgb(186, 180, 173, 0.5);
+  border-top: 1px solid rgb(128, 125, 122, 0.2);
+  padding: 10px;
+  align-items: center;
 }
 .odd-row.row{
   /* background-color: #ffffff; */
   background-color: rgb(255, 255, 255);
+  border-top: 1px solid rgb(128, 125, 122, 0.2);
+  padding: 10px;
+  align-items: center;
+}
+.PlayersList{
+  padding: 15px;
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+}
+.playerImage{
+  width: 80px;
+  height: 100px;
 }
 .forms {
   font-family: var(--main-body-font) !important;

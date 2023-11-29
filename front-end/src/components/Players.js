@@ -1,4 +1,4 @@
-import { Container, Tabs, Tab, Row, Col, Form } from "react-bootstrap";
+import { Container, Tabs, Tab, Row, Col, Image } from "react-bootstrap";
 import { useContext } from "react";
 import '../index.css';
 import { useRef } from "react";
@@ -24,8 +24,21 @@ const Players = () => {
                             {players.map((p, index) => {
                                 return (
                                     <div>
-                                        <Row className={index % 2 === 0 ? 'even-row' : 'odd-row'} style={{ height: '75px'}}>
-                                            <Col>{p.first_name} {p.last_name}</Col>
+                                        <Row className={index % 2 === 0 ? 'even-row' : 'odd-row'} style={{ height: '150px' }}>
+                                            <Col xs={1}>
+                                                <Image className="playerImage" src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=jpg&quality=90&v=1530129081" rounded />
+                                            </Col>
+                                            <Col xs={5}>
+                                                <div style={{ fontSize: '12px' }}>
+                                                    Event/ years on the team
+                                                </div>
+                                                <div style={{ fontWeight: '600' }}>
+                                                    &nbsp; {p.first_name} {p.last_name}
+                                                </div>
+                                            </Col>
+                                            <Col xs={5}>
+                                                Program / Home City / School?
+                                            </Col>
                                         </Row>
                                     </div>
                                 )
