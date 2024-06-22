@@ -3,11 +3,11 @@ import '../index.css';
 import { useRef } from "react";
 
 const ProfilePage = () => {
-    let { playerId } = useParams();
+    // let { playerId } = useParams();
 
     return (
         <>
-
+            b;ah balhjs
         </>
     )
 }
