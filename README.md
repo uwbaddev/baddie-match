@@ -10,7 +10,7 @@ Score and stats tracker for the Waterloo Warriors badminton team.
 ### Setting Up the Dev Env
 1. Make a Copy of .env.sample, name it .env and move it the root dir. 
 
-2. From the root dir, run ./devops.init.sh
+2. From the root dir, run ./devops/init.sh
 
 3. When the script finishes, verify that it has been setup properly by visiting localhost:8000. 
 
