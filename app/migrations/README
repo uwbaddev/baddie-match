@@ -1,0 +1,13 @@
+Generic single-database configuration.
+
+alembic revision --autogenerate -m "initial"
+
+alembic revision -m "name of revision"
+
+alembic downgrade 8ac14e223d1e
+alembic upgrade head
+alembic history
+
+
+set set the head
+alembic stamp <revision>

@@ -65,16 +65,24 @@ class Matches(db.Model):
     db.session.commit()
 
 
-  def getMatchesWithPlayer(id):
+  def getMatchesWithPlayer(id, start, end):
     id = int(id)
-    all_matches = Matches.query.all()
+    all_matches = Matches.getMatchesBetweenDate(start, end)
     to_return = []
     for match in all_matches:
       for playerId in match.players:
         if (playerId == id):
           to_return.append(match)
     return json.dumps([m.serialize() for m in to_return])
-
+  
+  def toDate(dateString): 
+    return datetime.strptime(dateString, "%Y-%m-%d").date()
+  
+  def getMatchesBetweenDate(start, end):
+    match_query = Matches.query.filter(Matches.date_added <= end) \
+      .filter(Matches.date_added >= start) \
+      .order_by(Matches.last_edit.desc())
+    return match_query.all()
 
   def createMatch(event, playersInMatch, score, category):
     Matches.validateEvent(event)

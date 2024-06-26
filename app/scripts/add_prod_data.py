@@ -30,7 +30,7 @@ def add_players():
               player['first_name'] + " " + player['last_name'])
         player = Players(
             id=player['id'],
-            first_name="test_" + player['first_name'],
+            first_name="t_" + player['first_name'],
             last_name=player['last_name'],
             elegible_year=player['elegible_year'],
             sex=player['sex'],
@@ -103,7 +103,7 @@ def add_categories():
         print("queuing category id: " + str(cat['id']) + " " + cat['name'])
         cat = Categories(
             id=cat['id'],
-            name="test_" + cat['name'],
+            name="t_" + cat['name'],
         )
         db.session.add(cat)
         categories_added += 1
