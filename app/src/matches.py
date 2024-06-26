@@ -12,6 +12,10 @@ class Matches(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   event = db.Column(db.String())
   players = db.Column(db.ARRAY(db.Integer()))
+  player_1 = db.Column(db.Integer())
+  player_2 = db.Column(db.Integer())
+  player_3 = db.Column(db.Integer())
+  player_4 = db.Column(db.Integer())
   winners = db.Column(db.ARRAY(db.Integer()))
   score = db.Column(db.ARRAY(db.Integer()))
   category = db.Column(db.String())
@@ -41,8 +45,16 @@ class Matches(db.Model):
         Matches.validateEvent(event)
         match.event = event
 
+      #this might need to be changed?
       if (not all(player is None for player in players)):
         Matches.validatePlayers(players)
+        match.player_1 = players[0]
+        match.player_2 = players[1]
+        if len(player) == 2:
+          break
+        else:
+          match.player_3 = players[2]
+          match.player_4 = player[3]
         match.players = players
 
       if (score is not None):
@@ -70,6 +82,15 @@ class Matches(db.Model):
     all_matches = Matches.getMatchesBetweenDate(start, end)
     to_return = []
     for match in all_matches:
+
+      #new functionality, not returned atm
+      # if match.event == "Singles":
+      #   if match.player_1 == id or match.player_2 == id:
+      #     ret.append(match)
+      # else:
+      #   if match.player_1 == id or match.player_2 == id or match.player_3 == id or match.player_4 == id:
+      #     ret.append(match)
+
       for playerId in match.players:
         if (playerId == id):
           to_return.append(match)
@@ -90,9 +111,14 @@ class Matches(db.Model):
     Matches.validatePlayersAndEvents(playersInMatch, event)
     Matches.validatePlayers(playersInMatch)
 
+    #this has to be migrated
     match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
+      player_1 = playersInMatch[0]
+      player_2 = playersInMatch[1]
+      player_3 = None if event == 'Singles' else playersInMatch[2]
+      player_4 = None if event == 'Singles' else playersInMatch[3]
       score = score,
       category = category,
       date_added = datetime.today(),
@@ -132,6 +158,7 @@ class Matches(db.Model):
       else:
         team2score = 69
 
+    #this has to be changed
     if (event == 'Singles'):
       return [players[0]] if team1score > team2score else [players[1]]
     else:
@@ -173,10 +200,15 @@ class Matches(db.Model):
 
 
   def serialize(self):
+    #this has to be changed
     return {
         'id': self.id,
         'event': self.event,
         'players': self.players,
+        'player_1': self.player_1,
+        "player_2": self.player_2,
+        'player_3': self.player_3,
+        'player_4':self.player_4,
         'winners': self.winners,
         'score': self.score,
         'category': self.category,

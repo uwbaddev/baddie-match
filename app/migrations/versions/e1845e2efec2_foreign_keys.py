@@ -23,10 +23,10 @@ def upgrade():
     # add foreign key for matches players array instead of array of integers
     #make a fcking association table where primary keys of both matches and players and foreign keys of the association table <- dont do this
     #create four new columns, make them all foreign keys of players <- do this one
-    op.add_column('matches', Column('player-1', INTEGER, ForeignKey("players.id")))
-    op.add_column('matches', Column('player-2', INTEGER, ForeignKey("players.id")))
-    op.add_column('matches', Column('player-3', INTEGER, ForeignKey("players.id")))
-    op.add_column('matches', Column('player-4', INTEGER, ForeignKey("players.id")))
+    op.add_column('matches', Column('player_1', INTEGER, ForeignKey("players.id")))
+    op.add_column('matches', Column('player_2', INTEGER, ForeignKey("players.id")))
+    op.add_column('matches', Column('player_3', INTEGER, ForeignKey("players.id")))
+    op.add_column('matches', Column('player_4', INTEGER, ForeignKey("players.id")))
 
 
     # make another migration after this to properly populate the columns
