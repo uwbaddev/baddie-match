@@ -21,7 +21,7 @@ def upgrade():
     op.create_foreign_key('fk_match_category','matches','categories',["category"],['id'])
 
     # add foreign key for matches players array instead of array of integers
-    #make a fcking association table where primary keys of both matches and players and foreign keys of the association table <- dont do this
+    #make a association table where primary keys of both matches and players and foreign keys of the association table <- dont do this
     #create four new columns, make them all foreign keys of players <- do this one
     op.add_column('matches', Column('player_1', INTEGER, ForeignKey("players.id")))
     op.add_column('matches', Column('player_2', INTEGER, ForeignKey("players.id")))
@@ -35,4 +35,12 @@ def upgrade():
 
 def downgrade():
     # remove foreign key for string instead
+    op.drop_constraint('fk_match_category', 'matches', type_='foreignkey')
+
+    #drop foreign key colums for matches
+    op.drop_column('matches', Column('player_1', INTEGER, ForeignKey("players.id")))
+    op.drop_column('matches', Column('player_2', INTEGER, ForeignKey("players.id")))
+    op.drop_column('matches', Column('player_3', INTEGER, ForeignKey("players.id")))
+    op.drop_column('matches', Column('player_4', INTEGER, ForeignKey("players.id")))
+
     pass
