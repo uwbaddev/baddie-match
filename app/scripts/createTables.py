@@ -56,7 +56,7 @@ def createTables():
             FOREIGN KEY (player_2) REFERENCES players(player_2),
             FOREIGN KEY (player_3) REFERENCES players(player_3),
             FOREIGN KEY (player_4) REFERENCES players(player_4),
-            FOREIGN KEY (category) REFERENCES categories(category),
+            FOREIGN KEY (category) REFERENCES categories(category)
         )
         """,
         )

@@ -12,13 +12,13 @@ class Matches(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   event = db.Column(db.String())
   players = db.Column(db.ARRAY(db.Integer()))
-  player_1 = db.Column(db.Integer())
-  player_2 = db.Column(db.Integer())
-  player_3 = db.Column(db.Integer())
-  player_4 = db.Column(db.Integer())
+  player_1 = db.Column(db.Integer(), db.ForeignKey('players.id'))
+  player_2 = db.Column(db.Integer(), db.ForeignKey('players.id'))
+  player_3 = db.Column(db.Integer(), db.ForeignKey('players.id'))
+  player_4 = db.Column(db.Integer(), db.ForeignKey('players.id'))
   winners = db.Column(db.ARRAY(db.Integer()))
   score = db.Column(db.ARRAY(db.Integer()))
-  category = db.Column(db.String())
+  category = db.Column(db.Integer(), db.ForeignKey('categories.id'))
   date_added = db.Column(db.TIMESTAMP())
   last_edit = db.Column(db.TIMESTAMP())
 
@@ -50,11 +50,10 @@ class Matches(db.Model):
         Matches.validatePlayers(players)
         match.player_1 = players[0]
         match.player_2 = players[1]
-        if len(player) == 2:
-          break
-        else:
+        if len(player) != 2:
           match.player_3 = players[2]
           match.player_4 = player[3]
+          
         match.players = players
 
       if (score is not None):
@@ -115,10 +114,10 @@ class Matches(db.Model):
     match=Matches (
       event = event,
       players=[playersInMatch[0], playersInMatch[1]] if event == 'Singles' else playersInMatch,
-      player_1 = playersInMatch[0]
-      player_2 = playersInMatch[1]
-      player_3 = None if event == 'Singles' else playersInMatch[2]
-      player_4 = None if event == 'Singles' else playersInMatch[3]
+      player_1 = playersInMatch[0],
+      player_2 = playersInMatch[1],
+      player_3 = None if event == 'Singles' else playersInMatch[2],
+      player_4 = None if event == 'Singles' else playersInMatch[3],
       score = score,
       category = category,
       date_added = datetime.today(),
