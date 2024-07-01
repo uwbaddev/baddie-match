@@ -1,23 +1,28 @@
 import { Container, Tabs, Tab, Row, Col, Form } from "react-bootstrap";
 import '../index.css';
-import { useRef } from "react";
+import React from 'react';
 import temporaryPfp from '../pfp images/temporaryPfp.png';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from "react"; 
 
 
 const ProfilePage = () => {
-    // let { playerId } = useParams();
+    let params = useParams();
+    //console.log(params.playerID);
+    useEffect(() => {
+        console.log(params.playerId)
+      }, [params.playerId]);
 
-function showMore() {
-    alert("will show more info eventually lol");
-}
-
+    function showMore() {
+        alert("will show more info eventually lol");
+    }
 
     return (
         <>
         <Container fluid="true">
             <Row>
                 <Col className='page-title'>
-                    Player Profile
+                    Player Profile {params.playerId}
                 </Col>
             </Row>
 
@@ -25,7 +30,7 @@ function showMore() {
                 <Col sm={12} md={3} >
                 </Col>
                 <Col>
-                <div className='table-header'>Emily Xia</div> 
+                <div className='table-header'>Emily Xia {params.playerId}</div> 
                 </Col>
                 <Col sm={12} md={3} >
                 </Col>
@@ -35,7 +40,7 @@ function showMore() {
                 <Col sm={12} md={3} >
                 </Col>
                 <Col sm={12} md={3} >
-                    <div class="text-center">
+                    <div className="text-center">
                         <img src={temporaryPfp} alt="Pfp" width={250} height={250}>
                         </img>
                     </div>               
