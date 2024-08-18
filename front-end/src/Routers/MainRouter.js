@@ -21,7 +21,7 @@ const MainRouter = () => {
                     {/* <Route exact path='/admin' element={Admin()} /> */}
                     <Route exact path='/players' element={Players()} />
                     <Route exact path='/elo' element={EloPage()} />
-                    <Route exact path='/profile/:playerId?' element={ProfilePage()} />
+                    <Route exact path='/profile/:playerId' element={<ProfilePage/>} />
                 </Routes>
             </BrowserRouter>
         </>

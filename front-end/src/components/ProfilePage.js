@@ -4,17 +4,40 @@ import React from 'react';
 import temporaryPfp from '../pfp images/temporaryPfp.png';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from "react"; 
+import { PlayerIdUrl } from '../API/API';
 
 
 const ProfilePage = () => {
-    let params = useParams();
-    //console.log(params.playerID);
+    const [playerData, setPlayerData] = useState(null);
+    let { playerId } = useParams();
+
+
     useEffect(() => {
-        console.log(params.playerId)
-      }, [params.playerId]);
+
+        if (playerId) {
+            const playerUrl = PlayerIdUrl(playerId);
+            console.log(playerId)
+            console.log("fetching");
+
+            fetch(playerUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+
+            .catch(error => {
+                console.error('error', error);
+            });
+
+        }
+    
+    
+      }, [playerId]);
+
 
     function showMore() {
         alert("will show more info eventually lol");
+
     }
 
     return (
@@ -22,7 +45,7 @@ const ProfilePage = () => {
         <Container fluid="true">
             <Row>
                 <Col className='page-title'>
-                    Player Profile {params.playerId}
+                    Player Profile 
                 </Col>
             </Row>
 
@@ -30,7 +53,7 @@ const ProfilePage = () => {
                 <Col sm={12} md={3} >
                 </Col>
                 <Col>
-                <div className='table-header'>Emily Xia {params.playerId}</div> 
+                <div className='table-header'>Emily Xia </div> 
                 </Col>
                 <Col sm={12} md={3} >
                 </Col>
