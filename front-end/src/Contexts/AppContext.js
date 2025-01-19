@@ -10,6 +10,7 @@ export const AppContext = React.createContext('')
 
 const useApp = () => {
     const [players, setPlayers] = useState([]);
+    const [activePlayers, setActivePlayers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [singlesRankings, setSinglesRankings] = useState([]);
     const [doublesRankings, setDoublesRankings] = useState([]);
@@ -23,8 +24,10 @@ const useApp = () => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
             .then(res => res.json())
             .then(data => {
+                console.error(data)
                 data.sort((a, b) => (a.first_name > b.first_name) ? 1 : ((b.first_name > a.first_name) ? -1 : 0));
                 setPlayers(data);
+                setActivePlayers(data.filter((p) => p.elegible_year >= 0));
             });
 
         fetch(CategoryUrl, { method: 'GET' })
@@ -70,6 +73,7 @@ const useApp = () => {
         //constants across app
         categories,
         players,
+        activePlayers,
         singlesRankings,
         doublesRankings,
         mixedRankings,
