@@ -9,7 +9,7 @@ const SinglesForm = (formRef) => {
 
     const [show, setShow] = useState(true);
 
-    const { categories, players } = useContext(AppContext);
+    const { categories, activePlayers } = useContext(AppContext);
 
     const [matchObj, setMatchObj] = useState({
         event: 'Singles',
@@ -106,13 +106,13 @@ const SinglesForm = (formRef) => {
                         <Col>
                             <Form.Select name='player1Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                         <Col>
                             <Form.Select name='player2Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                     </Row>

@@ -7,7 +7,7 @@ import * as ReactDOM from 'react-dom';
 const DoublesForm = () => {
     const [bannerMessage, setBannerMessage] = useState('');
 
-    const { players, categories } = useContext(AppContext);
+    const { activePlayers, categories } = useContext(AppContext);
 
     const [matchObj, setMatchObj] = useState({
         event: 'Doubles',
@@ -18,6 +18,10 @@ const DoublesForm = () => {
         score: [0, 0, 0, 0, 0, 0],
         category: ''
     })
+
+
+
+
 
     async function postResults(e) {
         e.preventDefault();
@@ -105,13 +109,13 @@ const DoublesForm = () => {
                         <Col>
                             <Form.Select name='player1Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                         <Col>
                             <Form.Select name='player2Id' onChange={handleMatchDataChange}> 
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                     </Row>
@@ -125,13 +129,13 @@ const DoublesForm = () => {
                         <Col>
                             <Form.Select name='player3Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                         <Col>
                             <Form.Select name='player4Id' onChange={handleMatchDataChange}>
                                 <option>Select</option>
-                                {players.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
+                                {activePlayers.map((p, i) => <option key={i} value={p.id}>{p.first_name} {p.last_name}</option>)}
                             </Form.Select>
                         </Col>
                     </Row>
