@@ -24,18 +24,6 @@ def createTables():
 
     commands = (
         """
-        CREATE TABLE matches (
-            id SERIAL PRIMARY KEY,
-            event VARCHAR(255),
-            players INTEGER[],
-            winners INTEGER[],
-            score INTEGER[],
-            category VARCHAR(255),
-            date_added TIMESTAMP,
-            last_edit TIMESTAMP
-        )
-        """,
-        """
         CREATE TABLE players (
             id SERIAL PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
@@ -48,6 +36,27 @@ def createTables():
         CREATE TABLE categories (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL
+        )
+        """,
+        """
+        CREATE TABLE matches (
+            id SERIAL PRIMARY KEY,
+            event VARCHAR(255),
+            players INTEGER[],
+            player_1 INTEGER,
+            player_2 INTEGER,
+            player_3 INTEGER,
+            player_4 INTEGER,
+            winners INTEGER[],
+            score INTEGER[],
+            category INTEGER,
+            date_added TIMESTAMP,
+            last_edit TIMESTAMP,
+            FOREIGN KEY (player_1) REFERENCES players(player_1),
+            FOREIGN KEY (player_2) REFERENCES players(player_2),
+            FOREIGN KEY (player_3) REFERENCES players(player_3),
+            FOREIGN KEY (player_4) REFERENCES players(player_4),
+            FOREIGN KEY (category) REFERENCES categories(category)
         )
         """,
         )
