@@ -12,7 +12,7 @@ COPY ./front-end .
 RUN npm run build
 
 # Create Backend, and move static build into /build dir
-FROM python:3.8-slim-buster
+FROM python:3.8-slim
 ENV WORKDIR=/user/src/app
 RUN mkdir -p $WORKDIR
 COPY "./app/requirements.txt" .
