@@ -48,7 +48,7 @@ const ResultsPage = () => {
     }
 
     useEffect(() => {
-        queryThenFormatMatches(1, 10, '2023-09-01', '2024-08-31')
+        queryThenFormatMatches(1, 10, '2025-09-01', '2026-08-31')
     }, [])
 
     useEffect(() => {
