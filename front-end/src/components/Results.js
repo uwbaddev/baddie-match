@@ -15,8 +15,8 @@ const ResultsPage = () => {
     const [pageCount, setPageCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10);
-    const [seasonStart, setSeasonStart] = useState('2023-09-01');
-    const [seasonEnd, setSeasonEnd] = useState('2024-08-31');
+    const [seasonStart, setSeasonStart] = useState('2025-09-01');
+    const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
  
 
     function queryThenFormatMatches(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd) {
