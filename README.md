@@ -6,7 +6,8 @@
 Score and stats tracker for the Waterloo Warriors badminton team.
 
 ## Developing
-gunicorn main:app -b 0.0.0.0:9999
+gunicorn main:app -b 0.0.0.0:5000
+waitress main:app -b 0.0.0.0:5000
 
 
 ### Docker 
