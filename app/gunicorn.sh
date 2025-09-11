@@ -1,2 +1,2 @@
 #!/bin/sh
-gunicorn app.main:app -b 0.0.0.0:$PORT
+gunicorn main:app -b 0.0.0.0:$PORT

@@ -2,10 +2,10 @@
 
 Scripts 
 
-Run from base dir, run with python -m app.scripts."script"
+Run from base dir, run with python -m scripts."script"
 Example 
 ```
-python -m app.scripts.nuke
+python -m scripts.nuke
 ```
 
 nuke.py will clear your local db. Can be run with arguments m for matches, p for players, and c for categories. Run with no args to clear entire db

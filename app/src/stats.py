@@ -1,5 +1,5 @@
-from app.src.players import Players
-from app.src.matches import Matches
+from src.players import Players
+from src.matches import Matches
 import json
 
 class Stats:

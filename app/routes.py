@@ -1,12 +1,12 @@
-from app.src.categories import Categories
-from app.src.players import Players
-from app.src.matches import Matches
-from app.src.stats import Stats
-from app.src.player_elo import Player_elo
+from src.categories import Categories
+from src.players import Players
+from src.matches import Matches
+from src.stats import Stats
+from src.player_elo import Player_elo
 from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
-from app.main import db, app
+from main import db, app
 
 
 
@@ -197,8 +197,8 @@ def matchHandler(id):
             return str(e), 500
 
 
-@ cross_origin()
-@ app.route("/api/match/player/<id>", methods=["GET"])
+@cross_origin()
+@app.route("/api/match/player/<id>", methods=["GET"])
 def getMatchesWithPlayer(id):
     try:
         to_return = Matches.getMatchesWithPlayer(id)
@@ -207,8 +207,8 @@ def getMatchesWithPlayer(id):
         return str(e), 500
 
 
-@ cross_origin()
-@ app.route("/api/match", methods=["POST"])
+@cross_origin()
+@app.route("/api/match", methods=["POST"])
 def addMatch():
     try:
         event = request.json.get("event")
@@ -232,8 +232,8 @@ def addMatch():
 ################################################################################
 
 
-@ cross_origin()
-@ app.route("/api/players/stats", methods=["GET"])
+@cross_origin()
+@app.route("/api/players/stats", methods=["GET"])
 def getAllWinPercentages():
     try:
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
@@ -247,8 +247,8 @@ def getAllWinPercentages():
 ################################################################################
 
 
-@ cross_origin()
-@ app.route("/api/elo/singles", methods=["GET"])
+@cross_origin()
+@app.route("/api/elo/singles", methods=["GET"])
 def getSinglesElo():
     try:
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
@@ -258,8 +258,8 @@ def getSinglesElo():
         return str(e), 500
 
 
-@ cross_origin()
-@ app.route("/api/elo/doubles", methods=["GET"])
+@cross_origin()
+@app.route("/api/elo/doubles", methods=["GET"])
 def getDoublesElo():
     try:
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)

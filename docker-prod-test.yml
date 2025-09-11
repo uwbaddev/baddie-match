@@ -20,7 +20,7 @@ services:
     env_file:
       - .env
     environment:
-      - FLASK_APP=app.main
+      - FLASK_APP=main
       - APP_CONFIG_FILE=/user/src/config.py
       - PORT=5000
 
