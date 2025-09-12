@@ -4,6 +4,7 @@
 
 # Create front-end static build
 FROM node:16-alpine AS builder
+ENV REACT_APP_DOMAIN_NAME=https://baddie-match.herokuapp.com/api
 RUN apk add --no-cache python3 g++ make
 WORKDIR /fe
 COPY ./front-end/package.json .
