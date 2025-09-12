@@ -14,6 +14,7 @@ RUN npm run build
 # Create Backend, and move static build into /build dir
 FROM python:3.13-slim
 ENV WORKDIR=/user/src/app
+WORKDIR /user/src/app
 RUN mkdir -p $WORKDIR
 COPY "./app/requirements.txt" .
 RUN apt-get update 
