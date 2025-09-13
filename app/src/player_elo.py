@@ -4,9 +4,9 @@ import datetime
 from operator import itemgetter
 import os
 import pandas as pd
-from app.main import app
-from app.src.players import Players
-from app.src.matches import Matches
+from main import app
+from src.players import Players
+from src.matches import Matches
 import json
 
 # todo:

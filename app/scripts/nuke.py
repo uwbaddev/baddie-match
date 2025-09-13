@@ -1,7 +1,7 @@
-from app.main import app
-from app.src.players import Players
-from app.src.matches import Matches
-from app.src.categories import Categories
+from main import app
+from src.players import Players
+from src.matches import Matches
+from src.categories import Categories
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 import sys

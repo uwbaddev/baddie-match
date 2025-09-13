@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from config import DevelopmentConfig, TestingConfig, StagingConfig, ProductionConfig
+
 
 
 print(os.path.abspath(os.path.dirname(__file__)))
@@ -21,7 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-from app import routes
+import routes 
 
 if __name__ == "__main__":
     app.run()

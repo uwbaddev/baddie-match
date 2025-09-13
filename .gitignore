@@ -8,3 +8,4 @@ db/
 front-end/build/
 *.pyc
 *.vscode/
+.venv

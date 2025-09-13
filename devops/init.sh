@@ -34,6 +34,6 @@ echo Creating Tables
 docker exec app python3 app/scripts/createTables.py
 
 echo Adding prod data 
-docker exec app python3 -m app.scripts.add_prod_data
+docker exec app python3 -m scripts.add_prod_data
 
 # use for quick copy and paste while script is broken

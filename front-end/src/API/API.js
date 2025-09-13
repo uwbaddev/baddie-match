@@ -1,4 +1,4 @@
-export const DomainName = process.env.REACT_APP_DOMAIN_NAME || "https://baddie-match.herokuapp.com/api";
+export const DomainName = process.env.REACT_APP_DOMAIN_NAME
 export const MatchUrl = (id) => `${DomainName}/match/${id}`
 export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;

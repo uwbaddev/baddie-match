@@ -6,9 +6,11 @@ import sys
 # run in the venv
 # running with commandline with any single arg will drop all old tables before creating. 
 
-load_dotenv()
+
+
 
 def createTables():
+    
     conn = psycopg2.connect(
         host=os.getenv("DATABASE_HOST"),
         database=os.getenv("DATABASE_NAME"),
@@ -78,4 +80,11 @@ def createTables():
             conn.close()
 
 if __name__ == '__main__':
+    load_dotenv()
+        
+    print(os.getenv("DATABASE_HOST"))
+    print(os.getenv("DATABASE_NAME"))
+    print(os.getenv("DATABASE_USER"))
+    print(os.getenv("DATABASE_PASSWORD"))
+    print(os.getenv("DATABASE_PORT"))
     createTables()

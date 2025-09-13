@@ -1,6 +1,8 @@
 import os
+from dotenv import load_dotenv
 
 class Config(object):
+    load_dotenv()
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
