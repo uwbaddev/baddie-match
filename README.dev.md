@@ -27,51 +27,61 @@ Details:
 - Data volume is created at `./db`
 
 ### 2) Backend (Flask API)
-From the repo root, create and activate a virtual environment, then install deps:
-
+From the repo root, create and activate a virtual environment
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
+
+Then, cd into app and install dependencies. 
+```bash
+cd app
 python -m pip install --upgrade pip
-pip install -r app/requirements.txt
+pip install -r requirements.txt
 ```
 
 Create your backend environment file from the sample:
 
 ```bash
-cp app/.env_app.sample app/.env
+cp .env_app.sample .env
 ```
 
-Ensure `DATABASE_URL` in `app/.env` points at Docker Postgres (default):
-```
-postgresql://postgres:postgres@localhost:5800/postgres
-```
-
-Initialize the database schema and optionally seed with data (run from repo root):
+Initialize the database schema and optionally seed with data (run from app dir):
 
 ```bash
-python -m app.scripts.createTables
+python -m scripts.createTables
 # Optional: pull sample/prod data into local (safe names)
-python -m app.scripts.add_prod_data
+python -m scripts.add_prod_data
 ```
 
-Run the backend in dev:
+Start the backend:
 
 ```bash
-export FLASK_APP=app.main
-flask run --port 5000
+# For Windows:
+waitress-serve --host=0.0.0.0 --port=5000 myapp:app
+
+# For mac
+gunicorn -b 0.0.0.0:5000 main:app
 ```
 
 The API will be available at `http://localhost:5000` and the API root at `http://localhost:5000/api`.
 
 ### 3) Frontend (React)
-From the repo root:
+Open a new terminal window. From the repo root:
 
 ```bash
 cd front-end
-echo "REACT_APP_DOMAIN_NAME=http://localhost:5000/api" > .env
 npm install
-npm start
+```
+
+Then create a copy of the environment file (in front-end dir)
+```bash
+cp .env_app.sample .env
+```
+
+Start the server
+```bash
+npm run start
 ```
 
 The React dev server runs on `http://localhost:3000` and points to the local backend via `REACT_APP_DOMAIN_NAME`.
@@ -88,12 +98,14 @@ docker compose -f docker-dev.yml up -d
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install -r app/requirements.txt
-cp app/.env_app.sample app/.env
-python -m app.scripts.createTables
+cd app
+pip install -r /requirements.txt
+cp .env_app.sample .env
+python -m scripts.createTables
 
 # 3) Frontend
 cd front-end
+cp .env_app.sample .env
 npm install
 npm start
 ```
