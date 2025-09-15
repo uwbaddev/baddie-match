@@ -1,45 +1,39 @@
 import { Container, Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useState, useContext, useRef } from "react";
-import { ReportMatchUrl } from "../API/API";
-import { AppContext } from '../Contexts/AppContext';
+import { useState, useContext } from "react";
+import { ReportMatchUrl, ReportUrl } from "../API/API";
+import { AppContext } from '../Contexts/AppContext'
 import * as ReactDOM from 'react-dom';
 
-const SinglesForm = () => {
+const SinglesForm = (formRef) => {
     const [bannerMessage, setBannerMessage] = useState('');
-    const [cooldown, setCooldown] = useState(false);
+
+    const [show, setShow] = useState(true);
 
     const { categories, activePlayers } = useContext(AppContext);
-    const formElementRef = useRef(null);
 
-    const initialMatch = {
+    const [matchObj, setMatchObj] = useState({
         event: 'Singles',
         player1Id: 0,
         player2Id: 0,
         score: [0, 0, 0, 0, 0, 0],
         category: ''
-    };
-
-    const [matchObj, setMatchObj] = useState(initialMatch);
-
-    const resetForm = () => {
-        setMatchObj(initialMatch);
-    };
+    })
 
     async function postResults(e) {
         e.preventDefault();
-
-        if (cooldown) {
-            setBannerMessage('Please wait before submitting again...');
-            return;
-        }
-
-        if (matchObj.player1Id === 0 || matchObj.player2Id === 0 || matchObj.player1Id === matchObj.player2Id) {
+        if (matchObj.player1Id == 0 || matchObj.player2Id == 0 ||
+            matchObj.player1Id === matchObj.player2Id) {
             setBannerMessage('Invalid players selected!');
             return;
         }
 
-        const zeroScoreCount = matchObj.score.filter(s => s === 0).length;
-        if (zeroScoreCount === 6) {
+        // TODO: complex score validation
+
+        let zero_score = 0;
+        for (let i = 0; i < 6; i++) {
+            if (matchObj.score[i] === 0) zero_score++;
+        }
+        if (zero_score === 6) {
             setBannerMessage('Invalid scores inputted');
             return;
         }
@@ -49,25 +43,28 @@ const SinglesForm = () => {
             return;
         }
 
-        setCooldown(true); // start cooldown immediately
-
-        const response = await fetch(ReportMatchUrl, {
+        fetch(ReportMatchUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(matchObj)
-        });
-
-        const text = await response.text();
-
-        if (response.status === 500) {
-            setBannerMessage("Error: " + text);
-        } else {
-            const node = document.getElementById("match-form");
-            ReactDOM.findDOMNode(node).reset();
-            resetForm();
-            setBannerMessage(text);
-        }
-        setTimeout(() => setCooldown(false), 3000);
+        }).then(response => {
+            if (response.status === 500) {
+                response.text().then((text) => {
+                    setBannerMessage("Error: " + text);
+                });
+            } else {
+                response.text().then((text) => {
+                    setBannerMessage(text);
+                });
+                var node = document.getElementById("match-form");
+                ReactDOM.findDOMNode(node).reset();
+            }
+        }).catch(error => {
+            console.log("Failed")
+            console.error('Error: ', error);
+        })
     }
 
     function handleMatchDataChange(evt) {
