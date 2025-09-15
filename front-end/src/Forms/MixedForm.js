@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { ReportMatchUrl } from "../API/API";
 import { AppContext } from "../Contexts/AppContext";
@@ -6,10 +6,12 @@ import * as ReactDOM from 'react-dom';
 
 const MixedForm = () => {
     const [bannerMessage, setBannerMessage] = useState('');
+    const [cooldown, setCooldown] = useState(false);
 
     const { activePlayers, categories } = useContext(AppContext);
+    const formElementRef = useRef(null);
 
-    const [matchObj, setMatchObj] = useState({
+    const initialMatch = {
         event: 'Mixed',
         player1Id: 0,
         player2Id: 0,
@@ -17,24 +19,31 @@ const MixedForm = () => {
         player4Id: 0,
         score: [0, 0, 0, 0, 0, 0],
         category: ''
-    })
+    };
+
+    const [matchObj, setMatchObj] = useState(initialMatch);
+
+    const resetForm = () => {
+        setMatchObj(initialMatch);
+    };
 
     async function postResults(e) {
         e.preventDefault();
-        if (matchObj.player1Id == 0 || matchObj.player2Id == 0 ||
-            matchObj.player3Id == 0 || matchObj.player4Id == 0 ||
+
+        if (cooldown) {
+            setBannerMessage('Please wait before submitting again...');
+            return;
+        }
+
+        if (matchObj.player1Id === 0 || matchObj.player2Id === 0 ||
+            matchObj.player3Id === 0 || matchObj.player4Id === 0 ||
             matchObj.player1Id === matchObj.player2Id) {
             setBannerMessage('Invalid players selected!');
             return;
         }
 
-        // TODO: complex score validation
-
-        let zero_score = 0;
-        for (let i = 0; i < 6; i++) {
-            if (matchObj.score[i] === 0) zero_score++;
-        }
-        if (zero_score === 6) {
+        const zeroScoreCount = matchObj.score.filter(s => s === 0).length;
+        if (zeroScoreCount === 6) {
             setBannerMessage('Invalid scores inputted');
             return;
         }
@@ -44,27 +53,25 @@ const MixedForm = () => {
             return;
         }
 
-        fetch(ReportMatchUrl, {
+        setCooldown(true);
+
+        const response = await fetch(ReportMatchUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(matchObj)
-        }).then(response => {
-            if (response.status === 500) {
-                response.text().then((text) => {
-                    setBannerMessage("Error: " + text);
-                });
-            } else {
-                response.text().then((text) => {
-                    setBannerMessage(text);
-                });
-                var node = document.getElementById("match-form");
-                ReactDOM.findDOMNode(node).reset();
-            }
-        }).catch(error => {
-            console.log(error);
-        })
+        });
+
+        const text = await response.text();
+
+        if (response.status === 500) {
+            setBannerMessage("Error: " + text);
+        } else {
+            const node = document.getElementById("match-form");
+            ReactDOM.findDOMNode(node).reset();
+            resetForm();
+            setBannerMessage(text);
+        }
+        setTimeout(() => setCooldown(false), 3000);
     }
 
     function handleMatchDataChange(evt) {
@@ -80,16 +87,14 @@ const MixedForm = () => {
 
     function SubmissionAlert() {
         const [show, setShow] = useState(true);
-      
-        if (show) {
-          return (
-            <Alert variant="info" onClose={() => setShow(false)} dismissible>
-              <p>{bannerMessage}</p>
+        if (!bannerMessage || !show) return null;
+
+        return (
+            <Alert variant="info" dismissible onClose={() => setShow(false)}>
+                <p>{bannerMessage}</p>
             </Alert>
-          );
-        }
-        return null;
-      }
+        );
+    }
 
     return (
         <>
