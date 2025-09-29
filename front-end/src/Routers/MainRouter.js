@@ -6,6 +6,7 @@ import ResultsPage from '../components/Results';
 import Admin from '../components/Admin/Admin';
 import Players from '../components/Players';
 import EloPage from '../components/EloPage';
+import EloPageV2 from '../components/EloPageV2';
 
 
 const MainRouter = () => {
@@ -20,6 +21,7 @@ const MainRouter = () => {
                     {/* <Route exact path='/admin' element={Admin()} /> */}
                     <Route exact path='/players' element={Players()} />
                     <Route exact path='/elo' element={EloPage()} />
+                    <Route exact path='/elo/v2' element={EloPageV2()} />
                 </Routes>
             </BrowserRouter>
         </>

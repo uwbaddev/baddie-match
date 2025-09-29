@@ -7,7 +7,7 @@ from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
 from main import db, app
-
+from src.player_elo_v2 import Player_elo_v2
 
 
 @cross_origin()
@@ -250,24 +250,91 @@ def getAllWinPercentages():
 @cross_origin()
 @app.route("/api/elo/singles", methods=["GET"])
 def getSinglesElo():
-    try:
-        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
-        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
-        return(Player_elo.get_singles_elo(start, end))
-    except Exception as e:
-        return str(e), 500
+    # try:
+    #     start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+    #     end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+    #     return(Player_elo.get_singles_elo(start, end))
+    # except Exception as e:
+    #      return str(e), 500
+
+    return json.dumps([{
+        "name": "Kevin Wang",
+        "singles_elo": 1638.2429223847,
+        "singles_rating": {
+            "exposure": 23.2348168872,
+            "mu": 29.5454294172,
+            "pi": 0.2259953371,
+            "sigma": 2.10353751,
+            "tau": 6.6771292814
+        },
+        "singles_games_played": 28,
+        "singles_wins": 20,
+        "singles_losses": 8,
+        "singles_win_pct": 0.7142857143
+        }]), 200
+
 
 
 @cross_origin()
 @app.route("/api/elo/doubles", methods=["GET"])
 def getDoublesElo():
+    tmp = [
+    {
+        "name": "t_Allison Cheng",
+        "doubles_rating": {
+            "exposure": 20.6967512427,
+            "mu": 34.0712618633,
+            "pi": 0.0503137526,
+            "sigma": 4.4581702069,
+            "tau": 1.7142530385
+        },
+        "doubles_games_played": 11,
+        "doubles_wins": 9,
+        "doubles_losses": 2,
+        "doubles_win_pct": 0.8181818182
+    }
+    ]
+    return json.dumps(tmp), 200
+
     try:
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
         end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
         return(Player_elo.get_doubles_elo(start, end))
     except Exception as e:
         return str(e), 500
+    
+    # try:
+    #     elo = Player_elo_v2()
+    #     start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+    #     end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+    #     return(elo.get_doubles_elo(start, end)), 200
+    # except Exception as e:
+    #     return str(e), 500
+
+
+@cross_origin()
+@app.route("/api/v2/elo/doubles", methods=["GET"])
+def getDoublesEloV2():
+    try:
+        elo = Player_elo_v2()
+        start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+        end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        return(elo.get_doubles_elo(start, end)), 200
+    except Exception as e:
+        return str(e), 500
+    
+@cross_origin()
+@app.route("/api/v2/elo/singles", methods=["GET"])
+def getSinglesEloV2():
+    # try:
+    elo = Player_elo_v2()
+    start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
+    end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+    return(elo.get_singles_elo(start, end)), 200
+    # except Exception as e:
+    #     return str(e), 500
 
 
 if __name__ == '__main__':
     app.run()
+

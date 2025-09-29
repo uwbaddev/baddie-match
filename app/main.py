@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from config import DevelopmentConfig, TestingConfig, StagingConfig, ProductionConfig
 
 
-
 print(os.path.abspath(os.path.dirname(__file__)))
 print(os.getcwd())
 
@@ -27,3 +26,4 @@ import routes
 
 if __name__ == "__main__":
     app.run()
+    

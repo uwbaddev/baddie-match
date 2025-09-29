@@ -49,7 +49,7 @@ const EloPage = () => {
         })
 
         const result = elo.filter((player) => {
-            return player.doubles_games_played > 5 && player.sigma < 4;
+            return player.doubles_games_played > 0 && player.sigma < 4000;
         })
 
 
@@ -83,7 +83,7 @@ const EloPage = () => {
         })
 
         const result = elo.filter((player) => {
-            return player.singles_games_played > 5 && player.sigma < 4;
+            return player.singles_games_played > 0 && player.sigma < 1000;
         })
 
         let i = 0
