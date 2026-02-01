@@ -37,6 +37,55 @@
   padding-bottom: 0.25em;
 }
 
+.show-more-btn {
+  font-family: var(--main-body-font);
+  background-color: #e8e8e2;;
+  color: rgb(0, 0, 0);
+  border-color: #e8e8e2;
+  border-radius: 4px;
+}
+
+.divider{
+  content: '';
+  background-color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  height: 1px;
+  width: 50%;
+}
+
+.recent-matches-with{
+  font-family: var(--main-body-font);
+  letter-spacing: 1px;
+  color: black !important;
+  padding: 0px;
+  margin-bottom: 0px;
+  margin-top: 30px;
+  background-color: #e8e8e200;
+  font-size: 1.5em;
+}
+
+.recent-profile-matches {
+  font-family: var(--main-body-font);
+  font-size:1em;
+}
+
+
+.player-column-headers {
+  font-family: var(--main-body-font);
+  font-size:1.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.player-info {
+  font-family: var(--main-body-font);
+  font-size:1.3em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
 .forms {
   font-family: var(--main-body-font) !important;
 }
