@@ -3,9 +3,9 @@ import ReportMatchComponent from '../components/ReportMatch';
 import Header from '../components/Header';
 import LandingPage from '../components/LandingPage';
 import ResultsPage from '../components/Results';
-import Admin from '../components/Admin/Admin';
 import Players from '../components/Players';
 import EloPage from '../components/EloPage';
+import PlayerProfile from '../components/PlayerProfile';
 
 
 const MainRouter = () => {
@@ -17,9 +17,10 @@ const MainRouter = () => {
                     <Route exact path='/' element={LandingPage()} />
                     <Route exact path='/report' element={ReportMatchComponent()} />
                     <Route exact path='/results' element={ResultsPage()} />
-                    {/* <Route exact path='/admin' element={Admin()} /> */}
                     <Route exact path='/players' element={Players()} />
                     <Route exact path='/elo' element={EloPage()} />
+                    <Route exact path='/players/:season/:slug' element={<PlayerProfile />} />
+                    <Route exact path='/players/:id' element={<PlayerProfile />} />
                 </Routes>
             </BrowserRouter>
         </>

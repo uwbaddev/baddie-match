@@ -1,32 +1,32 @@
-import { Container, Tabs, Tab, Row, Col, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import '../index.css';
-import { useRef } from "react";
+import { useState } from "react";
 import SinglesForm from "../Forms/SinglesForm";
 import DoublesForm from "../Forms/DoublesForm";
 import MixedForm from "../Forms/MixedForm";
+import { PageShell, TabControl } from "./RedesignUI";
+
+const reportTabs = [
+    { key: 'Singles', label: 'Singles' },
+    { key: 'Doubles', label: 'Doubles' },
+    { key: 'Mixed', label: 'Mixed' },
+];
 
 const ReportMatchComponent = () => {
+    const [activeTab, setActiveTab] = useState('Singles');
+    const ActiveForm = activeTab === 'Singles'
+        ? SinglesForm
+        : activeTab === 'Doubles'
+            ? DoublesForm
+            : MixedForm;
+
     return (
-        <>
-            <Container>
-                <Row>
-                    <Col> <p className='page-title'>REPORT MATCH</p></Col>
-                </Row>
-                <Form id="match-form">
-                    <Tabs defaultActiveKey="Singles">
-                        <Tab eventKey="Singles" title="Singles" tabClassName="report-tab">
-                            <SinglesForm />
-                        </Tab>
-                        <Tab eventKey="Doubles" title="Doubles" tabClassName="report-tab">
-                            <DoublesForm />
-                        </Tab>
-                        <Tab eventKey="Mixed" title="Mixed" tabClassName="report-tab">
-                            <MixedForm />
-                        </Tab>
-                    </Tabs>
-                </Form>
-            </Container>
-        </>
+        <PageShell title="Report Match" className="report-page">
+            <Form id="match-form">
+                <TabControl tabs={reportTabs} active={activeTab} onChange={setActiveTab} className="report-tabs" />
+                <ActiveForm />
+            </Form>
+        </PageShell>
     )
 }
 

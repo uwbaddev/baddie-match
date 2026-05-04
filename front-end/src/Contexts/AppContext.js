@@ -1,10 +1,6 @@
-import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider"
-import { AllMatchesUrl, CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, EloUrl, MatchPageUrl } from "../API/API"
+import { CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, EloUrl, MatchPageUrl } from "../API/API"
 import React from "react"
 import { useState, useEffect } from "react"
-import { responsivePropType } from "react-bootstrap/esm/createUtilityClasses"
-import Moment from "moment"
-import { getOverlayDirection } from "react-bootstrap/esm/helpers"
 
 export const AppContext = React.createContext('')
 
@@ -24,7 +20,6 @@ const useApp = () => {
         fetch(PlayersUrl, { method: 'GET', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
             .then(res => res.json())
             .then(data => {
-                console.error(data)
                 data.sort((a, b) => (a.first_name > b.first_name) ? 1 : ((b.first_name > a.first_name) ? -1 : 0));
                 setPlayers(data);
                 setActivePlayers(data.filter((p) => p.elegible_year >= 0));
@@ -55,7 +50,7 @@ const useApp = () => {
             })
     };
 
-    const queryPlayerResults = (id) => fetch(PlayerMatchesUrl(id), { method: 'GET' }).then(response => response.json())
+    const queryPlayerResults = (id, start, end) => fetch(PlayerMatchesUrl(id, start, end), { method: 'GET' }).then(response => response.json())
 
     const queryMatch = (id) => fetch(MatchUrl(id), { method: 'GET' }).then(response => response.json())
 

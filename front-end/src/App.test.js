@@ -1,8 +1,14 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { buildWinRankings } from './utils/playerViewModels';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test('builds landing page ranking rows', () => {
+  const rows = buildWinRankings([
+    { id: 1, name: 'Player One', singles_wins: 1, singles_losses: 1 },
+  ], 'singles');
+
+  expect(rows[0]).toEqual(expect.objectContaining({
+    rank: 1,
+    name: 'Player One',
+    winPct: 50,
+    record: '1:1',
+  }));
 });

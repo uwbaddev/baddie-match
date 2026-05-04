@@ -1,47 +1,78 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom'
-import { Col, Container, Nav, Navbar, Row, Offcanvas } from 'react-bootstrap'
-import { DropdownIcon } from '../icons/MainDropdown.js';
+import { Link, NavLink } from 'react-router-dom'
+import { ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
 import '../index.css'
 
 const Header = () => {
     const [expanded, setExpanded] = useState(false);
+    const closeMenu = () => setExpanded(false);
+    const navItems = [
+        { to: '/', label: 'Home', icon: Home },
+        { to: '/report', label: 'Report Match', icon: PencilLine },
+        { to: '/results', label: 'Results', icon: BarChart3 },
+        { to: '/elo', label: 'Rankings', icon: ArrowUpRight },
+        { to: '/players', label: 'Roster', icon: User },
+    ];
 
     return (
         <>
-            <Navbar fixed="sticky" className='header-panel' expand={false}>
-                <Container fluid>
-                    <Navbar.Brand href="/" className='header'>WATERLOO WARRIORS</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={ () => setExpanded(!expanded) } />
-                    <Navbar.Offcanvas
-                        id="offcanvasNavbar"
-                        aria-labelledby="offcanvasNavbarLabel"
-                        placement="end"
-                        show={expanded}
-                    >
-                        <Offcanvas.Header closeButton>
-                            <Offcanvas.Title id="offcanvasNavbarLabel">WARRIORS</Offcanvas.Title>
-                        </Offcanvas.Header>
-                        <Offcanvas.Body>
-                            <Nav className="justify-content-end flex-grow-1 page-header pe-3">
-                                <Nav.Link as={Link} to="/" onClick={ () => setExpanded(false) }>HOME</Nav.Link>
-                                <Nav.Link as={Link} to="/report" onClick={ () => setExpanded(false) }>REPORT MATCH</Nav.Link>
-                                <Nav.Link as={Link} to="/results" onClick={ () => setExpanded(false) }>RESULTS</Nav.Link>
-                                <Nav.Link as={Link} to="/elo" onClick={ () => setExpanded(false) }>ELO RANKINGS</Nav.Link>
-                                {/* <Nav.Link as={Link} to="/admin" onClick={ () => setExpanded(false) }>ADMIN</Nav.Link> */}
-                                <Nav.Link as={Link} to="/players" onClick={ () => setExpanded(false) }>PLAYERS</Nav.Link>
-                            </Nav>
-                        </Offcanvas.Body>
-                    </Navbar.Offcanvas>
-                </Container>
-            </Navbar>
-            {/* <Container fluid className='header-panel'>
-                <Row>
-                    <Col className='header-icon'><DropdownIcon ></DropdownIcon></Col>
-                    <Col className='header'> WATERLOO WARRIORS</Col>
-                    <Col />
-                </Row>
-            </Container> */}
+            <header className="site-header">
+                <Link to="/" className="brand-lockup" onClick={closeMenu}>
+                    <img src="/warriors_logo.png" alt="" />
+                    <span>Varsity Badminton</span>
+                </Link>
+                <nav className="desktop-nav" aria-label="Primary">
+                    {navItems.map(item => (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            className={({ isActive }) => isActive ? 'active' : ''}
+                        >
+                            {item.label === 'Roster' ? 'Players' : item.label}
+                        </NavLink>
+                    ))}
+                </nav>
+                <button
+                    className="menu-button"
+                    type="button"
+                    aria-label="Open menu"
+                    onClick={() => setExpanded(true)}
+                >
+                    <Menu size={22} />
+                </button>
+            </header>
+            {expanded && (
+                <div className="mobile-menu" role="dialog" aria-modal="true" aria-label="Main menu">
+                    <div className="mobile-menu-panel">
+                        <div className="mobile-menu-brand">
+                            <img src="/warriors_logo.png" alt="" />
+                            <span>
+                                <strong>Varsity Badminton</strong>
+                                <small>TEAM STATISTICS</small>
+                            </span>
+                        </div>
+                        <nav aria-label="Mobile primary">
+                            {navItems.map(item => {
+                                const Icon = item.icon;
+                                return (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        onClick={closeMenu}
+                                        className={({ isActive }) => isActive ? 'active' : ''}
+                                    >
+                                        <Icon size={17} />
+                                        {item.label}
+                                    </NavLink>
+                                );
+                            })}
+                        </nav>
+                        <button className="mobile-menu-close" type="button" aria-label="Close menu" onClick={closeMenu}>
+                            <X size={18} />
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

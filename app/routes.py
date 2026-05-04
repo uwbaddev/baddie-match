@@ -201,7 +201,9 @@ def matchHandler(id):
 @app.route("/api/match/player/<id>", methods=["GET"])
 def getMatchesWithPlayer(id):
     try:
-        to_return = Matches.getMatchesWithPlayer(id)
+        start = request.args.get('start', default="2000-09-01", type=Matches.toDate)
+        end = request.args.get('end', default="3000-09-01", type=Matches.toDate)
+        to_return = Matches.getMatchesWithPlayer(id, start, end)
         return to_return, 200
     except Exception as e:
         return str(e), 500

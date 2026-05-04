@@ -1,5 +1,5 @@
-import { Container, Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import { useState, useContext, useRef } from "react";
+import { Card, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import { useState, useContext } from "react";
 import { ReportMatchUrl } from "../API/API";
 import { AppContext } from '../Contexts/AppContext';
 import * as ReactDOM from 'react-dom';
@@ -8,7 +8,6 @@ const SinglesForm = () => {
     const [bannerMessage, setBannerMessage] = useState('');
     const [cooldown, setCooldown] = useState(false);
     const { categories, activePlayers } = useContext(AppContext);
-    const formElementRef = useRef(null);
 
     const initialMatch = {
         event: 'Singles',
@@ -76,9 +75,9 @@ const SinglesForm = () => {
 
     function handleMatchDataChange(evt) {
         if (evt.target.name === 'score') {
-            let localObj = matchObj;
-            localObj.score[evt.target.id] = parseInt(evt.target.value) || 0;
-            setMatchObj(localObj);
+            const newScores = [...matchObj.score];
+            newScores[evt.target.id] = parseInt(evt.target.value) || 0;
+            setMatchObj({ ...matchObj, score: newScores });
         } else {
             setMatchObj({ ...matchObj, [evt.target.name]: evt.target.value });
         }

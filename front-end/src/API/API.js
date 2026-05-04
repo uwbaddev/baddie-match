@@ -4,7 +4,10 @@ export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
 export const PlayersUrl = `${DomainName}/players`
 export const AllMatchesUrl = `${DomainName}/matches/all`;
-export const PlayerMatchesUrl = (id) => `${DomainName}/match/player/${id}`
+export const PlayerMatchesUrl = (id, start, end) => {
+  const query = start && end ? `?start=${start}&end=${end}` : '';
+  return `${DomainName}/match/player/${id}${query}`;
+}
 export const PlayerIdUrl = (id) => `${DomainName}/player/${id}`
 export const CategoryId = (id) => `${DomainName}/category/${id}`
 export const CreatePlayerUrl = `${DomainName}/player`;
