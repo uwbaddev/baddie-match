@@ -10,7 +10,7 @@ import {
     summarizeMatch,
 } from "../utils/playerViewModels";
 
-const MATCHES_PER_PAGE = 50;
+const MATCHES_PER_PAGE = 20;
 
 const ResultsPage = () => {
     const { players, queryMatchPage } = useContext(AppContext)
@@ -25,13 +25,11 @@ const ResultsPage = () => {
     useEffect(() => {
         let isCurrent = true;
 
-        queryMatchPage(currentPage, MATCHES_PER_PAGE, seasonStart, seasonEnd)
+        queryMatchPage(currentPage, MATCHES_PER_PAGE, seasonStart, seasonEnd, eventFilter)
             .then(data => {
                 if (!isCurrent) return;
                 const metadata = data.metadata || {};
-                const recordCount = Number(metadata.recordCount || 0);
-                const recordsPerPage = Number(metadata.recordsPerPage || MATCHES_PER_PAGE);
-                const nextPageCount = Math.max(1, Math.ceil(recordCount / recordsPerPage));
+                const nextPageCount = Number(metadata.pageCount || 1);
 
                 setMatches(data.records || []);
                 setPageCount(nextPageCount);
@@ -43,13 +41,18 @@ const ResultsPage = () => {
         return () => {
             isCurrent = false;
         };
-    }, [queryMatchPage, currentPage, seasonStart, seasonEnd])
+    }, [queryMatchPage, currentPage, seasonStart, seasonEnd, eventFilter])
 
     const handleSeasonChange = (value, parsedSeason) => {
         const season = parsedSeason || parseSeasonValue(value);
         setSeasonValue(value);
         setSeasonStart(season.start);
         setSeasonEnd(season.end);
+        setCurrentPage(1);
+    };
+
+    const handleEventFilterChange = (event) => {
+        setEventFilter(event.target.value);
         setCurrentPage(1);
     };
 
@@ -63,7 +66,7 @@ const ResultsPage = () => {
                 <select
                     className="filter-select"
                     value={eventFilter}
-                    onChange={(event) => setEventFilter(event.target.value)}
+                    onChange={handleEventFilterChange}
                 >
                     {EVENT_FILTERS.map(option => (
                         <option key={option.key} value={option.key}>{option.label}</option>
@@ -74,6 +77,7 @@ const ResultsPage = () => {
                 currentPage={currentPage}
                 pageCount={pageCount}
                 onPageChange={setCurrentPage}
+                label="Results pages top"
             />
 
             {players.length === 0 ? (
@@ -92,6 +96,12 @@ const ResultsPage = () => {
                             </div>
                         </section>
                     ))}
+                    <PaginationControl
+                        currentPage={currentPage}
+                        pageCount={pageCount}
+                        onPageChange={setCurrentPage}
+                        label="Results pages bottom"
+                    />
                 </div>
             )}
         </PageShell>
