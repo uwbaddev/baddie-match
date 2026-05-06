@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { MatchCard, NamePill, ProfileEloCard, SeasonSelect } from './RedesignUI';
+import { MatchCard, NamePill, ProfileEloCard, SeasonSelect } from '../../components/RedesignUI';
 
 test('NamePill can render a linked player name', () => {
   render(

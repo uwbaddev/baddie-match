@@ -1,4 +1,4 @@
-import { buildWinRankings } from './utils/playerViewModels';
+import { buildWinRankings } from '../utils/playerViewModels';
 
 test('builds landing page ranking rows', () => {
   const rows = buildWinRankings([

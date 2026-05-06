@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AppContext } from '../Contexts/AppContext';
-import LandingPage from './LandingPage';
+import { AppContext } from '../../Contexts/AppContext';
+import LandingPage from '../../components/LandingPage';
 
 test('home rankings render player names as plain links instead of name pills', async () => {
   render(

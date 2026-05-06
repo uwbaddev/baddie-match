@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { AppContext } from '../Contexts/AppContext';
-import Players from './Players';
+import { AppContext } from '../../Contexts/AppContext';
+import Players from '../../components/Players';
 
 const renderPlayers = () => render(
   <MemoryRouter>

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AppContext } from '../Contexts/AppContext';
-import EloPage from './EloPage';
+import { AppContext } from '../../Contexts/AppContext';
+import EloPage from '../../components/EloPage';
 
 test('elo rankings link player names to official roster profiles when matched', async () => {
   render(

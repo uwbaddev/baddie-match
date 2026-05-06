@@ -8,7 +8,7 @@ import {
   makeProfileEloCards,
   makeProfileStats,
   summarizeMatch,
-} from './playerViewModels';
+} from '../../utils/playerViewModels';
 
 const players = [
   { id: 1, first_name: 'Ada', last_name: 'Wong', elegible_year: 0 },

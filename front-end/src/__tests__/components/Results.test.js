@@ -1,8 +1,8 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { AppContext } from '../Contexts/AppContext';
-import ResultsPage from './Results';
+import { AppContext } from '../../Contexts/AppContext';
+import ResultsPage from '../../components/Results';
 
 const renderResults = (queryMatchPage) => {
   render(
