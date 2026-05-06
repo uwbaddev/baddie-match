@@ -116,19 +116,19 @@ test('renders win-rate ranks, elo cards, and date labels for recent matches', as
     ],
     statsByStart: {
       '2025-09-01': [
-        statsRecord(113, 't_Liam Zhang', 4, { doubles_wins: 1, doubles_losses: 1, mixed_wins: 0, mixed_losses: 1 }),
-        statsRecord(2, 'Allison Cheng', 8, { doubles_wins: 0, doubles_losses: 2, mixed_wins: 5, mixed_losses: 1 }),
-        statsRecord(3, 'Ben Singh', 2, { singles_losses: 0, doubles_wins: 4, doubles_losses: 0 }),
+        statsRecord(113, 't_Liam Zhang', 8, { singles_losses: 2, doubles_wins: 5, doubles_losses: 3, mixed_wins: 4, mixed_losses: 4 }),
+        statsRecord(2, 'Allison Cheng', 9, { doubles_wins: 6, doubles_losses: 2, mixed_wins: 7, mixed_losses: 1 }),
+        statsRecord(3, 'Ben Singh', 2, { singles_losses: 6, doubles_wins: 2, doubles_losses: 6, mixed_wins: 2, mixed_losses: 6 }),
       ],
     },
     eloByEvent: {
       singles: [
-        { name: 'Liam Zhang', singles_elo: 1042, singles_rating: { mu: 31.4, sigma: 2.8 }, singles_games_played: 3, singles_win_pct: 0.67 },
-        { name: 'Allison Cheng', singles_elo: 1000, singles_rating: { mu: 28.1, sigma: 3.1 }, singles_games_played: 2, singles_win_pct: 0.5 },
+        { name: 'Liam Zhang', singles_elo: 1042, singles_rating: { mu: 31.4, sigma: 2.8 }, singles_games_played: 8, singles_win_pct: 0.67 },
+        { name: 'Allison Cheng', singles_elo: 1000, singles_rating: { mu: 28.1, sigma: 3.1 }, singles_games_played: 8, singles_win_pct: 0.5 },
       ],
       doubles: [
-        { name: 'Allison Cheng', doubles_rating: { mu: 29.2, sigma: 2.7 }, doubles_games_played: 4, doubles_win_pct: 0.5 },
-        { name: 't_Liam Zhang', doubles_rating: { mu: 27.4, sigma: 3.2 }, doubles_games_played: 2, doubles_win_pct: 0.25 },
+        { name: 'Allison Cheng', doubles_rating: { mu: 29.2, sigma: 2.7 }, doubles_games_played: 8, doubles_win_pct: 0.5 },
+        { name: 't_Liam Zhang', doubles_rating: { mu: 27.4, sigma: 3.2 }, doubles_games_played: 8, doubles_win_pct: 0.25 },
       ],
     },
     playerMatchesByStart: {
@@ -142,7 +142,7 @@ test('renders win-rate ranks, elo cards, and date labels for recent matches', as
   expect(screen.queryByRole('heading', { name: 'Stats' })).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Win Rate' })).toBeInTheDocument();
   expect(screen.queryByText('#-')).not.toBeInTheDocument();
-  expect(screen.getAllByText('#3').length).toBeGreaterThan(0);
+  expect(screen.getAllByText('#2').length).toBeGreaterThan(0);
   expect(screen.getByRole('heading', { name: 'Elo Rankings' })).toBeInTheDocument();
   expect(screen.getByText('Singles Elo')).toBeInTheDocument();
   expect(screen.getByText('Doubles Elo')).toBeInTheDocument();

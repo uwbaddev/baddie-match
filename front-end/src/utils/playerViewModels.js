@@ -25,6 +25,8 @@ export const SEASON_OPTIONS = [
 
 const YEAR_LABELS = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
 const AVATAR_THEMES = ['avatar-a', 'avatar-b', 'avatar-c', 'avatar-d'];
+export const MIN_RANKING_GAMES = 8;
+export const MAX_ELO_SIGMA = 4;
 
 export function parseSeasonValue(value) {
   const [start, end] = value.split(',');
@@ -111,6 +113,7 @@ export function buildWinRankings(stats, eventKey) {
         record: `${wins}:${losses}`,
       };
     })
+    .filter(player => player.wins + player.losses >= MIN_RANKING_GAMES)
     .sort((a, b) => b.winPct - a.winPct || b.wins - a.wins || a.name.localeCompare(b.name))
     .map((player, index) => ({ ...player, rank: index + 1 }));
 }
@@ -131,6 +134,7 @@ export function buildOverallWinRankings(stats) {
         record: `${wins}:${losses}`,
       };
     })
+    .filter(player => player.wins + player.losses >= MIN_RANKING_GAMES)
     .sort((a, b) => b.winPct - a.winPct || b.wins - a.wins || a.name.localeCompare(b.name))
     .map((player, index) => ({ ...player, rank: index + 1 }));
 }
@@ -144,16 +148,18 @@ export function buildEloRankings(elo, eventKey) {
     .map(player => {
       const rating = player[ratingKey] || {};
       const winPct = Number.isFinite(player[winPctKey]) ? Math.round(player[winPctKey] * 100) : 0;
+      const sigma = Number(rating.sigma || 0);
       return {
         id: player.id,
         to: getPlayerProfilePath(player),
         name: cleanSeedPrefix(player.name || 'Player Name'),
         mu: Number(rating.mu || player.singles_elo || 0),
-        sigma: Number(rating.sigma || 0),
+        sigma,
         winPct,
         games: Number(player[gamesKey] || 0),
       };
     })
+    .filter(player => player.games >= MIN_RANKING_GAMES && player.sigma < MAX_ELO_SIGMA)
     .sort((a, b) => b.mu - a.mu || a.name.localeCompare(b.name))
     .map((player, index) => ({ ...player, rank: index + 1 }));
 }
