@@ -32,7 +32,6 @@ test('elo rankings link player names to official roster profiles when matched', 
               singles_win_pct: 0.8,
             },
           ]),
-          queryStats: () => Promise.resolve([]),
         }}
       >
         <EloPage />
@@ -41,6 +40,9 @@ test('elo rankings link player names to official roster profiles when matched', 
   );
 
   const link = await screen.findByRole('link', { name: 'Liam Zhang' });
+  expect(screen.getByRole('button', { name: 'Singles' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Doubles' })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Mixed' })).not.toBeInTheDocument();
   expect(link).toHaveAttribute('href', '/players/2025-26/liam-zhang');
   expect(link).toHaveClass('table-name-link');
   expect(link).not.toHaveClass('name-pill');

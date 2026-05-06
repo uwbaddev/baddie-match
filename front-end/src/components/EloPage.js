@@ -4,30 +4,31 @@ import { AppContext } from "../Contexts/AppContext";
 import { PageShell, RankingsTable, SeasonSelect, TabControl } from "./RedesignUI";
 import {
     buildEloRankings,
-    buildWinRankings,
     cleanSeedPrefix,
-    EVENT_TABS,
     SEASON_OPTIONS,
     findPlayerByName,
     getPlayerProfilePath,
     parseSeasonValue,
 } from "../utils/playerViewModels";
 
+const ELO_EVENT_TABS = [
+    { key: 'singles', label: 'Singles' },
+    { key: 'doubles', label: 'Doubles' },
+];
+
 const EloPage = () => {
-    const { players, queryElo, queryStats } = useContext(AppContext);
+    const { players, queryElo } = useContext(AppContext);
     const [seasonValue, setSeasonValue] = useState(SEASON_OPTIONS[0].value);
     const [seasonStart, setSeasonStart] = useState('2025-09-01');
     const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
     const [activeEvent, setActiveEvent] = useState('singles');
     const [singlesElo, setSinglesElo] = useState([]);
     const [doublesElo, setDoublesElo] = useState([]);
-    const [stats, setStats] = useState([]);
 
     useEffect(() => {
         queryElo('singles', seasonStart, seasonEnd).then(data => setSinglesElo(data || []));
         queryElo('doubles', seasonStart, seasonEnd).then(data => setDoublesElo(data || []));
-        queryStats(seasonStart, seasonEnd).then(data => setStats(data || []));
-    }, [seasonStart, seasonEnd])
+    }, [seasonStart, seasonEnd, queryElo])
 
     const handleSeasonChange = (value, parsedSeason) => {
         const season = parsedSeason || parseSeasonValue(value);
@@ -36,22 +37,16 @@ const EloPage = () => {
         setSeasonEnd(season.end);
     };
 
-    const rankings = activeEvent === 'mixed'
-        ? buildWinRankings(stats, 'mixed').map(row => ({
-            ...row,
-            mu: '-',
-            sigma: '-',
-        }))
-        : buildEloRankings(activeEvent === 'singles' ? singlesElo : doublesElo, activeEvent)
-            .map(row => {
-                const localPlayer = findPlayerByName(players, row.name);
-                return {
-                    ...row,
-                    id: row.id || (localPlayer && localPlayer.id),
-                    name: cleanSeedPrefix(row.name),
-                    to: row.to || getPlayerProfilePath(localPlayer),
-                };
-            });
+    const rankings = buildEloRankings(activeEvent === 'singles' ? singlesElo : doublesElo, activeEvent)
+        .map(row => {
+            const localPlayer = findPlayerByName(players, row.name);
+            return {
+                ...row,
+                id: row.id || (localPlayer && localPlayer.id),
+                name: cleanSeedPrefix(row.name),
+                to: row.to || getPlayerProfilePath(localPlayer),
+            };
+        });
 
     const columns = [
         { key: 'rank', label: 'Rank' },
@@ -70,7 +65,7 @@ const EloPage = () => {
     return (
         <PageShell title="Rankings" eyebrow="Current elo rankings">
             <div className="toolbar-row">
-                <TabControl tabs={EVENT_TABS} active={activeEvent} onChange={setActiveEvent} />
+                <TabControl tabs={ELO_EVENT_TABS} active={activeEvent} onChange={setActiveEvent} />
                 <SeasonSelect value={seasonValue} onChange={handleSeasonChange} />
             </div>
             <RankingsTable columns={columns} rows={rankings.slice(0, 10)} />
