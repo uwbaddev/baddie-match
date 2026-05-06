@@ -53,6 +53,7 @@ const renderProfile = ({
       <AppContext.Provider value={{ players, queryStats, queryPlayerResults, queryElo }}>
         <LocationProbe />
         <Routes>
+          <Route path="/players/:season/id/:id" element={<PlayerProfile />} />
           <Route path="/players/:season/:slug" element={<PlayerProfile />} />
           <Route path="/players/:id" element={<PlayerProfile />} />
         </Routes>
@@ -86,6 +87,34 @@ test('shows route-season bio details with the latest available player photo', as
   await waitFor(() => expect(screen.getAllByText('83%').length).toBeGreaterThan(0));
 });
 
+test('shows route-season bio details from database-id season profile routes', async () => {
+  const { queryPlayerResults } = renderProfile({
+    route: '/players/2024-25/id/1',
+  });
+
+  expect(await screen.findByRole('heading', { name: 'Allison Cheng' })).toBeInTheDocument();
+  expect(screen.getByTestId('current-path')).toHaveTextContent('/players/2024-25/id/1');
+  expect(screen.getByText('Math/CPA')).toBeInTheDocument();
+  expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
+    'src',
+    expect.stringContaining('2026/3/4/Allison_Cheng_DxO.jpg')
+  );
+  await waitFor(() => expect(queryPlayerResults).toHaveBeenCalledWith(1, '2000-09-01', '3000-09-01'));
+});
+
+test('renders local database profile when season-id route has no roster record for that season', async () => {
+  renderProfile({
+    route: '/players/2024-25/id/999',
+    players: [{ id: 999, first_name: 't_Test', last_name: 'Player', elegible_year: 0 }],
+    statsByStart: {
+      '2000-09-01': [statsRecord(999, 't_Test Player', 1)],
+    },
+  });
+
+  expect(await screen.findByRole('heading', { name: 'Test Player' })).toBeInTheDocument();
+  expect(screen.queryByText('Program')).not.toBeInTheDocument();
+});
+
 test('defaults stats to route season when that season has stats and can switch to all time', async () => {
   const { queryStats } = renderProfile({
     route: '/players/2025-26/allison-cheng',
@@ -108,7 +137,7 @@ test('defaults stats to route season when that season has stats and can switch t
 
 test('renders win-rate ranks, elo cards, and date labels for recent matches', async () => {
   renderProfile({
-    route: '/players/2025-26/liam-zhang',
+    route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
@@ -157,7 +186,7 @@ test('renders win-rate ranks, elo cards, and date labels for recent matches', as
 
 test('fetches player-specific matches for the selected stats range', async () => {
   const { queryPlayerResults } = renderProfile({
-    route: '/players/2025-26/liam-zhang',
+    route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
@@ -179,7 +208,7 @@ test('fetches player-specific matches for the selected stats range', async () =>
 
 test('paginates player profile match history after six matches', async () => {
   renderProfile({
-    route: '/players/2025-26/liam-zhang',
+    route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
@@ -205,7 +234,7 @@ test('paginates player profile match history after six matches', async () => {
 
 test('caps profile match pagination at five numbered buttons', async () => {
   renderProfile({
-    route: '/players/2025-26/liam-zhang',
+    route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
@@ -226,7 +255,7 @@ test('caps profile match pagination at five numbered buttons', async () => {
 
 test('changing profile stats season resets match pagination to page one', async () => {
   renderProfile({
-    route: '/players/2025-26/liam-zhang',
+    route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
@@ -299,7 +328,7 @@ test('maps legacy local profile routes to official roster display when names mat
 
 test('shows coach profiles with title while matching local stats', async () => {
   renderProfile({
-    route: '/players/2025-26/ivan-cheng',
+    route: '/players/2025-26/id/39',
     players: [{ id: 39, first_name: 't_Ivan', last_name: 'Cheng', elegible_year: 0 }],
     statsByStart: {
       '2025-09-01': [statsRecord(39, 't_Ivan Cheng', 2)],

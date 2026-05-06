@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AppContext } from "../Contexts/AppContext";
 import { PageShell, RosterCard } from "./RedesignUI";
-import { getRosterBySeason, getRosterProfilePath, ROSTER_SEASONS } from "../utils/rosterData";
+import { getRosterBySeason, getRosterCardProfilePath, ROSTER_SEASONS } from "../utils/rosterData";
 
 const Players = () => {
+    const { players } = useContext(AppContext);
     const [selectedSeason, setSelectedSeason] = useState(ROSTER_SEASONS[0].value);
     const roster = getRosterBySeason(selectedSeason);
 
@@ -29,7 +31,7 @@ const Players = () => {
                         key={player.slug}
                         player={player}
                         index={index}
-                        to={`/players/${player.season}/${player.slug}`}
+                        to={getRosterCardProfilePath(player, players)}
                     />
                 ))}
             </RosterSection>
@@ -41,7 +43,7 @@ const Players = () => {
                             player={person}
                             index={index}
                             subtitle={person.title}
-                            to={getRosterProfilePath(person)}
+                            to={getRosterCardProfilePath(person, players)}
                         />
                     ))}
                 </RosterSection>
@@ -54,7 +56,7 @@ const Players = () => {
                             player={person}
                             index={index}
                             subtitle={person.title}
-                            to={getRosterProfilePath(person)}
+                            to={getRosterCardProfilePath(person, players)}
                         />
                     ))}
                 </RosterSection>

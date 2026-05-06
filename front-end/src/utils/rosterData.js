@@ -254,9 +254,18 @@ export function findLatestRosterRecord(rosterPlayer) {
 export function findLocalPlayerForRoster(rosterPlayer, localPlayers) {
   const rosterNames = rosterNameCandidates(rosterPlayer);
   return (localPlayers || []).find(localPlayer => {
-    const localName = normalizeRosterName(`${localPlayer.first_name || ''} ${localPlayer.last_name || ''}`);
-    return rosterNames.includes(localName);
+    const localNames = localPlayerNameCandidates(localPlayer);
+    return localNames.some(localName => rosterNames.includes(localName));
   });
+}
+
+export function findRosterRecordForLocalPlayer(season, localPlayer) {
+  const localNames = localPlayerNameCandidates(localPlayer);
+  if (!season || localNames.length === 0) return undefined;
+
+  return getRosterProfilePeopleBySeason(season).find(rosterPlayer => (
+    rosterNameCandidates(rosterPlayer).some(name => localNames.includes(name))
+  ));
 }
 
 export function findLatestRosterRecordForLocalPlayer(localPlayer) {
@@ -276,8 +285,32 @@ export function findLatestRosterRecordForLocalPlayer(localPlayer) {
 export function getRosterProfilePath(rosterPlayer) {
   if (isSupportStaffRecord(rosterPlayer)) return undefined;
   if (!rosterPlayer || !rosterPlayer.season || !rosterPlayer.slug) return undefined;
-  const latestRosterRecord = findLatestRosterRecord(rosterPlayer);
-  return `/players/${latestRosterRecord.season}/${latestRosterRecord.slug}`;
+  return `/players/${rosterPlayer.season}/${rosterPlayer.slug}`;
+}
+
+export function getRosterDbProfilePath(rosterPlayer, localPlayers) {
+  if (isSupportStaffRecord(rosterPlayer)) return undefined;
+  if (!rosterPlayer || !rosterPlayer.season) return undefined;
+
+  const localPlayer = findLocalPlayerForRoster(rosterPlayer, localPlayers);
+  if (!localPlayer || localPlayer.id === undefined || localPlayer.id === null) return undefined;
+
+  return `/players/${rosterPlayer.season}/id/${localPlayer.id}`;
+}
+
+export function getRosterCardProfilePath(rosterPlayer, localPlayers) {
+  return getRosterDbProfilePath(rosterPlayer, localPlayers) || getRosterProfilePath(rosterPlayer);
+}
+
+export function getLocalPlayerRosterProfilePath(localPlayer) {
+  if (!localPlayer || localPlayer.id === undefined || localPlayer.id === null) return undefined;
+
+  const rosterRecord = findLatestRosterRecordForLocalPlayer(localPlayer);
+  if (rosterRecord) {
+    return `/players/${rosterRecord.season}/id/${localPlayer.id}`;
+  }
+
+  return `/players/${localPlayer.id}`;
 }
 
 export function getRosterAvatar(rosterPlayer) {

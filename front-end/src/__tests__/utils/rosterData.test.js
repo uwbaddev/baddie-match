@@ -2,7 +2,10 @@ import {
   findLatestRosterRecordForLocalPlayer,
   findLatestRosterRecord,
   findLocalPlayerForRoster,
+  findRosterRecordForLocalPlayer,
   findRosterPlayer,
+  getLocalPlayerRosterProfilePath,
+  getRosterCardProfilePath,
   getRosterProfilePath,
   getRosterAvatar,
   getRosterBySeason,
@@ -75,6 +78,7 @@ test('maps local seeded player records to latest official roster profiles', () =
     slug: 'liam-zhang',
   }));
   expect(getRosterProfilePath(latest)).toBe('/players/2025-26/liam-zhang');
+  expect(getLocalPlayerRosterProfilePath({ id: 113, first_name: 't_Liam', last_name: 'Zhang' })).toBe('/players/2025-26/id/113');
 });
 
 test('maps local stat records to 2025-26 coach profiles when names match', () => {
@@ -91,6 +95,36 @@ test('maps local stat records to 2025-26 coach profiles when names match', () =>
     title: 'Assistant Coach',
   }));
   expect(getRosterProfilePath(latest)).toBe('/players/2025-26/ivan-cheng');
+  expect(getLocalPlayerRosterProfilePath({ id: 39, first_name: 't_Ivan', last_name: 'Cheng' })).toBe('/players/2025-26/id/39');
+});
+
+test('builds season-specific database-id roster card profile paths when local records match', () => {
+  const localPlayers = [
+    { id: 113, first_name: 't_Liam', last_name: 'Zhang' },
+    { id: 1, first_name: 'Allison', last_name: 'Cheng' },
+  ];
+  const allison2024 = getRosterBySeason('2024-25').players.find(player => player.name === 'Allison Cheng');
+  const liam2025 = getRosterBySeason('2025-26').players.find(player => player.name === 'Liam Zhang');
+
+  expect(findRosterRecordForLocalPlayer('2024-25', localPlayers[1])).toEqual(allison2024);
+  expect(getRosterCardProfilePath(allison2024, localPlayers)).toBe('/players/2024-25/id/1');
+  expect(getRosterCardProfilePath(liam2025, localPlayers)).toBe('/players/2025-26/id/113');
+});
+
+test('falls back to slug roster card paths when no local database player matches', () => {
+  const liam2025 = getRosterBySeason('2025-26').players.find(player => player.name === 'Liam Zhang');
+
+  expect(getRosterCardProfilePath(liam2025, [])).toBe('/players/2025-26/liam-zhang');
+});
+
+test('keeps same-name local records on distinct database-id profile paths', () => {
+  const sameNamePlayers = [
+    { id: 901, first_name: 'Liam', last_name: 'Zhang' },
+    { id: 902, first_name: 'Liam', last_name: 'Zhang' },
+  ];
+
+  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[0])).toBe('/players/2025-26/id/901');
+  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[1])).toBe('/players/2025-26/id/902');
 });
 
 test('does not create profile routes for support staff records', () => {

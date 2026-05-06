@@ -17,6 +17,7 @@ import {
     findLatestRosterRecord,
     findLatestRosterRecordForLocalPlayer,
     findLocalPlayerForRoster,
+    findRosterRecordForLocalPlayer,
     findRosterPlayer,
     getStatsSeasonRange,
     hasPlayerStats,
@@ -36,11 +37,12 @@ const PlayerProfile = () => {
     const [selectedStatsSeason, setSelectedStatsSeason] = useState('');
     const [matchPage, setMatchPage] = useState(1);
 
-    const rosterPlayer = season && slug ? findRosterPlayer(season, slug) : null;
-    const localPlayer = rosterPlayer
-        ? findLocalPlayerForRoster(rosterPlayer, players)
-        : findPlayer(players, id);
-    const localRosterPlayer = !rosterPlayer ? findLatestRosterRecordForLocalPlayer(localPlayer) : null;
+    const routeLocalPlayer = id ? findPlayer(players, id) : null;
+    const slugRosterPlayer = season && slug ? findRosterPlayer(season, slug) : null;
+    const idRosterPlayer = season && id ? findRosterRecordForLocalPlayer(season, routeLocalPlayer) : null;
+    const rosterPlayer = idRosterPlayer || slugRosterPlayer;
+    const localPlayer = routeLocalPlayer || (slugRosterPlayer ? findLocalPlayerForRoster(slugRosterPlayer, players) : null);
+    const localRosterPlayer = !season && !rosterPlayer ? findLatestRosterRecordForLocalPlayer(localPlayer) : null;
     const displayRosterPlayer = rosterPlayer || localRosterPlayer;
     const statsPlayerId = localPlayer && localPlayer.id;
     const latestRosterRecord = displayRosterPlayer ? findLatestRosterRecord(displayRosterPlayer) : null;

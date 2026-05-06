@@ -1,7 +1,6 @@
 import Moment from 'moment';
 import {
-  findLatestRosterRecordForLocalPlayer,
-  getRosterProfilePath,
+  getLocalPlayerRosterProfilePath,
 } from './rosterData';
 
 export const EVENT_TABS = [
@@ -80,11 +79,7 @@ export function normalizePlayerName(name) {
 }
 
 export function getPlayerProfilePath(player) {
-  const rosterRecord = findLatestRosterRecordForLocalPlayer(player);
-  const rosterPath = getRosterProfilePath(rosterRecord);
-  if (rosterPath) return rosterPath;
-  if (!player || player.id === undefined || player.id === null) return undefined;
-  return `/players/${player.id}`;
+  return getLocalPlayerRosterProfilePath(player);
 }
 
 export function findPlayerByName(players, name) {

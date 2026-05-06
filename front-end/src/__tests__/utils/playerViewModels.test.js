@@ -26,7 +26,7 @@ test('buildWinRankings sorts by event win percentage and includes win-loss text'
 
   expect(rankings).toEqual([
     expect.objectContaining({ id: 2, rank: 1, name: 'Ben Singh', winPct: 78, record: '7:2' }),
-    expect.objectContaining({ id: 1, rank: 2, name: 'Liam Zhang', to: '/players/2025-26/liam-zhang', winPct: 50, record: '5:5' }),
+    expect.objectContaining({ id: 1, rank: 2, name: 'Liam Zhang', to: '/players/2025-26/id/1', winPct: 50, record: '5:5' }),
   ]);
 });
 
