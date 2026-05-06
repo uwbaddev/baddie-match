@@ -173,7 +173,7 @@ hr {
 }
 
 .page-shell {
-  width: min(640px, calc(100vw - 48px));
+  width: min(960px, calc(100vw - 64px));
   margin: 0 auto;
   padding: 46px 0 64px;
 }
@@ -361,6 +361,10 @@ hr {
   gap: 22px;
 }
 
+.results-page {
+  width: min(1180px, calc(100vw - 64px));
+}
+
 .match-day h2 {
   margin: 0 0 10px;
   padding: 8px 12px;
@@ -372,7 +376,7 @@ hr {
 .match-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 
 .match-card {
@@ -461,7 +465,7 @@ hr {
 }
 
 .report-page {
-  width: min(450px, calc(100vw - 48px));
+  width: min(900px, calc(100vw - 64px));
 }
 
 .report-tabs {
@@ -585,7 +589,7 @@ hr {
 }
 
 .roster-page {
-  width: min(640px, calc(100vw - 48px));
+  width: min(1120px, calc(100vw - 64px));
 }
 
 .roster-section {
@@ -605,8 +609,8 @@ hr {
 
 .roster-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 16px;
 }
 
 .roster-card {
@@ -685,7 +689,7 @@ hr {
 }
 
 .profile-page {
-  width: min(590px, calc(100vw - 48px));
+  width: min(960px, calc(100vw - 64px));
 }
 
 .back-link {
@@ -773,10 +777,10 @@ hr {
 
 .profile-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 30px 74px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
   margin-top: 22px;
-  padding: 22px 68px 26px;
+  padding: 26px 24px 30px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -815,6 +819,7 @@ hr {
 .profile-stat-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
 }
 
@@ -925,6 +930,13 @@ hr {
 
 .pagination {
   justify-content: center;
+}
+
+@media (max-width: 1100px) and (min-width: 701px) {
+  .roster-grid,
+  .profile-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 700px) {

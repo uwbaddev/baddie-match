@@ -60,7 +60,7 @@ const ResultsPage = () => {
     const groupedMatches = groupMatchesByDate(filteredMatches);
 
     return (
-        <PageShell title="Results">
+        <PageShell title="Results" className="results-page">
             <div className="toolbar-row results-toolbar">
                 <SeasonSelect value={seasonValue} onChange={handleSeasonChange} />
                 <select
