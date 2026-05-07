@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&display=swap');
+
 :root {
+  --main-body-font: 'Barlow Condensed', sans-serif;
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ink: #242424;
   --muted: #7d7d7d;
@@ -1153,11 +1156,13 @@ hr {
   justify-content: center;
   padding-left: 0.3em;
   color: #222222;
+  font-family: var(--main-body-font);
   font-size: 1.5em;
   font-weight: 500;
 }
 
 .legacy-page-header {
+  font-family: var(--main-body-font);
   font-size: 1.5em;
   padding-top: 0.75em;
   padding-bottom: 0.25em;
@@ -1178,6 +1183,7 @@ hr {
   margin: 0;
   padding: 0.5em 0;
   color: #4a4a4a;
+  font-family: var(--main-body-font);
   font-size: 1.5em;
 }
 
@@ -1187,6 +1193,7 @@ hr {
   padding: 10px;
   color: black;
   background-color: #e8e8e2;
+  font-family: var(--main-body-font);
   font-size: large;
   letter-spacing: 1px;
 }
@@ -1231,6 +1238,7 @@ hr {
 .legacy-report-tab {
   width: 100%;
   color: #4a4a4a;
+  font-family: var(--main-body-font);
   letter-spacing: 1px;
   border-bottom-color: #4a4a4a;
 }
@@ -1252,7 +1260,16 @@ hr {
   letter-spacing: 1px;
 }
 
+.legacy-site .form-header {
+  font-family: var(--main-body-font);
+}
+
+.legacy-site .form-table-header {
+  font-family: var(--main-body-font);
+}
+
 .legacy-site .form-label {
+  font-family: var(--main-body-font);
   margin: 0;
   letter-spacing: 1px;
 }
@@ -1280,6 +1297,7 @@ hr {
   color: #ffd54f;
   background-color: #4a4a4a;
   border: none;
+  font-family: var(--main-body-font);
   font-weight: 700;
   letter-spacing: 1px;
 }
