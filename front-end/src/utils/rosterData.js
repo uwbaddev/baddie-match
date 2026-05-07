@@ -19,6 +19,7 @@ export const ALL_TIME_STATS_SEASON = {
 };
 
 const BASE_URL = 'https://athletics.uwaterloo.ca';
+const V2_PLAYERS_PATH = '/v2/players';
 
 const profileUrl = (slug, id) => `${BASE_URL}/sports/mens-badminton/roster/${slug}/${id}`;
 
@@ -285,7 +286,7 @@ export function findLatestRosterRecordForLocalPlayer(localPlayer) {
 export function getRosterProfilePath(rosterPlayer) {
   if (isSupportStaffRecord(rosterPlayer)) return undefined;
   if (!rosterPlayer || !rosterPlayer.season || !rosterPlayer.slug) return undefined;
-  return `/players/${rosterPlayer.season}/${rosterPlayer.slug}`;
+  return `${V2_PLAYERS_PATH}/${rosterPlayer.season}/${rosterPlayer.slug}`;
 }
 
 export function getRosterDbProfilePath(rosterPlayer, localPlayers) {
@@ -295,7 +296,7 @@ export function getRosterDbProfilePath(rosterPlayer, localPlayers) {
   const localPlayer = findLocalPlayerForRoster(rosterPlayer, localPlayers);
   if (!localPlayer || localPlayer.id === undefined || localPlayer.id === null) return undefined;
 
-  return `/players/${rosterPlayer.season}/id/${localPlayer.id}`;
+  return `${V2_PLAYERS_PATH}/${rosterPlayer.season}/id/${localPlayer.id}`;
 }
 
 export function getRosterCardProfilePath(rosterPlayer, localPlayers) {
@@ -307,10 +308,10 @@ export function getLocalPlayerRosterProfilePath(localPlayer) {
 
   const rosterRecord = findLatestRosterRecordForLocalPlayer(localPlayer);
   if (rosterRecord) {
-    return `/players/${rosterRecord.season}/id/${localPlayer.id}`;
+    return `${V2_PLAYERS_PATH}/${rosterRecord.season}/id/${localPlayer.id}`;
   }
 
-  return `/players/${localPlayer.id}`;
+  return `${V2_PLAYERS_PATH}/${localPlayer.id}`;
 }
 
 export function getRosterAvatar(rosterPlayer) {

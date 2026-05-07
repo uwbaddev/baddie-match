@@ -21,7 +21,7 @@ test('home rankings render player names as plain links instead of name pills', a
 
   const link = await screen.findByRole('link', { name: 'Liam Zhang' });
 
-  expect(link).toHaveAttribute('href', '/players/2025-26/id/7');
+  expect(link).toHaveAttribute('href', '/v2/players/2025-26/id/7');
   expect(link).not.toHaveClass('name-pill');
   expect(screen.queryByText('Low Sample')).not.toBeInTheDocument();
   expect(screen.queryByRole('option', { name: '2024 - 2025' })).not.toBeInTheDocument();

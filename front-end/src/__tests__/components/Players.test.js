@@ -24,7 +24,7 @@ test('defaults roster to 2025-26 and links official player cards', () => {
 
   expect(screen.getByRole('combobox')).toHaveValue('2025-26');
   expect(screen.getByText('Liam Zhang')).toBeInTheDocument();
-  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2025-26/id/113');
+  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/v2/players/2025-26/id/113');
 });
 
 test('switches roster seasons from the dropdown', async () => {
@@ -33,9 +33,9 @@ test('switches roster seasons from the dropdown', async () => {
   await userEvent.selectOptions(screen.getByRole('combobox'), '2024-25');
 
   expect(screen.getByText('Allison Cheng')).toBeInTheDocument();
-  expect(screen.getByText('Allison Cheng').closest('a')).toHaveAttribute('href', '/players/2024-25/id/1');
+  expect(screen.getByText('Allison Cheng').closest('a')).toHaveAttribute('href', '/v2/players/2024-25/id/1');
   expect(screen.getByText('Darren Choi')).toBeInTheDocument();
-  expect(screen.getByText('Darren Choi').closest('a')).toHaveAttribute('href', '/players/2024-25/darren-choi');
+  expect(screen.getByText('Darren Choi').closest('a')).toHaveAttribute('href', '/v2/players/2024-25/darren-choi');
 
   await userEvent.selectOptions(screen.getByRole('combobox'), '2023-24');
 
@@ -46,7 +46,7 @@ test('switches roster seasons from the dropdown', async () => {
 test('falls back to slug profile routes when a roster player has no local database match', () => {
   renderPlayers([]);
 
-  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2025-26/liam-zhang');
+  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/v2/players/2025-26/liam-zhang');
 });
 
 test('keeps player roster cards simple while preserving staff roles', async () => {
@@ -56,10 +56,10 @@ test('keeps player roster cards simple while preserving staff roles', async () =
   expect(screen.queryByText('Computer Engineering')).not.toBeInTheDocument();
   expect(screen.queryByText('Second Year')).not.toBeInTheDocument();
   expect(screen.getByText('Andrew Zhuang')).toBeInTheDocument();
-  expect(screen.getByText('Andrew Zhuang').closest('a')).toHaveAttribute('href', '/players/2025-26/id/57');
+  expect(screen.getByText('Andrew Zhuang').closest('a')).toHaveAttribute('href', '/v2/players/2025-26/id/57');
   expect(screen.getByText('Head Coach')).toBeInTheDocument();
   expect(screen.getByText('Ivan Cheng')).toBeInTheDocument();
-  expect(screen.getByText('Ivan Cheng').closest('a')).toHaveAttribute('href', '/players/2025-26/id/39');
+  expect(screen.getByText('Ivan Cheng').closest('a')).toHaveAttribute('href', '/v2/players/2025-26/id/39');
   expect(screen.getByText('Thomas Dent')).toBeInTheDocument();
   expect(screen.getByText('Brad Enns')).toBeInTheDocument();
   expect(screen.getAllByText('Assistant Coach')).toHaveLength(3);

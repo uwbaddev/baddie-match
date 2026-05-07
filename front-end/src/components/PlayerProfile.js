@@ -128,7 +128,7 @@ const PlayerProfile = () => {
 
     return (
         <main className="page-shell profile-page">
-            <Link className="back-link" to="/players">
+            <Link className="back-link" to="/v2/players">
                 <ArrowLeft size={18} />
                 Back to Roster
             </Link>

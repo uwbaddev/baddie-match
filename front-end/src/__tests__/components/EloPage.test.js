@@ -44,7 +44,7 @@ test('elo rankings link player names to official roster profiles when matched', 
   expect(screen.getByRole('button', { name: 'Singles' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Doubles' })).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'Mixed' })).not.toBeInTheDocument();
-  expect(link).toHaveAttribute('href', '/players/2025-26/id/8');
+  expect(link).toHaveAttribute('href', '/v2/players/2025-26/id/8');
   expect(link).toHaveClass('table-name-link');
   expect(link).not.toHaveClass('name-pill');
   expect(screen.queryByText('Low Sample')).not.toBeInTheDocument();

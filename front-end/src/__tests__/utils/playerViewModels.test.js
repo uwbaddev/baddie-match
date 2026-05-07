@@ -26,7 +26,7 @@ test('buildWinRankings sorts by event win percentage and includes win-loss text'
 
   expect(rankings).toEqual([
     expect.objectContaining({ id: 2, rank: 1, name: 'Ben Singh', winPct: 78, record: '7:2' }),
-    expect.objectContaining({ id: 1, rank: 2, name: 'Liam Zhang', to: '/players/2025-26/id/1', winPct: 50, record: '5:5' }),
+    expect.objectContaining({ id: 1, rank: 2, name: 'Liam Zhang', to: '/v2/players/2025-26/id/1', winPct: 50, record: '5:5' }),
   ]);
 });
 
@@ -75,12 +75,12 @@ test('summarizeMatch resolves players, scores, categories, and winners', () => {
   expect(summary.teamOne).toBe('Ada Wong / Ben Singh');
   expect(summary.teamTwo).toBe('Cyd Tran / Dee Kim');
   expect(summary.teamOnePlayers).toEqual([
-    { id: 1, name: 'Ada Wong', to: '/players/1' },
-    { id: 2, name: 'Ben Singh', to: '/players/2' },
+    { id: 1, name: 'Ada Wong', to: '/v2/players/1' },
+    { id: 2, name: 'Ben Singh', to: '/v2/players/2' },
   ]);
   expect(summary.teamTwoPlayers).toEqual([
-    { id: 3, name: 'Cyd Tran', to: '/players/3' },
-    { id: 4, name: 'Dee Kim', to: '/players/4' },
+    { id: 3, name: 'Cyd Tran', to: '/v2/players/3' },
+    { id: 4, name: 'Dee Kim', to: '/v2/players/4' },
   ]);
   expect(summary.teamTwoWon).toBe(true);
   expect(summary.sets).toEqual([

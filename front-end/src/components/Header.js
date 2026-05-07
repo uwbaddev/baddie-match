@@ -1,23 +1,31 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom'
-import { ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { ArrowLeft, ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
+import LegacyHeader from './legacy/LegacyHeader';
 import '../index.css'
 
 const Header = () => {
+    const location = useLocation();
     const [expanded, setExpanded] = useState(false);
+    const isV2 = location.pathname === '/v2' || location.pathname.startsWith('/v2/');
+
+    if (!isV2) {
+        return <LegacyHeader />;
+    }
+
     const closeMenu = () => setExpanded(false);
     const navItems = [
-        { to: '/', label: 'Home', icon: Home },
-        { to: '/report', label: 'Report Match', icon: PencilLine },
-        { to: '/results', label: 'Results', icon: BarChart3 },
-        { to: '/elo', label: 'Rankings', icon: ArrowUpRight },
-        { to: '/players', label: 'Roster', icon: User },
+        { to: '/v2', label: 'Home', icon: Home },
+        { to: '/v2/report', label: 'Report Match', icon: PencilLine },
+        { to: '/v2/results', label: 'Results', icon: BarChart3 },
+        { to: '/v2/elo', label: 'Rankings', icon: ArrowUpRight },
+        { to: '/v2/players', label: 'Roster', icon: User },
     ];
 
     return (
         <>
             <header className="site-header">
-                <Link to="/" className="brand-lockup" onClick={closeMenu}>
+                <Link to="/v2" className="brand-lockup" onClick={closeMenu}>
                     <img src="/warriors_logo.png" alt="" />
                     <span>Varsity Badminton</span>
                 </Link>
@@ -26,11 +34,15 @@ const Header = () => {
                         <NavLink
                             key={item.to}
                             to={item.to}
+                            end={item.to === '/v2'}
                             className={({ isActive }) => isActive ? 'active' : ''}
                         >
                             {item.label === 'Roster' ? 'Players' : item.label}
                         </NavLink>
                     ))}
+                    <Link to="/" className="v2-exit-link" onClick={closeMenu}>
+                        Back to V1
+                    </Link>
                 </nav>
                 <button
                     className="menu-button"
@@ -58,6 +70,7 @@ const Header = () => {
                                     <NavLink
                                         key={item.to}
                                         to={item.to}
+                                        end={item.to === '/v2'}
                                         onClick={closeMenu}
                                         className={({ isActive }) => isActive ? 'active' : ''}
                                     >
@@ -66,6 +79,10 @@ const Header = () => {
                                     </NavLink>
                                 );
                             })}
+                            <Link to="/" className="v2-exit-link" onClick={closeMenu}>
+                                <ArrowLeft size={17} />
+                                Back to V1
+                            </Link>
                         </nav>
                         <button className="mobile-menu-close" type="button" aria-label="Close menu" onClick={closeMenu}>
                             <X size={18} />
