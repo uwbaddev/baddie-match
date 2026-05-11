@@ -12,7 +12,7 @@ import {
   getRosterPlayerAvatar,
   normalizeRosterName,
   ROSTER_SEASONS,
-} from '../../utils/rosterData';
+} from '../../../v2/utils/rosterData';
 
 test('exposes roster seasons from 2025-26 through 2022-23', () => {
   expect(ROSTER_SEASONS.map(season => season.value)).toEqual([

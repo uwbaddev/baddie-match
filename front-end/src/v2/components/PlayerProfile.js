@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { AppContext } from "../Contexts/AppContext";
+import { AppContext } from "../../Contexts/AppContext";
 import { MatchCard, PaginationControl, PlayerAvatar, ProfileEloCard, StatRing } from "./RedesignUI";
 import {
     buildEloRankings,
@@ -127,7 +127,7 @@ const PlayerProfile = () => {
     ].filter(Boolean);
 
     return (
-        <main className="page-shell profile-page">
+        <main className="page-shell v2-site profile-page">
             <Link className="back-link" to="/v2/players">
                 <ArrowLeft size={18} />
                 Back to Roster

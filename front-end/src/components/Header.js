@@ -1,97 +1,42 @@
 import { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ArrowLeft, ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
-import LegacyHeader from './legacy/LegacyHeader';
-import '../index.css'
+import { Link } from 'react-router-dom';
+import { Container, Nav, Navbar, Offcanvas } from 'react-bootstrap';
+import '../index.css';
 
 const Header = () => {
-    const location = useLocation();
     const [expanded, setExpanded] = useState(false);
-    const isV2 = location.pathname === '/v2' || location.pathname.startsWith('/v2/');
-
-    if (!isV2) {
-        return <LegacyHeader />;
-    }
-
     const closeMenu = () => setExpanded(false);
-    const navItems = [
-        { to: '/v2', label: 'Home', icon: Home },
-        { to: '/v2/report', label: 'Report Match', icon: PencilLine },
-        { to: '/v2/results', label: 'Results', icon: BarChart3 },
-        { to: '/v2/elo', label: 'Rankings', icon: ArrowUpRight },
-        { to: '/v2/players', label: 'Roster', icon: User },
-    ];
 
     return (
-        <>
-            <header className="site-header">
-                <Link to="/v2" className="brand-lockup" onClick={closeMenu}>
-                    <img src="/warriors_logo.png" alt="" />
-                    <span>Varsity Badminton</span>
-                </Link>
-                <nav className="desktop-nav" aria-label="Primary">
-                    {navItems.map(item => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            end={item.to === '/v2'}
-                            className={({ isActive }) => isActive ? 'active' : ''}
-                        >
-                            {item.label === 'Roster' ? 'Players' : item.label}
-                        </NavLink>
-                    ))}
-                    <Link to="/" className="v2-exit-link" onClick={closeMenu}>
-                        Back to V1
-                    </Link>
-                </nav>
-                <button
-                    className="menu-button"
-                    type="button"
-                    aria-label="Open menu"
-                    onClick={() => setExpanded(true)}
+        <Navbar fixed="sticky" className="header-panel" expand={false}>
+            <Container fluid>
+                <Navbar.Brand as={Link} to="/" className="header" onClick={closeMenu}>
+                    WATERLOO WARRIORS
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={() => setExpanded(!expanded)} />
+                <Navbar.Offcanvas
+                    id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel"
+                    placement="end"
+                    show={expanded}
                 >
-                    <Menu size={22} />
-                </button>
-            </header>
-            {expanded && (
-                <div className="mobile-menu" role="dialog" aria-modal="true" aria-label="Main menu">
-                    <div className="mobile-menu-panel">
-                        <div className="mobile-menu-brand">
-                            <img src="/warriors_logo.png" alt="" />
-                            <span>
-                                <strong>Varsity Badminton</strong>
-                                <small>TEAM STATISTICS</small>
-                            </span>
-                        </div>
-                        <nav aria-label="Mobile primary">
-                            {navItems.map(item => {
-                                const Icon = item.icon;
-                                return (
-                                    <NavLink
-                                        key={item.to}
-                                        to={item.to}
-                                        end={item.to === '/v2'}
-                                        onClick={closeMenu}
-                                        className={({ isActive }) => isActive ? 'active' : ''}
-                                    >
-                                        <Icon size={17} />
-                                        {item.label}
-                                    </NavLink>
-                                );
-                            })}
-                            <Link to="/" className="v2-exit-link" onClick={closeMenu}>
-                                <ArrowLeft size={17} />
-                                Back to V1
-                            </Link>
-                        </nav>
-                        <button className="mobile-menu-close" type="button" aria-label="Close menu" onClick={closeMenu}>
-                            <X size={18} />
-                        </button>
-                    </div>
-                </div>
-            )}
-        </>
-    )
-}
+                    <Offcanvas.Header closeButton onHide={closeMenu}>
+                        <Offcanvas.Title id="offcanvasNavbarLabel">WARRIORS</Offcanvas.Title>
+                    </Offcanvas.Header>
+                    <Offcanvas.Body>
+                        <Nav className="justify-content-end flex-grow-1 page-header pe-3">
+                            <Nav.Link as={Link} to="/" onClick={closeMenu}>HOME</Nav.Link>
+                            <Nav.Link as={Link} to="/report" onClick={closeMenu}>REPORT MATCH</Nav.Link>
+                            <Nav.Link as={Link} to="/results" onClick={closeMenu}>RESULTS</Nav.Link>
+                            <Nav.Link as={Link} to="/elo" onClick={closeMenu}>ELO RANKINGS</Nav.Link>
+                            <Nav.Link as={Link} to="/players" onClick={closeMenu}>PLAYERS</Nav.Link>
+                            <Nav.Link as={Link} to="/v2" onClick={closeMenu}>TRY V2</Nav.Link>
+                        </Nav>
+                    </Offcanvas.Body>
+                </Navbar.Offcanvas>
+            </Container>
+        </Navbar>
+    );
+};
 
 export default Header;

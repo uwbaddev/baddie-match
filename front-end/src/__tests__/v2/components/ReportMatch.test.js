@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AppContext } from '../../Contexts/AppContext';
-import ReportMatchComponent from '../../components/ReportMatch';
+import { AppContext } from '../../../Contexts/AppContext';
+import ReportMatchComponent from '../../../v2/components/ReportMatch';
 
 const appContext = {
   activePlayers: [

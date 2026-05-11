@@ -9,7 +9,7 @@ import {
 import { getRosterPlayerAvatar } from '../utils/rosterData';
 
 export const PageShell = ({ title, eyebrow, actions, children, className = '' }) => (
-  <main className={`page-shell ${className}`}>
+  <main className={`page-shell v2-site ${className}`}>
     <div className="page-heading">
       <div>
         <h1>{title}</h1>
