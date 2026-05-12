@@ -1,10 +1,7 @@
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import { AppContext, AppContextProvider } from "../Contexts/AppContext";
+import { AppContext } from "../Contexts/AppContext";
 import SeasonSelector from "./SeasonSelector";
-
-
-
 
 const EloPage = () => {
     const { queryElo, players } = useContext(AppContext);
@@ -13,97 +10,66 @@ const EloPage = () => {
     const [singlesElo, setSinglesElo] = useState([]);
     const [doublesElo, setDoublesElo] = useState([]);
 
-
-
-    // useEffect(() => {
-    //     queryThenFormatSinglesElo('2023-09-01', '2024-08-31')
-    //     queryThenFormatDoublesElo('2023-09-01', '2024-08-31')
-    // }, [])
-
-    const queryThenFormatSinglesElo = (newSeasonStart, newSeasonEnd) => {
-        queryElo('singles', newSeasonStart, newSeasonEnd).then(data => {
-            setSinglesElo(data)
-        })
-    }
-
-    const queryThenFormatDoublesElo = (newSeasonStart, newSeasonEnd) => {
-        queryElo('doubles', newSeasonStart, newSeasonEnd).then(data => {
-            setDoublesElo(data)
-        })
-    }
-
     useEffect(() => {
-        queryThenFormatSinglesElo(seasonStart, seasonEnd);
-        queryThenFormatDoublesElo(seasonStart, seasonEnd);
-    }, [seasonStart, seasonEnd])
-
-
+        queryElo('singles', seasonStart, seasonEnd).then(data => {
+            setSinglesElo(data);
+        });
+        queryElo('doubles', seasonStart, seasonEnd).then(data => {
+            setDoublesElo(data);
+        });
+    }, [queryElo, seasonStart, seasonEnd]);
 
     const doubles = (elo) => {
-        elo.map((player) => {
-            player['mu'] = player['doubles_rating']['mu']
-            player['sigma'] = player['doubles_rating']['sigma']
-        })
-        elo.sort((a, b) => {
-            return b['mu'] - a['mu']
-        })
+        const result = [...elo]
+            .map(player => ({
+                ...player,
+                mu: player.doubles_rating.mu,
+                sigma: player.doubles_rating.sigma,
+            }))
+            .sort((a, b) => b.mu - a.mu)
+            .filter(player => player.doubles_games_played > 5 && player.sigma < 4);
 
-        const result = elo.filter((player) => {
-            return player.doubles_games_played > 5 && player.sigma < 4;
-        })
-
-
-        let i = 0
-        return <ListGroup as="ol" numbered>
-            {
-                result.map((player) => {
-                    i++
-                    return <ListGroup.Item>
+        return (
+            <ListGroup as="ol" numbered>
+                {result.map((player, index) => (
+                    <ListGroup.Item key={player.name}>
                         <Row>
-                            <Col xs={5}>{i + '. ' + player['name']}</Col>
-                            <Col xs={3}>{player['mu'].toFixed(3)}</Col>
-                            <Col xs={2}>{player['sigma'].toFixed(3)}</Col>
-                            <Col xs={2}>{player['doubles_win_pct'].toFixed(3)}</Col>
-
+                            <Col xs={5}>{index + 1}. {player.name}</Col>
+                            <Col xs={3}>{player.mu.toFixed(3)}</Col>
+                            <Col xs={2}>{player.sigma.toFixed(3)}</Col>
+                            <Col xs={2}>{player.doubles_win_pct.toFixed(3)}</Col>
                         </Row>
                     </ListGroup.Item>
-                })
-            }
-        </ListGroup>
-    }
+                ))}
+            </ListGroup>
+        );
+    };
 
     const singles = (elo) => {
-        //console.log(elo)
-        elo.map((player) => {
-            player['mu'] = player['singles_rating']['mu']
-            player['sigma'] = player['singles_rating']['sigma']
-        })
-        elo.sort((a, b) => {
-            return b['mu'] - a['mu']
-        })
+        const result = [...elo]
+            .map(player => ({
+                ...player,
+                mu: player.singles_rating.mu,
+                sigma: player.singles_rating.sigma,
+            }))
+            .sort((a, b) => b.mu - a.mu)
+            .filter(player => player.singles_games_played > 5 && player.sigma < 4);
 
-        const result = elo.filter((player) => {
-            return player.singles_games_played > 5 && player.sigma < 4;
-        })
-
-        let i = 0
-        return <ListGroup as="ol" numbered>
-            {
-                result.map((player) => {
-                    i++
-                    return <ListGroup.Item>
+        return (
+            <ListGroup as="ol" numbered>
+                {result.map((player, index) => (
+                    <ListGroup.Item key={player.name}>
                         <Row>
-                            <Col xs={5}>{i + '. ' + player['name']}</Col>
-                            <Col xs={3}>{player['mu'].toFixed(3)}</Col>
-                            <Col xs={2}>{player['sigma'].toFixed(3)}</Col>
-                            <Col xs={2}>{player['singles_win_pct'].toFixed(3)}</Col>
-
+                            <Col xs={5}>{index + 1}. {player.name}</Col>
+                            <Col xs={3}>{player.mu.toFixed(3)}</Col>
+                            <Col xs={2}>{player.sigma.toFixed(3)}</Col>
+                            <Col xs={2}>{player.singles_win_pct.toFixed(3)}</Col>
                         </Row>
                     </ListGroup.Item>
-                })
-            }
-        </ListGroup>
-    }
+                ))}
+            </ListGroup>
+        );
+    };
 
     return (
         <>
@@ -115,34 +81,33 @@ const EloPage = () => {
                     setStart={(start) => setSeasonStart(start)}
                     setEnd={(end) => setSeasonEnd(end)}
                 />
-                {(singlesElo.length == 0 || doublesElo.length == 0 || players.length == 0) ? (
-                    <Col className='page-title'>
+                {(singlesElo.length === 0 || doublesElo.length === 0 || players.length === 0) ? (
+                    <Col className="page-title">
                         Retreiving data, please be patient...
                     </Col>
                 ) : (
                     <Container>
                         <Row>
-                            <Col sm={12} md={12} >
-                                <div className='table-header'>Singles Elo</div>
+                            <Col sm={12} md={12}>
+                                <div className="table-header">Singles Elo</div>
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col xs={5}> <b>Name</b> </Col>
-                                        <Col xs={3}> <b>{'\u03BC'}</b> </Col>
-                                        <Col xs={2}> <b>{'\u03C3'}</b> </Col>
-                                        <Col xs={2}> <b>Win %</b></Col>
+                                        <Col xs={5}><b>Name</b></Col>
+                                        <Col xs={3}><b>{'\u03BC'}</b></Col>
+                                        <Col xs={2}><b>{'\u03C3'}</b></Col>
+                                        <Col xs={2}><b>Win %</b></Col>
                                     </Row>
                                 </ListGroup.Item>
                                 {singles(singlesElo)}
-
                             </Col>
-                            <Col sm={12} md={12} >
-                                <div className='table-header'>Doubles Elo</div>
+                            <Col sm={12} md={12}>
+                                <div className="table-header">Doubles Elo</div>
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col xs={5}> <b>Name</b> </Col>
-                                        <Col xs={3}> <b>{'\u03BC'}</b> </Col>
-                                        <Col xs={2}> <b>{'\u03C3'}</b> </Col>
-                                        <Col xs={2}> <b>Win %</b></Col>
+                                        <Col xs={5}><b>Name</b></Col>
+                                        <Col xs={3}><b>{'\u03BC'}</b></Col>
+                                        <Col xs={2}><b>{'\u03C3'}</b></Col>
+                                        <Col xs={2}><b>Win %</b></Col>
                                     </Row>
                                 </ListGroup.Item>
                                 {doubles(doublesElo)}
@@ -152,7 +117,7 @@ const EloPage = () => {
                 )}
             </Container>
         </>
-    )
-}
+    );
+};
 
 export default EloPage;

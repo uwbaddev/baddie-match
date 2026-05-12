@@ -132,24 +132,68 @@ def getMatches():
     return json.dumps([m.serialize() for m in matches]), 200
 
 
+def get_match_event_filter(event):
+    event_map = {
+        'singles': 'Singles',
+        'doubles': 'Doubles',
+        'mixed': 'Mixed',
+    }
+    normalized_event = (event or 'all').strip().lower()
+    return event_map.get(normalized_event)
+
+
+def get_match_day(match):
+    timestamp = match.last_edit or match.date_added
+    return timestamp.date()
+
+
+def build_match_pages(matches, records_per_page):
+    if not matches:
+        return []
+
+    pages = []
+    current_page = []
+
+    for match in matches:
+        if current_page:
+            current_day = get_match_day(current_page[-1])
+            next_day = get_match_day(match)
+            if len(current_page) >= records_per_page and next_day != current_day:
+                pages.append(current_page)
+                current_page = []
+
+        current_page.append(match)
+
+    if current_page:
+        pages.append(current_page)
+
+    return pages
+
+
 
 @cross_origin
 @app.route('/api/matches', methods=['GET'])
 def getMatchPage():
     try:
         # app.logger.debug('hit match pagination')
-        page = int(request.args.get('page') or 1)
-        recordsPerPage = int(request.args.get('perPage') or 10)
+        page = max(1, int(request.args.get('page') or 1))
+        recordsPerPage = max(1, int(request.args.get('perPage') or 10))
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
         end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
+        event = get_match_event_filter(request.args.get('event'))
         matches = Matches.getMatchesBetweenDate(start, end)
-        
-        matchPage = matches[(page-1)*recordsPerPage:page*recordsPerPage]
+
+        if event is not None:
+            matches = [match for match in matches if match.event == event]
+
+        matchPages = build_match_pages(matches, recordsPerPage)
+        pageCount = max(1, len(matchPages))
+        matchPage = matchPages[page - 1] if page <= len(matchPages) else []
         returnObj = {
             'metadata':
             {
                 'recordCount': str(len(matches)),
-                'pageCount': str(int(len(matches)/recordsPerPage) + 1),
+                'pageCount': str(pageCount),
                 'recordsPerPage': str(recordsPerPage)
             },
             'records': [m.serialize() for m in matchPage]
@@ -201,7 +245,9 @@ def matchHandler(id):
 @app.route("/api/match/player/<id>", methods=["GET"])
 def getMatchesWithPlayer(id):
     try:
-        to_return = Matches.getMatchesWithPlayer(id)
+        start = request.args.get('start', default="2000-09-01", type=Matches.toDate)
+        end = request.args.get('end', default="3000-09-01", type=Matches.toDate)
+        to_return = Matches.getMatchesWithPlayer(id, start, end)
         return to_return, 200
     except Exception as e:
         return str(e), 500

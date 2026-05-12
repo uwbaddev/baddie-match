@@ -1,113 +1,89 @@
 import { useContext, useEffect, useState } from "react";
-import { Col, Container, Row, Form, Button, Dropdown, DropdownButton } from "react-bootstrap";
+import { Col, Container, Row, Dropdown, DropdownButton } from "react-bootstrap";
 import { AppContext } from "../Contexts/AppContext";
-import { GetMatchesCount } from "../API/API"
-import Moment from "moment"
+import Moment from "moment";
 import { PaginationControl } from 'react-bootstrap-pagination-control';
-import  SeasonSelector from "./SeasonSelector"
+import SeasonSelector from "./SeasonSelector";
 
 const ResultsPage = () => {
-    // const [results, setResults] = useState({});
-    const { players, queryPlayerResults, queryMatchPage } = useContext(AppContext)
-    // const [selectedPlayer, setSelectedPlayer] = useState()
-    const [matches, setMatches] = useState([])
+    const { players, queryMatchPage } = useContext(AppContext);
+    const [matches, setMatches] = useState({});
     const [recordCount, setRecordCount] = useState(0);
-    const [pageCount, setPageCount] = useState(0);
     const [activePage, setActivePage] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [seasonStart, setSeasonStart] = useState('2025-09-01');
     const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
- 
 
-    function queryThenFormatMatches(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd) {
-        queryMatchPage(newActivePage, newRecordsPerPage, newSeasonStart, newSeasonEnd)
+    useEffect(() => {
+        queryMatchPage(activePage, recordsPerPage, seasonStart, seasonEnd)
             .then(data => {
-                var matchesDict = {};
+                const matchesDict = {};
                 data.records.forEach((d) => {
-                    var date_obj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local()
-
-                    var key = date_obj.clone().startOf('day').unix()
+                    const dateObj = Moment.utc(d.last_edit, "YYYY-MM-DD-HH:mm:ss", true).local();
+                    const key = dateObj.clone().startOf('day').unix();
                     if (!(key in matchesDict)) {
                         matchesDict[key] = [];
                     }
-                    matchesDict[key].push({ date: date_obj, data: d });
+                    matchesDict[key].push({ date: dateObj, data: d });
                 });
 
-                for (var day in matchesDict) {
-                    matchesDict[day].sort((a, b) => {
-                        if (a.date.unix() > b.date.unix()) return -1
-                        else if (a.date.unix() < b.date.unix()) return 1
-                        else return 0
-                    })
+                for (const day in matchesDict) {
+                    matchesDict[day].sort((a, b) => b.date.unix() - a.date.unix());
                 }
 
                 setMatches(matchesDict);
-                setRecordCount(data.metadata.recordCount)
-                setPageCount(data.metadata.pageCount)
-            })
-    }
+                setRecordCount(data.metadata.recordCount);
+            });
+    }, [activePage, recordsPerPage, seasonStart, seasonEnd, queryMatchPage]);
 
-    useEffect(() => {
-        queryThenFormatMatches(1, 10, '2025-09-01', '2026-08-31')
-    }, [])
-
-    useEffect(() => {
-        queryThenFormatMatches(activePage, recordsPerPage, seasonStart, seasonEnd)
-    }, [activePage, recordsPerPage, seasonStart, seasonEnd])
-
-    // TODO: someone with React experience pls do this better
     function formatPlayerSingles(match, index) {
-        let player = players.find(x => x.id === match.players[index])
-        let playerString = player.first_name + " " + player.last_name 
+        const player = players.find(x => x.id === match.players[index]);
+        if (!player) return 'Player';
+        const playerString = `${player.first_name} ${player.last_name}`;
 
         if (match.winners === null) {
-            return playerString
+            return playerString;
         }
 
-        let winner = match.winners[0]
+        const winner = match.winners[0];
         if (winner === match.players[index]) {
-            return (<b>{playerString}</b>)
+            return <b>{playerString}</b>;
         }
-        return playerString
+        return playerString;
     }
 
     function formatPlayerDoubles(match, index1, index2) {
-        let player1 = players.find(x => x.id === match.players[index1])
-        let player2 = players.find(x => x.id === match.players[index2])
+        const player1 = players.find(x => x.id === match.players[index1]);
+        const player2 = players.find(x => x.id === match.players[index2]);
+        if (!player1 || !player2) return 'Team';
 
-        let playerString = player1.first_name + " " + player1.last_name + '/' + player2.first_name + " " + player2.last_name
+        const playerString = `${player1.first_name} ${player1.last_name}/${player2.first_name} ${player2.last_name}`;
 
         if (match.winners === null) {
-            return playerString
+            return playerString;
         }
 
         if (match.winners.includes(match.players[index1])) {
-            return (<b>{playerString}</b>)
+            return <b>{playerString}</b>;
         }
-        return playerString
+        return playerString;
     }
-
 
     function formatPlayers(match) {
         if (match.event === 'Singles') {
-            return (
-                <p>{formatPlayerSingles(match, 0)} vs. {formatPlayerSingles(match, 1)}</p>
-            )
-        } else {
-            return (
-                <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>
-            )
+            return <p>{formatPlayerSingles(match, 0)} vs. {formatPlayerSingles(match, 1)}</p>;
         }
+        return <p>{formatPlayerDoubles(match, 0, 1)} vs. {formatPlayerDoubles(match, 2, 3)}</p>;
     }
 
     function formatScores(scores) {
-        let scoreString = ''
+        let scoreString = '';
         for (let i = 0; i < scores.length; i++) {
             if (i % 2 === 0) {
-                if (scores[i] == 0) return scoreString
-                scoreString += scores[i] + '-'
+                if (scores[i] === 0) return scoreString;
+                scoreString += `${scores[i]}-`;
             } else {
-                scoreString += scores[i] + '   '
+                scoreString += `${scores[i]}   `;
             }
         }
         return scoreString;
@@ -116,107 +92,72 @@ const ResultsPage = () => {
     return (
         <>
             <Container>
-                
-                <Row >
-                    <Col className='page-title'>
+                <Row>
+                    <Col className="page-title">
                         RESULTS
                     </Col>
-
-                <SeasonSelector 
-                        setStart = {(start) => setSeasonStart(start)}
-                        setEnd = {(end) => setSeasonEnd(end)}
+                    <SeasonSelector
+                        setStart={(start) => setSeasonStart(start)}
+                        setEnd={(end) => setSeasonEnd(end)}
                     />
-
-                    <Col className='pagination'>
+                    <Col className="pagination">
                         <PaginationControl
                             page={activePage}
                             between={2}
                             total={recordCount}
-                            //leave as magic number idk why it works :/
                             limit={recordsPerPage}
-                            last={true}
+                            last
                             changePage={(num) => setActivePage(num)}
                             ellipsis={1}
                         />
                     </Col>
                 </Row>
                 <Row>
-                    <Col className='pagination'>
-                        <DropdownButton id='perPageSelect' title={recordsPerPage}>
-                            <Dropdown.Item key='5' value='5' onClick={(event) => {
-                                setRecordsPerPage(event.target.text)
-                                setActivePage(1)
-                            }}>5</Dropdown.Item>
-                            <Dropdown.Item key='10' value='10' onClick={(event) => {
-                                setRecordsPerPage(event.target.text)
-                                setActivePage(1)
-                            }}>10</Dropdown.Item>
-                            <Dropdown.Item key='15' value='15' onClick={(event) => {
-                                setRecordsPerPage(event.target.text)
-                                setActivePage(1)
-                            }}>15</Dropdown.Item>
-                            <Dropdown.Item key='20' value='20' onClick={(event) => {
-                                setRecordsPerPage(event.target.text)
-                                setActivePage(1)
-                            }}>20</Dropdown.Item>
+                    <Col className="pagination">
+                        <DropdownButton id="perPageSelect" title={recordsPerPage}>
+                            {[5, 10, 15, 20].map(value => (
+                                <Dropdown.Item
+                                    key={value}
+                                    value={value}
+                                    onClick={(event) => {
+                                        setRecordsPerPage(Number(event.target.text));
+                                        setActivePage(1);
+                                    }}
+                                >
+                                    {value}
+                                </Dropdown.Item>
+                            ))}
                         </DropdownButton>
                     </Col>
                 </Row>
-                <Row>
-                    
-                </Row>
-                {matches.length == 0 || players.length == 0 ? (
-                    /* if no matches yet or if there are matches but no players */
-                    <Col className='page-title'>
+                {Object.keys(matches).length === 0 || players.length === 0 ? (
+                    <Col className="page-title">
                         Retrieving data, please be patient...
                     </Col>
                 ) : (
                     <>
-                        {/* <Row>
-                            <Col className='page-header'>
-                                Pick a player for results
-                            </Col>
-                        </Row>
-                        <Form>
-                            <Row>
-                                <Col>
-                                    <Form.Select type='select' /*onChange={(e) => getResults(e)*}>
-
-                                        <option>Choose a player</option>
-                                        {players && players.map((p, i) => <option key={i} value={p.first_name + " " + p.last_name}>{p.first_name} {p.last_name}</option>)}
-
-                                    </Form.Select>
-                                </Col>
-                            </Row>
-                        </Form> */}
-                        {Object.keys(matches).sort().reverse().map((k) => {
-                            return (
-                                <div>
-                                    <Row
-                                        className='table-header'>{matches[k][0].date.format('ddd MMM D, YYYY')}
-                                    </Row>
-                                    {matches[k].map((match, i) => {
-                                        return (
-                                            <div>
-                                                <Row>
-                                                    <Col xs={2}>{match.date.format('h:mm a')}</Col>
-                                                    <Col xs={6}>{formatPlayers(match.data)}</Col>
-                                                    <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
-                                                </Row>
-                                                {matches[k].length === i + 1 ? <></> : <hr></hr>}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            )
-                        }
-                        )}
-
+                        {Object.keys(matches).sort().reverse().map((k) => (
+                            <div key={k}>
+                                <Row className="table-header">
+                                    {matches[k][0].date.format('ddd MMM D, YYYY')}
+                                </Row>
+                                {matches[k].map((match, i) => (
+                                    <div key={match.data.id}>
+                                        <Row>
+                                            <Col xs={2}>{match.date.format('h:mm a')}</Col>
+                                            <Col xs={6}>{formatPlayers(match.data)}</Col>
+                                            <Col xs={4}><p>{formatScores(match.data.score)}</p></Col>
+                                        </Row>
+                                        {matches[k].length === i + 1 ? null : <hr />}
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
                     </>
                 )}
             </Container>
         </>
-    )
-}
+    );
+};
 
 export default ResultsPage;

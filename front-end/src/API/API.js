@@ -4,11 +4,14 @@ export const ReportMatchUrl = `${DomainName}/match`
 export const CategoryUrl = `${DomainName}/categories`;
 export const PlayersUrl = `${DomainName}/players`
 export const AllMatchesUrl = `${DomainName}/matches/all`;
-export const PlayerMatchesUrl = (id) => `${DomainName}/match/player/${id}`
+export const PlayerMatchesUrl = (id, start, end) => {
+  const query = start && end ? `?start=${start}&end=${end}` : '';
+  return `${DomainName}/match/player/${id}${query}`;
+}
 export const PlayerIdUrl = (id) => `${DomainName}/player/${id}`
 export const CategoryId = (id) => `${DomainName}/category/${id}`
 export const CreatePlayerUrl = `${DomainName}/player`;
 export const GetStatsUrl = (start, end) => `${DomainName}/players/stats?start=${start}&end=${end}`
 export const EloUrl = (event, start, end) => `${DomainName}/elo/${event}?start=${start}&end=${end}`
-export const MatchPageUrl = (page, perPage,start,end) => `${DomainName}/matches?page=${page}&perPage=${perPage}&start=${start}&end=${end}`
+export const MatchPageUrl = (page, perPage,start,end,event = 'all') => `${DomainName}/matches?page=${page}&perPage=${perPage}&start=${start}&end=${end}&event=${encodeURIComponent(event)}`
 export const GetMatchesCount = `${DomainName}/matches/count`

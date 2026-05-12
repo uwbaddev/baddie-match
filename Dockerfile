@@ -13,7 +13,7 @@ COPY ./front-end .
 RUN npm run build
 
 # Create Backend, and move static build into /build dir
-FROM python:3.13-slim
+FROM python:3.12-slim
 ENV WORKDIR=/user/src/app
 WORKDIR /user/src/app
 RUN mkdir -p $WORKDIR
@@ -27,4 +27,3 @@ ENTRYPOINT ["./gunicorn.sh"]
 
 # Port is supplied by heroku
 EXPOSE $PORT
-

@@ -1,5 +1,5 @@
-import { useContext, useState, useRef } from "react";
-import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { ReportMatchUrl } from "../API/API";
 import { AppContext } from "../Contexts/AppContext";
 import * as ReactDOM from 'react-dom';
@@ -8,7 +8,6 @@ const DoublesForm = () => {
     const [bannerMessage, setBannerMessage] = useState('');
     const [cooldown, setCooldown] = useState(false);
     const { activePlayers, categories } = useContext(AppContext);
-    const formElementRef = useRef(null);
 
     const initialMatch = {
         event: 'Doubles',
