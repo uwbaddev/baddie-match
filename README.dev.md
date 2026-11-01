@@ -93,13 +93,6 @@ and deploy the frontend. It never runs as part of a website request. Existing
 photos survive a failed refresh. Stats still come from our existing
 Flask/database endpoints.
 
-Photo checks (no database connection is required):
-
-```bash
-cd app
-../.venv/bin/python -m unittest discover -s tests -v
-```
-
 The API will be available at `http://localhost:5000` and the API root at `http://localhost:5000/api`.
 
 ### 3) Frontend (React)
