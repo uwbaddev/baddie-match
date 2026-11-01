@@ -10,7 +10,7 @@ from PIL import Image, ImageOps
 import requests
 
 
-PHOTO_DIR = Path(__file__).resolve().parents[1] / 'data' / 'roster_photos'
+PHOTO_DIR = Path(__file__).resolve().parents[2] / 'front-end' / 'src' / 'assets' / 'roster-photos'
 
 
 def compress_photo(content):

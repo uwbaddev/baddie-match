@@ -332,9 +332,10 @@ export function getRosterAvatar(rosterPlayer) {
 
 export function getRosterPlayerAvatar(rosterPlayer) {
   const photo = getRosterPhotoSources().find(record => namesOverlap(record, rosterPlayer || {}));
+  const image = photo ? require(`../../assets/roster-photos/${photo.key}.webp`) : null;
   return getRosterAvatar({
     name: rosterPlayer && rosterPlayer.name,
-    photoUrl: photo && `${process.env.REACT_APP_DOMAIN_NAME || '/api'}/roster-photos/${encodeURIComponent(photo.key)}.webp`,
+    photoUrl: image && (image.default || image),
   });
 }
 

@@ -5,7 +5,8 @@ import { MatchCard, NamePill, PlayerAvatar, ProfileEloCard, SeasonSelect } from 
 test('cached avatars use lazy loading and fall back to initials on image failure', () => {
   render(<PlayerAvatar player={{ name: 'Jessica Cheng' }} />);
   const image = screen.getByRole('img', { name: 'Jessica Cheng' });
-  expect(image.src).toContain('/roster-photos/jessica-viyan-cheng.webp');
+  expect(image.src).toContain('jessica-viyan-cheng');
+  expect(image.src).not.toContain('/api/');
   expect(image).toHaveAttribute('loading', 'lazy');
   expect(image).toHaveAttribute('decoding', 'async');
   fireEvent.error(image);

@@ -1,4 +1,4 @@
-import { CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, EloUrl, MatchPageUrl } from "../API/API"
+import { CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, fetchElo as queryElo, MatchPageUrl } from "../API/API"
 import React from "react"
 import { useState, useEffect } from "react"
 
@@ -59,8 +59,6 @@ const useApp = () => {
     const queryCategory = (id) => fetch(CategoryId, { method: 'GET' }).then(response => response.json())
 
     const queryStats = (start, end) => fetch(GetStatsUrl(start, end), { method: 'GET' }).then(response => response.json())
-
-    const queryElo = (event, start, end) => fetch(EloUrl(event, start, end), { method: 'GET' }).then(response => response.json())
 
     const queryMatchPage = (id, perPage, start, end, event) => fetch(MatchPageUrl(id, perPage, start, end, event), { method: 'GET' }).then(response => response.json())
 

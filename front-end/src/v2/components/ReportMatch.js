@@ -1,31 +1,36 @@
-import { Form } from "react-bootstrap";
-import '../../index.css';
 import { useState } from "react";
-import SinglesForm from "../../Forms/SinglesForm";
-import DoublesForm from "../../Forms/DoublesForm";
-import MixedForm from "../../Forms/MixedForm";
-import { PageShell, TabControl } from "./RedesignUI";
+import { UserRound, UsersRound } from 'lucide-react';
+import { PageShell } from "./RedesignUI";
+import ReportMatchForm from './ReportMatchForm';
+import './ReportMatch.css';
 
 const reportTabs = [
-    { key: 'Singles', label: 'Singles' },
-    { key: 'Doubles', label: 'Doubles' },
-    { key: 'Mixed', label: 'Mixed' },
+    { key: 'Singles', icon: UserRound },
+    { key: 'Doubles', icon: UsersRound },
+    { key: 'Mixed', icon: UsersRound },
 ];
 
 const ReportMatchComponent = () => {
     const [activeTab, setActiveTab] = useState('Singles');
-    const ActiveForm = activeTab === 'Singles'
-        ? SinglesForm
-        : activeTab === 'Doubles'
-            ? DoublesForm
-            : MixedForm;
-
+    const [submitting, setSubmitting] = useState(false);
     return (
         <PageShell title="Report Match" className="report-page">
-            <Form id="match-form">
-                <TabControl tabs={reportTabs} active={activeTab} onChange={setActiveTab} className="report-tabs" />
-                <ActiveForm />
-            </Form>
+            <div className="report-tabs" role="group" aria-label="Match type">
+                {reportTabs.map(({ key, icon: Icon }) => (
+                    <button
+                        key={key}
+                        type="button"
+                        className={activeTab === key ? 'is-active' : ''}
+                        aria-pressed={activeTab === key}
+                        disabled={submitting}
+                        onClick={() => setActiveTab(key)}
+                    >
+                        <Icon size={16} aria-hidden="true" />
+                        {key}
+                    </button>
+                ))}
+            </div>
+            <ReportMatchForm key={activeTab} event={activeTab} submitting={submitting} onSubmittingChange={setSubmitting} />
         </PageShell>
     )
 }

@@ -4,51 +4,37 @@ import json
 
 class Stats:
     def getWinPercentages(start, end):
-        player_results = []
         players = json.loads(Players.get_all_players())
-        for p in players:
-            matches = json.loads(Matches.getMatchesWithPlayer(p["id"], start, end))
-            d_win, s_win, m_win = 0, 0, 0
-            d_loss, s_loss, m_loss = 0, 0, 0
-
-            for m in matches:
-                is_team_1 = (m["players"][0] == p["id"]) if (m["event"] == 'Singles') else (m["players"][0] == p["id"] or m["players"][1] == p["id"])
-                
-                wins, losses = 0, 0
-                for i in range(3):
-                    first = i * 2
-                    second = i * 2 + 1
-                    if m["score"][first] == 0 and m["score"][second] == 0: continue
-                    if is_team_1:
-                        if m["score"][first] > m["score"][second]:
-                            wins += 1 
-                        else:
-                            losses += 1
-                    else:
-                        if m["score"][first] > m["score"][second]:
-                            losses += 1 
-                        else:
-                            wins += 1
-
-                if m["event"] == "Doubles":
-                    d_win += wins
-                    d_loss += losses
-                elif m["event"] == "Mixed":
-                    m_win += wins
-                    m_loss += losses
-                else:
-                    s_win += wins
-                    s_loss += losses
-
-            player_results.append({
+        player_results = {
+            p['id']: {
                 "id": p["id"], 
                 "name": p["first_name"] + " " + p["last_name"],
-                "singles_wins": s_win,
-                "singles_losses": s_loss,
-                "doubles_wins": d_win,
-                "doubles_losses": d_loss,
-                "mixed_wins": m_win,
-                "mixed_losses": m_loss,
-            })
-        return json.dumps(player_results), 200
+                "singles_wins": 0,
+                "singles_losses": 0,
+                "doubles_wins": 0,
+                "doubles_losses": 0,
+                "mixed_wins": 0,
+                "mixed_losses": 0,
+            } for p in players
+        }
+        for match in Matches.getMatchesBetweenDate(start, end):
+            event = {'Doubles': 'doubles', 'Mixed': 'mixed'}.get(match.event, 'singles')
+            team_one = match.players[:1] if match.event == 'Singles' else match.players[:2]
+            team_one_wins, team_two_wins = 0, 0
+            for index in range(0, 6, 2):
+                first, second = match.score[index:index + 2]
+                if first == 0 and second == 0:
+                    continue
+                if first > second:
+                    team_one_wins += 1
+                else:
+                    team_two_wins += 1
+            for player_id in match.players:
+                result = player_results.get(player_id)
+                if result is None:
+                    continue
+                wins, losses = (team_one_wins, team_two_wins) if player_id in team_one else (team_two_wins, team_one_wins)
+                result[event + '_wins'] += wins
+                result[event + '_losses'] += losses
+        return json.dumps(list(player_results.values())), 200
 

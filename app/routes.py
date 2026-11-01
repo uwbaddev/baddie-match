@@ -3,9 +3,7 @@ from src.players import Players
 from src.matches import Matches
 from src.stats import Stats
 from src.player_elo import Player_elo
-from src.roster_photos import RosterPhoto
-from flask import request, jsonify, render_template, send_file
-from io import BytesIO
+from flask import request, jsonify, render_template
 from flask_cors import cross_origin
 import json
 from main import db, app
@@ -23,6 +21,17 @@ def serve():
 def not_found(e):
     return app.send_static_file('index.html')
 
+
+@app.after_request
+def cacheBuiltImages(response):
+    # The frontend build gives these images content-hashed filenames.
+    if request.path.startswith('/static/media/') and response.status_code in (200, 304) and response.mimetype.startswith('image/'):
+        response.cache_control.no_cache = None
+        response.cache_control.public = True
+        response.cache_control.max_age = 31536000
+        response.cache_control.immutable = True
+    return response
+
 ################################################################################
 # players
 ################################################################################
@@ -32,18 +41,6 @@ def not_found(e):
 @app.route("/api/players", methods=["GET"])
 def getplayers():
     return Players.get_all_players(), 200
-
-
-@app.route('/api/roster-photos/<photo_key>.webp', methods=['GET'])
-def getRosterPhoto(photo_key):
-    photo = RosterPhoto.query.get(photo_key)
-    if photo is None:
-        return '', 404
-    return send_file(
-        BytesIO(photo.content), mimetype='image/webp',
-        etag=photo.content_hash, last_modified=photo.updated_at,
-        max_age=86400, conditional=True,
-    )
 
 
 @cross_origin()
@@ -305,6 +302,17 @@ def getAllWinPercentages():
 ################################################################################
 # ELO
 ################################################################################
+
+
+@cross_origin()
+@app.route("/api/elo", methods=["GET"])
+def getElo():
+    try:
+        start = request.args.get('start', default="2020-09-01", type=Matches.toDate)
+        end = request.args.get('end', default="2023-09-01", type=Matches.toDate)
+        return Player_elo.get_elo(start, end)
+    except Exception as e:
+        return str(e), 500
 
 
 @cross_origin()
