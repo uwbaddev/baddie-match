@@ -3,7 +3,9 @@ from src.players import Players
 from src.matches import Matches
 from src.stats import Stats
 from src.player_elo import Player_elo
-from flask import request, jsonify, render_template
+from src.roster_photos import RosterPhoto
+from flask import request, jsonify, render_template, send_file
+from io import BytesIO
 from flask_cors import cross_origin
 import json
 from main import db, app
@@ -30,6 +32,18 @@ def not_found(e):
 @app.route("/api/players", methods=["GET"])
 def getplayers():
     return Players.get_all_players(), 200
+
+
+@app.route('/api/roster-photos/<photo_key>.webp', methods=['GET'])
+def getRosterPhoto(photo_key):
+    photo = RosterPhoto.query.get(photo_key)
+    if photo is None:
+        return '', 404
+    return send_file(
+        BytesIO(photo.content), mimetype='image/webp',
+        etag=photo.content_hash, last_modified=photo.updated_at,
+        max_age=86400, conditional=True,
+    )
 
 
 @cross_origin()

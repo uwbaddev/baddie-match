@@ -331,17 +331,40 @@ export function getRosterAvatar(rosterPlayer) {
 }
 
 export function getRosterPlayerAvatar(rosterPlayer) {
-  const latestRosterRecord = findLatestRosterRecord(rosterPlayer);
-  const latestPhotoRecord = rosterPlayer
-    ? ROSTER_SEASONS
-      .flatMap(season => getRosterBySeason(season.value).players)
-      .find(player => namesOverlap(player, rosterPlayer) && player.photoUrl)
-    : undefined;
-
+  const photo = getRosterPhotoSources().find(record => namesOverlap(record, rosterPlayer || {}));
   return getRosterAvatar({
     name: rosterPlayer && rosterPlayer.name,
-    photoUrl: (latestPhotoRecord && latestPhotoRecord.photoUrl) || (latestRosterRecord && latestRosterRecord.photoUrl),
+    photoUrl: photo && `${process.env.REACT_APP_DOMAIN_NAME || '/api'}/roster-photos/${encodeURIComponent(photo.key)}.webp`,
   });
+}
+
+let rosterPhotoSources;
+
+// Seasons are newest first; one shared photo key also covers name aliases and coaching roles.
+export function getRosterPhotoSources() {
+  if (rosterPhotoSources) return rosterPhotoSources;
+  const people = ROSTER_SEASONS.flatMap(season => {
+    const roster = getRosterBySeason(season.value);
+    return [...roster.players, ...roster.coaches, ...roster.supportStaff];
+  });
+  const records = [];
+  people.forEach(person => {
+    if (records.some(record => namesOverlap(record, person))) return;
+    const versions = people.filter(candidate => namesOverlap(candidate, person));
+    const sources = versions.filter(candidate => candidate.photoUrl).map(candidate => ({
+      url: candidate.photoUrl,
+      season: candidate.season,
+    }));
+    if (!sources.length) return;
+    records.push({
+      key: person.slug,
+      name: person.name,
+      aliases: [...new Set(versions.flatMap(candidate => [candidate.name, ...(candidate.aliases || [])]))],
+      sources,
+    });
+  });
+  rosterPhotoSources = records;
+  return rosterPhotoSources;
 }
 
 export function getStatsSeasonRange(value) {

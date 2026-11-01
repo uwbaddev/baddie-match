@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import {
   getAvatarTheme,
   getInitials,
@@ -125,6 +126,7 @@ export const PaginationControl = ({ currentPage, pageCount, onPageChange, label 
 };
 
 export const PlayerAvatar = ({ player, index = 0, size = 'md' }) => {
+  const [failedSrc, setFailedSrc] = useState(null);
   const name = formatPlayerName(player);
   const avatar = player && player.name
     ? getRosterPlayerAvatar(player)
@@ -132,10 +134,10 @@ export const PlayerAvatar = ({ player, index = 0, size = 'md' }) => {
 
   return (
     <div className={`player-avatar ${getAvatarTheme(player, index)} avatar-${size}`}>
-      {avatar.type === 'image' ? (
-        <img src={avatar.src} alt={name} />
+      {avatar.type === 'image' && failedSrc !== avatar.src ? (
+        <img src={avatar.src} alt={name} loading="lazy" decoding="async" onError={() => setFailedSrc(avatar.src)} />
       ) : (
-        <span aria-hidden="true">{avatar.initials}</span>
+        <span aria-hidden="true">{avatar.initials || getInitials(name)}</span>
       )}
     </div>
   );

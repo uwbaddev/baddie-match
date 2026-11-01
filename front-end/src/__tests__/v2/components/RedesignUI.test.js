@@ -1,6 +1,17 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { MatchCard, NamePill, ProfileEloCard, SeasonSelect } from '../../../v2/components/RedesignUI';
+import { MatchCard, NamePill, PlayerAvatar, ProfileEloCard, SeasonSelect } from '../../../v2/components/RedesignUI';
+
+test('cached avatars use lazy loading and fall back to initials on image failure', () => {
+  render(<PlayerAvatar player={{ name: 'Jessica Cheng' }} />);
+  const image = screen.getByRole('img', { name: 'Jessica Cheng' });
+  expect(image.src).toContain('/roster-photos/jessica-viyan-cheng.webp');
+  expect(image).toHaveAttribute('loading', 'lazy');
+  expect(image).toHaveAttribute('decoding', 'async');
+  fireEvent.error(image);
+  expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  expect(screen.getByText('JC')).toBeInTheDocument();
+});
 
 test('NamePill can render a linked player name', () => {
   render(

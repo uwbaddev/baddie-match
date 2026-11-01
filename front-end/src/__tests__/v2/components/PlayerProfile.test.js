@@ -79,7 +79,7 @@ test('shows route-season bio details with the latest available player photo', as
   expect(screen.queryByText('St. Clements')).not.toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('2026/3/4/Allison_Cheng_DxO.jpg')
+    expect.stringContaining('/roster-photos/allison-cheng.webp')
   );
   const statsSelect = await screen.findByRole('combobox', { name: /Stats season/i });
   await waitFor(() => expect(statsSelect).toHaveValue('all'));
@@ -97,7 +97,7 @@ test('shows route-season bio details from database-id season profile routes', as
   expect(screen.getByText('Math/CPA')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('2026/3/4/Allison_Cheng_DxO.jpg')
+    expect.stringContaining('/roster-photos/allison-cheng.webp')
   );
   await waitFor(() => expect(queryPlayerResults).toHaveBeenCalledWith(1, '2000-09-01', '3000-09-01'));
 });
@@ -322,7 +322,7 @@ test('maps legacy local profile routes to official roster display when names mat
   expect(screen.getByText('Computer Engineering')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Liam Zhang/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('2026/3/4/Liam_Zhang_DxO.jpg')
+    expect.stringContaining('/roster-photos/liam-zhang.webp')
   );
 });
 

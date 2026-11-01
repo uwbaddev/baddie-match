@@ -10,6 +10,7 @@ import {
   getRosterAvatar,
   getRosterBySeason,
   getRosterPlayerAvatar,
+  getRosterPhotoSources,
   normalizeRosterName,
   ROSTER_SEASONS,
 } from '../../../v2/utils/rosterData';
@@ -160,16 +161,28 @@ test('finds the latest roster record for the same player across seasons', () => 
   expect(latest.photoUrl).toContain('2026/3/4/Allison_Cheng_DxO.jpg');
 });
 
-test('chooses latest official photo across seasons for roster avatars', () => {
+test('shares a cached photo URL across roster seasons', () => {
   const olderAllison = getRosterBySeason('2024-25').players.find(player => player.name === 'Allison Cheng');
   const jerry = getRosterBySeason('2025-26').players.find(player => player.name === 'Jerry Yin');
 
   expect(getRosterPlayerAvatar(olderAllison)).toEqual({
     type: 'image',
-    src: expect.stringContaining('2026/3/4/Allison_Cheng_DxO.jpg'),
+    src: expect.stringContaining('/roster-photos/allison-cheng.webp'),
   });
+  expect(getRosterPlayerAvatar(olderAllison)).toEqual(getRosterPlayerAvatar(getRosterBySeason('2025-26').players[0]));
   expect(getRosterPlayerAvatar(jerry)).toEqual({
     type: 'initials',
     initials: 'JY',
   });
+});
+
+test('deduplicates photo sources across aliases and coaching roles, newest first', () => {
+  const photos = getRosterPhotoSources();
+  const jessica = photos.find(photo => photo.key === 'jessica-viyan-cheng');
+  expect(jessica.aliases).toContain('Jessica Cheng');
+  expect(jessica.sources[0].season).toBe('2025-26');
+  const olderJessica = getRosterBySeason('2022-23').players.find(player => player.name === 'Jessica Cheng');
+  expect(getRosterPlayerAvatar(olderJessica).src).toContain('/roster-photos/jessica-viyan-cheng.webp');
+  expect(photos.filter(photo => photo.aliases.includes('Ivan Cheng'))).toHaveLength(1);
+  expect(new Set(photos.map(photo => photo.key)).size).toBe(photos.length);
 });
