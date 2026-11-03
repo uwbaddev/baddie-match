@@ -1,0 +1,2 @@
+# Only needed when downloading/recompressing the source photos.
+Pillow>=10.4,<13

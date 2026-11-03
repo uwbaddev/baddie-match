@@ -162,8 +162,7 @@ class Player_elo:
         players = json.loads(Players.get_all_players())
         all_matches = Matches.getMatchesBetweenDate(start, end)
     
-        matches = json.dumps([m.serialize() for m in all_matches])
-        matches = json.loads(matches)
+        matches = [m.serialize() for m in all_matches]
  
         player_stats = Player_elo.initialize_player_stat_dict(players)
         
@@ -184,18 +183,28 @@ class Player_elo:
         return df_player_stats
 
     def get_doubles_elo(start, end):
-        df_player_stats = Player_elo.get_df_stats(start, end)
-        df_doubles_ranks = df_player_stats
+        return Player_elo.format_doubles_elo(Player_elo.get_df_stats(start, end))
+
+    def format_doubles_elo(df_player_stats):
+        df_doubles_ranks = df_player_stats.copy()
         df_doubles_ranks['doubles_win_pct'] =  df_doubles_ranks['doubles_wins']/df_doubles_ranks['doubles_games_played']
         df_doubles_ranks = df_doubles_ranks.sort_values(by=['doubles_rating'], ascending = False)
         df_doubles_ranks = df_doubles_ranks[['name', 'doubles_rating', 'doubles_games_played', 'doubles_wins', 'doubles_losses', 'doubles_win_pct']]
         return df_doubles_ranks.to_json(None, 'records'), 200
 
     def get_singles_elo(start, end):
-        df_player_stats = Player_elo.get_df_stats(start, end)
-        df_singles_ranks = df_player_stats
+        return Player_elo.format_singles_elo(Player_elo.get_df_stats(start, end))
+
+    def format_singles_elo(df_player_stats):
+        df_singles_ranks = df_player_stats.copy()
         df_singles_ranks['singles_win_pct'] =  df_singles_ranks['singles_wins']/df_singles_ranks['singles_games_played']
         df_singles_ranks = df_singles_ranks.sort_values(by=['singles_elo'], ascending = False)
         df_singles_ranks = df_singles_ranks[['name', 'singles_elo', 'singles_rating', 'singles_games_played', 'singles_wins', 'singles_losses', 'singles_win_pct']]
         return df_singles_ranks.to_json(None, 'records'), 200
+
+    def get_elo(start, end):
+        player_stats = Player_elo.get_df_stats(start, end)
+        singles, _ = Player_elo.format_singles_elo(player_stats)
+        doubles, _ = Player_elo.format_doubles_elo(player_stats)
+        return {'singles': json.loads(singles), 'doubles': json.loads(doubles)}, 200
 
