@@ -7,17 +7,17 @@ const Header = () => {
     const [expanded, setExpanded] = useState(false);
     const closeMenu = () => setExpanded(false);
     const navItems = [
-        { to: '/v2', label: 'Home', icon: Home },
-        { to: '/v2/report', label: 'Report Match', icon: PencilLine },
-        { to: '/v2/results', label: 'Results', icon: BarChart3 },
-        { to: '/v2/elo', label: 'Rankings', icon: ArrowUpRight },
-        { to: '/v2/players', label: 'Roster', icon: User },
+        { to: '/', label: 'Home', icon: Home },
+        { to: '/report', label: 'Report Match', icon: PencilLine },
+        { to: '/results', label: 'Results', icon: BarChart3 },
+        { to: '/elo', label: 'Rankings', icon: ArrowUpRight },
+        { to: '/players', label: 'Roster', icon: User },
     ];
 
     return (
         <>
             <header className="site-header">
-                <Link to="/v2" className="brand-lockup" onClick={closeMenu}>
+                <Link to="/" className="brand-lockup" onClick={closeMenu}>
                     <img src="/warriors_logo.png" alt="" />
                     <span>Varsity Badminton</span>
                 </Link>
@@ -26,13 +26,13 @@ const Header = () => {
                         <NavLink
                             key={item.to}
                             to={item.to}
-                            end={item.to === '/v2'}
+                            end={item.to === '/'}
                             className={({ isActive }) => isActive ? 'active' : ''}
                         >
                             {item.label === 'Roster' ? 'Players' : item.label}
                         </NavLink>
                     ))}
-                    <Link to="/" className="v2-exit-link" onClick={closeMenu}>
+                    <Link to="/v1" className="v2-exit-link" onClick={closeMenu}>
                         Back to V1
                     </Link>
                 </nav>
@@ -62,7 +62,7 @@ const Header = () => {
                                     <NavLink
                                         key={item.to}
                                         to={item.to}
-                                        end={item.to === '/v2'}
+                                        end={item.to === '/'}
                                         onClick={closeMenu}
                                         className={({ isActive }) => isActive ? 'active' : ''}
                                     >
@@ -71,7 +71,7 @@ const Header = () => {
                                     </NavLink>
                                 );
                             })}
-                            <Link to="/" className="v2-exit-link" onClick={closeMenu}>
+                            <Link to="/v1" className="v2-exit-link" onClick={closeMenu}>
                                 <ArrowLeft size={17} />
                                 Back to V1
                             </Link>

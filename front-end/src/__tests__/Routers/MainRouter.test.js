@@ -45,61 +45,77 @@ const renderRoute = (route) => {
   return { ...result, contextValue };
 };
 
-test('base home route renders the legacy site and links to v2', async () => {
-  const { contextValue } = renderRoute('/');
+test('home route renders the redesigned site with a link back to v1', async () => {
+  renderRoute('/');
+
+  expect(await screen.findByRole('heading', { name: 'Team Statistics' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Report Match' })).toHaveAttribute('href', '/report');
+  expect(screen.getByRole('link', { name: 'Back to V1' })).toHaveAttribute('href', '/v1');
+});
+
+test('v1 home route renders the legacy site and links back to v2', async () => {
+  const { contextValue } = renderRoute('/v1');
 
   expect(screen.getByText(/Welcome to the official site/i)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /Try V2/i })).toHaveAttribute('href', '/v2');
+  expect(screen.getByRole('link', { name: /Back to V2/i })).toHaveAttribute('href', '/');
+  expect(screen.getByRole('link', { name: 'REPORT MATCH' })).toHaveAttribute('href', '/v1/report');
   await waitFor(() => expect(contextValue.queryStats).toHaveBeenCalled());
 });
 
-test('v2 home route renders the redesigned team statistics page', async () => {
-  renderRoute('/v2');
-
-  expect(await screen.findByRole('heading', { name: 'Team Statistics' })).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Report Match' })).toHaveAttribute('href', '/v2/report');
-  expect(screen.getByRole('link', { name: 'Back to V1' })).toHaveAttribute('href', '/');
-});
-
-test('v2 mobile menu includes a back to v1 link', async () => {
-  renderRoute('/v2');
+test('mobile menu includes a back to v1 link', async () => {
+  renderRoute('/');
 
   expect(await screen.findByRole('heading', { name: 'Team Statistics' })).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
   const backLinks = screen.getAllByRole('link', { name: 'Back to V1' });
   expect(backLinks).toHaveLength(2);
-  expect(backLinks[1]).toHaveAttribute('href', '/');
+  expect(backLinks[1]).toHaveAttribute('href', '/v1');
 });
 
-test('base and v2 report routes render their respective tab UIs', () => {
-  const { container, unmount } = renderRoute('/report');
+test('v2 and v1 report routes render their respective tab UIs', () => {
+  const { container, unmount } = renderRoute('/v1/report');
 
   expect(screen.getAllByText('REPORT MATCH').length).toBeGreaterThan(0);
   expect(container.querySelector('.report-tabs')).not.toBeInTheDocument();
 
   unmount();
-  const v2 = renderRoute('/v2/report');
+  const v2 = renderRoute('/report');
 
   expect(screen.getByRole('heading', { name: 'Report Match' })).toBeInTheDocument();
   expect(v2.container.querySelector('.report-tabs')).toBeInTheDocument();
 });
 
-test('base players route renders legacy list while v2 renders roster cards', () => {
-  const { unmount } = renderRoute('/players');
+test('v1 players route renders legacy list while the main players route renders roster cards', () => {
+  const { unmount } = renderRoute('/v1/players');
 
   expect(screen.getByText('All Players')).toBeInTheDocument();
   expect(screen.getByText('t_Liam Zhang')).toBeInTheDocument();
 
   unmount();
-  renderRoute('/v2/players');
+  renderRoute('/players');
 
   expect(screen.getByRole('heading', { name: 'Roster' })).toBeInTheDocument();
   expect(screen.getByText('Liam Zhang')).toBeInTheDocument();
 });
 
-test('v2 database-id player profile route remains available', async () => {
-  renderRoute('/v2/players/2025-26/id/113');
+test('database-id player profile route is available', async () => {
+  renderRoute('/players/2025-26/id/113');
 
   expect(await screen.findByRole('heading', { name: 'Liam Zhang' })).toBeInTheDocument();
+});
+
+test('old /v2 links redirect to the same page at the new path', async () => {
+  renderRoute('/v2/players/2025-26/id/113?tab=stats');
+
+  expect(await screen.findByRole('heading', { name: 'Liam Zhang' })).toBeInTheDocument();
+  expect(window.location.pathname).toBe('/players/2025-26/id/113');
+  expect(window.location.search).toBe('?tab=stats');
+});
+
+test('old /v2 home link redirects to the home page', async () => {
+  renderRoute('/v2');
+
+  expect(await screen.findByRole('heading', { name: 'Team Statistics' })).toBeInTheDocument();
+  expect(window.location.pathname).toBe('/');
 });

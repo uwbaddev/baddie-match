@@ -10,7 +10,7 @@ const Header = () => {
     return (
         <Navbar fixed="sticky" className="header-panel" expand={false}>
             <Container fluid>
-                <Navbar.Brand as={Link} to="/" className="header" onClick={closeMenu}>
+                <Navbar.Brand as={Link} to="/v1" className="header" onClick={closeMenu}>
                     WATERLOO WARRIORS
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={() => setExpanded(!expanded)} />
@@ -25,12 +25,12 @@ const Header = () => {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <Nav className="justify-content-end flex-grow-1 page-header pe-3">
-                            <Nav.Link as={Link} to="/" onClick={closeMenu}>HOME</Nav.Link>
-                            <Nav.Link as={Link} to="/report" onClick={closeMenu}>REPORT MATCH</Nav.Link>
-                            <Nav.Link as={Link} to="/results" onClick={closeMenu}>RESULTS</Nav.Link>
-                            <Nav.Link as={Link} to="/elo" onClick={closeMenu}>ELO RANKINGS</Nav.Link>
-                            <Nav.Link as={Link} to="/players" onClick={closeMenu}>PLAYERS</Nav.Link>
-                            <Nav.Link as={Link} to="/v2" onClick={closeMenu}>TRY V2</Nav.Link>
+                            <Nav.Link as={Link} to="/v1" onClick={closeMenu}>HOME</Nav.Link>
+                            <Nav.Link as={Link} to="/v1/report" onClick={closeMenu}>REPORT MATCH</Nav.Link>
+                            <Nav.Link as={Link} to="/v1/results" onClick={closeMenu}>RESULTS</Nav.Link>
+                            <Nav.Link as={Link} to="/v1/elo" onClick={closeMenu}>ELO RANKINGS</Nav.Link>
+                            <Nav.Link as={Link} to="/v1/players" onClick={closeMenu}>PLAYERS</Nav.Link>
+                            <Nav.Link as={Link} to="/" onClick={closeMenu}>BACK TO V2</Nav.Link>
                         </Nav>
                     </Offcanvas.Body>
                 </Navbar.Offcanvas>

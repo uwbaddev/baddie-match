@@ -24,26 +24,42 @@ test('NamePill can render a linked player name', () => {
   expect(screen.getByRole('link', { name: 'Ada Wong' })).toHaveAttribute('href', '/players/7');
 });
 
-test('ProfileEloCard marks mu and sigma as lowercase symbol labels', () => {
-  const { container } = render(
+test('ProfileEloCard shows the group label and promotion spot without mu or sigma', () => {
+  render(
     <ProfileEloCard
-      card={{
-        label: 'Singles Elo',
-        rank: 2,
-        mu: 32.29,
-        sigma: 6.27,
-        games: 11,
-        winPct: 55,
-      }}
+      card={{ label: 'Singles Elo', groupLabel: 'Group 2', promotion: true, placing: false, games: 11, winPct: 55 }}
     />
   );
 
-  const symbols = container.querySelectorAll('.profile-elo-symbol');
-  expect(symbols).toHaveLength(2);
-  expect(symbols[0]).toHaveTextContent('μ');
-  expect(symbols[1]).toHaveTextContent('σ');
-  expect(screen.getByText('Games')).not.toHaveClass('profile-elo-symbol');
-  expect(screen.getByText('Win %')).not.toHaveClass('profile-elo-symbol');
+  expect(screen.getByText('Group 2')).toBeInTheDocument();
+  expect(screen.getByText(/Promotion spot/)).toBeInTheDocument();
+  expect(screen.getByText('Games')).toBeInTheDocument();
+  expect(screen.getByText('Win %')).toBeInTheDocument();
+  expect(screen.queryByText('μ')).not.toBeInTheDocument();
+  expect(screen.queryByText('σ')).not.toBeInTheDocument();
+});
+
+test('ProfileEloCard shows a podium medal for the top three', () => {
+  render(
+    <ProfileEloCard
+      card={{ label: 'Singles Elo', groupLabel: 'Group 1', podium: 2, promotion: false, placing: false, games: 20, winPct: 70 }}
+    />
+  );
+
+  expect(screen.getByText('2nd')).toHaveClass('podium-badge', 'podium-2');
+  expect(screen.queryByText(/Promotion spot/)).not.toBeInTheDocument();
+});
+
+test('ProfileEloCard shows placement progress for players getting placed', () => {
+  render(
+    <ProfileEloCard
+      card={{ label: 'Doubles Elo', placing: true, placementGames: 8, games: 3, winPct: 33 }}
+    />
+  );
+
+  expect(screen.getByText('Getting placed')).toBeInTheDocument();
+  expect(screen.getByText('3 / 8')).toBeInTheDocument();
+  expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
 });
 
 test('SeasonSelect removes the 2024-2025 season option but keeps All', () => {

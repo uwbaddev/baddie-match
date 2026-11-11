@@ -1,5 +1,5 @@
 .report-page {
-  width: min(780px, calc(100% - 64px));
+  width: min(calc(780px * var(--v2-font-scale)), calc(100% - 64px));
 }
 
 .report-page .page-heading {
@@ -7,7 +7,7 @@
 }
 
 .report-page .page-heading h1 {
-  font-size: 30px;
+  font-size: calc(30px * var(--v2-font-scale));
 }
 
 .report-page .report-tabs {
@@ -32,7 +32,7 @@
   border-radius: 5px;
   background: transparent;
   color: #666666;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -78,7 +78,7 @@
 
 .report-page .report-side-heading h3 {
   margin: 0;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 600;
 }
 
@@ -88,7 +88,7 @@
   right: -34px;
   width: 16px;
   color: #999999;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
   text-align: center;
 }
 
@@ -101,7 +101,7 @@
   display: block;
   margin-bottom: 7px;
   color: #555555;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
   font-weight: 500;
 }
 
@@ -115,7 +115,7 @@
   border-radius: 6px;
   background-color: #ffffff;
   color: #292929;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   letter-spacing: 0;
 }
 
@@ -136,14 +136,14 @@
 .report-page .report-score-head {
   padding-bottom: 10px;
   color: #777777;
-  font-size: 11px;
+  font-size: calc(11px * var(--v2-font-scale));
   text-align: center;
 }
 
 .report-page .report-score-head h2 {
   margin: 0;
   color: #333333;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 600;
   text-align: left;
 }
@@ -162,7 +162,7 @@
   align-items: center;
   min-width: 0;
   color: #333333;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 600;
   overflow-wrap: anywhere;
 }
@@ -170,7 +170,7 @@
 .report-page .report-score-row input {
   padding: 0 2px;
   background: #fafafa;
-  font-size: 18px;
+  font-size: calc(18px * var(--v2-font-scale));
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: center;
@@ -231,7 +231,7 @@
   border: 1px solid transparent;
   border-radius: 4px;
   color: #777777;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
   font-weight: 600;
 }
 
@@ -281,7 +281,7 @@
   border: 1px solid var(--gold);
   background: var(--gold);
   color: #25220f;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -308,7 +308,7 @@
   border-radius: 6px;
   background: #fff0ed;
   color: #953c2e;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
 }
 
 .report-page .report-notice.is-success {
@@ -361,7 +361,7 @@
   .report-page .report-tabs button {
     gap: 5px;
     padding: 0 6px;
-    font-size: 12px;
+    font-size: calc(12px * var(--v2-font-scale));
   }
 
   .report-page .report-sides {
@@ -383,7 +383,7 @@
   }
 
   .report-page .report-score-player {
-    font-size: 12px;
+    font-size: calc(12px * var(--v2-font-scale));
   }
 
   .report-page .report-footer {

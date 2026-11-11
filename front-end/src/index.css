@@ -13,6 +13,8 @@
   --gold: #ffd84d;
   --accent: #ff9f1c;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  /* multiplies every v2 font size; 1 = original sizes. Steps up on wide screens below. */
+  --v2-font-scale: 1;
 }
 
 * {
@@ -30,10 +32,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Larger text on wide screens (e.g. 1440p monitors). Page max-widths use the same scale,
+   so the layout grows in proportion, like browser zoom. */
+@media (min-width: 1600px) {
+  :root {
+    --v2-font-scale: 1.125;
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --v2-font-scale: 1.25;
+  }
+}
+
 .v2-site,
 .site-header,
 .mobile-menu {
   font-family: var(--font-sans);
+  font-size: calc(1rem * var(--v2-font-scale));
 }
 
 button,
@@ -74,7 +91,7 @@ hr {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: calc(16px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -88,7 +105,7 @@ hr {
   display: flex;
   align-items: center;
   gap: 38px;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
 }
 
 .desktop-nav a {
@@ -161,12 +178,12 @@ hr {
 }
 
 .mobile-menu-brand strong {
-  font-size: 23px;
+  font-size: calc(23px * var(--v2-font-scale));
 }
 
 .mobile-menu-brand small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--v2-font-scale));
 }
 
 .mobile-menu nav {
@@ -174,7 +191,7 @@ hr {
   align-content: start;
   gap: 34px;
   padding-top: 40px;
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
 }
 
 .mobile-menu nav a {
@@ -205,7 +222,7 @@ hr {
 }
 
 .page-shell {
-  width: min(960px, calc(100vw - 64px));
+  width: min(calc(960px * var(--v2-font-scale)), calc(100vw - 64px));
   margin: 0 auto;
   padding: 46px 0 64px;
 }
@@ -221,7 +238,7 @@ hr {
 .page-heading h1,
 .profile-hero h1 {
   margin: 0;
-  font-size: 34px;
+  font-size: calc(34px * var(--v2-font-scale));
   font-weight: 800;
   line-height: 1.08;
 }
@@ -229,7 +246,7 @@ hr {
 .page-heading p {
   margin-top: 14px;
   color: #555555;
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
   font-weight: 500;
 }
 
@@ -254,7 +271,7 @@ hr {
   background: transparent;
   border: 0;
   border-bottom: 2px solid transparent;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   line-height: 1;
 }
 
@@ -271,7 +288,7 @@ hr {
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
 }
 
 .data-table-wrap {
@@ -284,7 +301,7 @@ hr {
   width: 100%;
   min-width: 520px;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
 }
 
 .data-table th,
@@ -299,7 +316,7 @@ hr {
   height: 48px;
   background: #fbfbfb;
   color: #111111;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -337,11 +354,135 @@ hr {
   text-decoration: underline;
 }
 
+.elo-groups {
+  display: grid;
+  gap: 18px;
+}
+
+.elo-group {
+  padding: 12px;
+  border-left: 4px solid var(--elo-group-accent, var(--line));
+  border-radius: 7px;
+  background: var(--elo-group-bg, var(--soft));
+}
+
+.elo-group-tone-1 { --elo-group-accent: var(--accent); --elo-group-bg: #fff4e3; }
+.elo-group-tone-2 { --elo-group-accent: var(--gold); --elo-group-bg: var(--soft-yellow); }
+.elo-group-tone-3 { --elo-group-accent: #9ccf7a; --elo-group-bg: #f2f9ec; }
+.elo-group-tone-4 { --elo-group-accent: #7cc4e8; --elo-group-bg: #eef7fc; }
+.elo-group-tone-placing { --elo-group-accent: #c4c4c4; --elo-group-bg: var(--soft); }
+
+.elo-group-title {
+  margin: 0 0 10px;
+  font-size: calc(14px * var(--v2-font-scale));
+  font-weight: 800;
+}
+
+.elo-group .data-table {
+  min-width: 0;
+}
+
+.elo-name-cell {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.promotion-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--soft-yellow);
+  border: 1px solid var(--gold);
+  color: #7a5a00;
+  font-size: calc(11px * var(--v2-font-scale));
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.elo-details {
+  margin-top: 6px;
+}
+
+.elo-details > summary {
+  width: fit-content;
+  color: var(--muted);
+  font-size: calc(13px * var(--v2-font-scale));
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.elo-details > summary:hover {
+  color: var(--ink);
+}
+
+.elo-details-note {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: calc(12px * var(--v2-font-scale));
+}
+
+.elo-details .data-table td:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+}
+
+.podium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px 1px 5px;
+  border-radius: 999px;
+  border: 1px solid var(--podium-edge);
+  background: var(--podium-bg);
+  color: var(--podium-ink);
+  font-size: calc(11px * var(--v2-font-scale));
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.podium-badge svg {
+  color: var(--podium-edge);
+}
+
+.podium-1 { --podium-bg: #fff6cc; --podium-edge: #e0a800; --podium-ink: #6b4f00; }
+.podium-2 { --podium-bg: #f1f3f5; --podium-edge: #9aa3ab; --podium-ink: #3f464d; }
+.podium-3 { --podium-bg: #fbeee4; --podium-edge: #c47a3d; --podium-ink: #6b3d17; }
+
+.placement-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.placement-progress-bar {
+  display: inline-block;
+  width: 72px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.placement-progress-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.placement-progress-text {
+  color: var(--muted);
+  font-size: calc(12px * var(--v2-font-scale));
+  font-variant-numeric: tabular-nums;
+}
+
 .empty-cell,
 .empty-state {
   padding: 26px 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
 }
 
 .results-toolbar {
@@ -361,7 +502,7 @@ hr {
   color: #333333;
   background: #ffffff;
   border: 1px solid #dddddd;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   font-weight: 500;
 }
 
@@ -394,14 +535,14 @@ hr {
 }
 
 .results-page {
-  width: min(1180px, calc(100vw - 64px));
+  width: min(calc(1180px * var(--v2-font-scale)), calc(100vw - 64px));
 }
 
 .match-day h2 {
   margin: 0 0 10px;
   padding: 8px 12px;
   background: var(--soft-yellow);
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 800;
 }
 
@@ -425,12 +566,12 @@ hr {
   align-items: center;
   gap: 7px;
   margin-bottom: 11px;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
 }
 
 .match-card-meta strong {
   margin-right: 2px;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   font-style: italic;
 }
 
@@ -453,7 +594,7 @@ hr {
   gap: 8px;
   align-items: center;
   color: #111111;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 400;
 }
 
@@ -497,7 +638,7 @@ hr {
 }
 
 .report-page {
-  width: min(900px, calc(100vw - 64px));
+  width: min(calc(900px * var(--v2-font-scale)), calc(100vw - 64px));
 }
 
 .report-tabs {
@@ -518,7 +659,7 @@ hr {
   border-radius: 0;
   background: #ededed;
   color: #555555;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   font-weight: 400;
   letter-spacing: 0.08em;
 }
@@ -562,7 +703,7 @@ hr {
 .v2-site .form-table-header,
 .v2-site .form-label {
   color: #222222;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -576,7 +717,7 @@ hr {
   border-color: #dddddd;
   border-radius: 5px;
   color: #555555;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
 }
 
 .v2-site .form-select:not(:last-of-type) {
@@ -602,7 +743,7 @@ hr {
   background-color: var(--gold);
   border: 0;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -617,11 +758,11 @@ hr {
 }
 
 .v2-site .alert {
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
 }
 
 .roster-page {
-  width: min(1120px, calc(100vw - 64px));
+  width: min(calc(1120px * var(--v2-font-scale)), calc(100vw - 64px));
 }
 
 .roster-section {
@@ -634,7 +775,7 @@ hr {
   padding-bottom: 4px;
   border-bottom: 2px solid var(--gold);
   color: #111111;
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -664,7 +805,7 @@ hr {
 
 .roster-card strong {
   overflow: hidden;
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -673,7 +814,7 @@ hr {
 .roster-card em {
   margin-top: 2px;
   color: #909090;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
 }
 
 .player-avatar {
@@ -695,13 +836,13 @@ hr {
 .avatar-md {
   width: 44px;
   height: 44px;
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
 }
 
 .avatar-lg {
   width: 88px;
   height: 88px;
-  font-size: 24px;
+  font-size: calc(24px * var(--v2-font-scale));
 }
 
 .avatar-a {
@@ -721,7 +862,7 @@ hr {
 }
 
 .profile-page {
-  width: min(960px, calc(100vw - 64px));
+  width: min(calc(960px * var(--v2-font-scale)), calc(100vw - 64px));
 }
 
 .back-link {
@@ -730,7 +871,7 @@ hr {
   gap: 8px;
   margin-bottom: 16px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
 }
 
 .profile-hero {
@@ -775,7 +916,7 @@ hr {
 .profile-role {
   margin-top: 8px;
   color: #777777;
-  font-size: 18px;
+  font-size: calc(18px * var(--v2-font-scale));
   font-style: italic;
   text-align: left;
 }
@@ -795,7 +936,7 @@ hr {
 
 .profile-details dt {
   color: #777777;
-  font-size: 10px;
+  font-size: calc(10px * var(--v2-font-scale));
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -803,7 +944,7 @@ hr {
 .profile-details dd {
   margin: 2px 0 0;
   color: #222222;
-  font-size: 12px;
+  font-size: calc(12px * var(--v2-font-scale));
   line-height: 1.3;
 }
 
@@ -827,7 +968,7 @@ hr {
 
 .profile-stats-toolbar label {
   color: #111111;
-  font-size: 16px;
+  font-size: calc(16px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -837,7 +978,7 @@ hr {
 
 .profile-metric-section h2 {
   margin: 0 0 14px;
-  font-size: 16px;
+  font-size: calc(16px * var(--v2-font-scale));
   font-weight: 800;
 }
 
@@ -845,7 +986,7 @@ hr {
   display: block;
   margin-bottom: 10px;
   text-align: center;
-  font-size: 11px;
+  font-size: calc(11px * var(--v2-font-scale));
 }
 
 .profile-stat-row {
@@ -863,15 +1004,15 @@ hr {
 
 .profile-stat-row small {
   color: #555555;
-  font-size: 8px;
+  font-size: calc(8px * var(--v2-font-scale));
 }
 
 .profile-stat-row b {
-  font-size: 18px;
+  font-size: calc(18px * var(--v2-font-scale));
 }
 
 .profile-stat-row span {
-  font-size: 17px;
+  font-size: calc(17px * var(--v2-font-scale));
 }
 
 .stat-ring {
@@ -888,7 +1029,7 @@ hr {
 }
 
 .stat-ring span {
-  font-size: 14px;
+  font-size: calc(14px * var(--v2-font-scale));
   font-weight: 800;
   line-height: 1;
 }
@@ -896,7 +1037,7 @@ hr {
 .stat-ring small {
   margin-top: 2px;
   color: var(--stat-color);
-  font-size: 8px;
+  font-size: calc(8px * var(--v2-font-scale));
   font-weight: 700;
 }
 
@@ -916,26 +1057,27 @@ hr {
 }
 
 .profile-elo-card > strong {
-  font-size: 13px;
+  font-size: calc(13px * var(--v2-font-scale));
   font-weight: 800;
 }
 
 .profile-elo-rank small,
 .profile-elo-card dt {
   color: #666666;
-  font-size: 10px;
+  font-size: calc(10px * var(--v2-font-scale));
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.profile-elo-card dt.profile-elo-symbol {
-  text-transform: none;
+.profile-elo-rank {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
 }
 
 .profile-elo-rank b {
   display: block;
-  margin-top: 2px;
-  font-size: 22px;
+  font-size: calc(22px * var(--v2-font-scale));
 }
 
 .profile-elo-card dl {
@@ -947,7 +1089,7 @@ hr {
 
 .profile-elo-card dd {
   margin: 2px 0 0;
-  font-size: 15px;
+  font-size: calc(15px * var(--v2-font-scale));
 }
 
 .profile-recent {
@@ -956,7 +1098,7 @@ hr {
 
 .profile-recent h2 {
   margin: 0 0 14px;
-  font-size: 16px;
+  font-size: calc(16px * var(--v2-font-scale));
   font-weight: 500;
 }
 
@@ -980,7 +1122,7 @@ hr {
 
   .brand-lockup {
     gap: 8px;
-    font-size: 11px;
+    font-size: calc(11px * var(--v2-font-scale));
     line-height: 1.1;
   }
 
@@ -1011,7 +1153,7 @@ hr {
   }
 
   .page-heading h1 {
-    font-size: 30px;
+    font-size: calc(30px * var(--v2-font-scale));
   }
 
   .profile-hero {
@@ -1034,17 +1176,17 @@ hr {
   }
 
   .profile-hero h1 {
-    font-size: 26px;
+    font-size: calc(26px * var(--v2-font-scale));
   }
 
   .profile-role {
     margin-top: 6px;
-    font-size: 18px;
+    font-size: calc(18px * var(--v2-font-scale));
   }
 
   .page-heading p {
     margin-top: 14px;
-    font-size: 14px;
+    font-size: calc(14px * var(--v2-font-scale));
   }
 
   .toolbar-row {
@@ -1062,7 +1204,7 @@ hr {
   .results-pagination button {
     min-width: 36px;
     height: 34px;
-    font-size: 13px;
+    font-size: calc(13px * var(--v2-font-scale));
   }
 
   .tab-control {
@@ -1075,7 +1217,7 @@ hr {
 
   .data-table {
     min-width: 0;
-    font-size: 12px;
+    font-size: calc(12px * var(--v2-font-scale));
   }
 
   .data-table th,
@@ -1129,7 +1271,7 @@ hr {
   .report-tabs button {
     min-height: 38px;
     padding: 0 8px;
-    font-size: 12px;
+    font-size: calc(12px * var(--v2-font-scale));
     letter-spacing: 0.04em;
   }
 
