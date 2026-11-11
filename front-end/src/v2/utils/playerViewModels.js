@@ -15,6 +15,7 @@ export const EVENT_FILTERS = [
 ];
 
 export const SEASON_OPTIONS = [
+  { label: '2026 - 2027', value: '2026-09-01,2027-08-31' },
   { label: '2025 - 2026', value: '2025-09-01,2026-08-31' },
   { label: '2023 - 2024', value: '2023-09-01,2024-08-31' },
   { label: '2022 - 2023', value: '2022-09-01,2023-08-31' },

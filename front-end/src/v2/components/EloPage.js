@@ -21,8 +21,8 @@ const RANKINGS_PER_PAGE = 10;
 const EloPage = () => {
     const { players, queryElo } = useContext(AppContext);
     const [seasonValue, setSeasonValue] = useState(SEASON_OPTIONS[0].value);
-    const [seasonStart, setSeasonStart] = useState('2025-09-01');
-    const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
+    const [seasonStart, setSeasonStart] = useState('2026-09-01');
+    const [seasonEnd, setSeasonEnd] = useState('2027-08-31');
     const [activeEvent, setActiveEvent] = useState('singles');
     const [currentPage, setCurrentPage] = useState(1);
     const [singlesElo, setSinglesElo] = useState([]);
