@@ -26,7 +26,21 @@ export const SEASON_OPTIONS = [
 const YEAR_LABELS = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
 const AVATAR_THEMES = ['avatar-a', 'avatar-b', 'avatar-c', 'avatar-d'];
 export const MIN_RANKING_GAMES = 8;
-export const MAX_ELO_SIGMA = 4;
+
+// Elo grouping. Players are ordered by a cautious score (mu - ELO_SCORE_SIGMAS * sigma) and
+// split into groups at natural breaks in that score (see groupByNaturalBreaks).
+export const ELO_SCORE_SIGMAS = 2;
+// Number of groups = floor(placed players / ELO_PLAYERS_PER_GROUP), kept within MIN..MAX groups
+// and never so many that a group would have fewer than ELO_MIN_GROUP_SIZE players.
+export const ELO_PLAYERS_PER_GROUP = 5;
+export const ELO_MIN_GROUPS = 3;
+export const ELO_MAX_GROUPS = 5;
+export const ELO_MIN_GROUP_SIZE = 4;
+export const ELO_PROMOTION_SPOTS = 2;
+// Top group only: the highest scores get 1st/2nd/3rd medals, shown in order.
+export const ELO_PODIUM_SPOTS = 3;
+// Games needed before a player is placed in a group; until then they are "getting placed".
+export const ELO_PLACEMENT_GAMES = { singles: 5, doubles: 8 };
 
 export function parseSeasonValue(value) {
   const [start, end] = value.split(',');
@@ -135,29 +149,153 @@ export function buildOverallWinRankings(stats) {
     .map((player, index) => ({ ...player, rank: index + 1 }));
 }
 
-export function buildEloRankings(elo, eventKey) {
-  const ratingKey = eventKey === 'singles' ? 'singles_rating' : 'doubles_rating';
-  const winPctKey = eventKey === 'singles' ? 'singles_win_pct' : 'doubles_win_pct';
-  const gamesKey = eventKey === 'singles' ? 'singles_games_played' : 'doubles_games_played';
+export function shuffle(items, rng = Math.random) {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+  }
+  return result;
+}
 
-  return [...(elo || [])]
-    .map(player => {
-      const rating = player[ratingKey] || {};
-      const winPct = Number.isFinite(player[winPctKey]) ? Math.round(player[winPctKey] * 100) : 0;
-      const sigma = Number(rating.sigma || 0);
-      return {
-        id: player.id,
-        to: getPlayerProfilePath(player),
-        name: cleanSeedPrefix(player.name || 'Player Name'),
-        mu: Number(rating.mu || player.singles_elo || 0),
-        sigma,
-        winPct,
-        games: Number(player[gamesKey] || 0),
-      };
-    })
-    .filter(player => player.games >= MIN_RANKING_GAMES && player.sigma < MAX_ELO_SIGMA)
-    .sort((a, b) => b.mu - a.mu || a.name.localeCompare(b.name))
-    .map((player, index) => ({ ...player, rank: index + 1 }));
+export function getEloPromotionSpots(groupIndex, groupSize) {
+  if (groupIndex === 0) return 0;
+  if (groupSize >= 5) return ELO_PROMOTION_SPOTS;
+  if (groupSize >= 3) return 1;
+  return 0;
+}
+
+function makeEloRow(player, eventKey) {
+  const rating = player[`${eventKey}_rating`];
+  if (!rating || !Number.isFinite(Number(rating.mu)) || !Number.isFinite(Number(rating.sigma))) {
+    return undefined;
+  }
+  const winPct = player[`${eventKey}_win_pct`];
+  const mu = Number(rating.mu);
+  const sigma = Number(rating.sigma);
+  return {
+    id: player.id,
+    to: getPlayerProfilePath(player),
+    name: cleanSeedPrefix(player.name || 'Player Name'),
+    mu,
+    sigma,
+    score: mu - ELO_SCORE_SIGMAS * sigma,
+    winPct: Number.isFinite(winPct) ? Math.round(winPct * 100) : 0,
+    games: Number(player[`${eventKey}_games_played`] || 0),
+  };
+}
+
+/**
+ * Split players into groups with natural breaks (Jenks): choose the boundaries that keep
+ * each group's scores as tight as possible (minimum total within-group squared deviation),
+ * with every group at least ELO_MIN_GROUP_SIZE players. The number of groups comes from the
+ * player count, so groups don't collapse or fragment as sigma shrinks over a season.
+ * rows must be sorted by score, highest first.
+ */
+export function getEloGroupCount(playerCount) {
+  if (playerCount === 0) return 0;
+  const target = Math.floor(playerCount / ELO_PLAYERS_PER_GROUP);
+  const clamped = Math.min(ELO_MAX_GROUPS, Math.max(ELO_MIN_GROUPS, target));
+  return Math.max(1, Math.min(clamped, Math.floor(playerCount / ELO_MIN_GROUP_SIZE)));
+}
+
+function groupByNaturalBreaks(rows) {
+  const n = rows.length;
+  const groupCount = getEloGroupCount(n);
+  if (groupCount <= 1) return n ? [rows] : [];
+
+  const minSize = ELO_MIN_GROUP_SIZE;
+  const sum = [0];
+  const sumSq = [0];
+  rows.forEach(row => {
+    sum.push(sum[sum.length - 1] + row.score);
+    sumSq.push(sumSq[sumSq.length - 1] + row.score * row.score);
+  });
+  // squared deviation of rows[start..end) from their mean
+  const cost = (start, end) => {
+    const total = sum[end] - sum[start];
+    return (sumSq[end] - sumSq[start]) - (total * total) / (end - start);
+  };
+
+  // best[g][end]: lowest cost of splitting rows[0..end) into g groups; from[g][end]: where group g starts
+  const best = Array.from({ length: groupCount + 1 }, () => new Array(n + 1).fill(Infinity));
+  const from = Array.from({ length: groupCount + 1 }, () => new Array(n + 1).fill(0));
+  best[0][0] = 0;
+  for (let g = 1; g <= groupCount; g += 1) {
+    for (let end = g * minSize; end <= n; end += 1) {
+      for (let start = (g - 1) * minSize; start <= end - minSize; start += 1) {
+        const total = best[g - 1][start] + cost(start, end);
+        if (total < best[g][end]) {
+          best[g][end] = total;
+          from[g][end] = start;
+        }
+      }
+    }
+  }
+
+  const groups = [];
+  let end = n;
+  for (let g = groupCount; g >= 1; g -= 1) {
+    const start = from[g][end];
+    groups.unshift(rows.slice(start, end));
+    end = start;
+  }
+  return groups;
+}
+
+/**
+ * Build the grouped Elo view for one event.
+ * Returns { groups: [{ key, label, players }], placing: [player] }.
+ * Players with 0 games are omitted. Players below ELO_PLACEMENT_GAMES are in `placing`
+ * (alphabetical). The top group lists its 1st/2nd/3rd (`podium`) first in order, then the
+ * rest shuffled. Lower groups list promotion-spot players first, then everyone else; both
+ * parts are shuffled so the order inside those groups is not a ranking.
+ */
+export function buildEloGroups(elo, eventKey, rng = Math.random) {
+  const placementGames = ELO_PLACEMENT_GAMES[eventKey] || MIN_RANKING_GAMES;
+  const rows = (elo || [])
+    .map(player => makeEloRow(player, eventKey))
+    .filter(row => row && row.games > 0);
+
+  const placing = rows
+    .filter(row => row.games < placementGames)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(row => ({ ...row, placementGames }));
+
+  const placed = rows
+    .filter(row => row.games >= placementGames)
+    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+
+  const groups = groupByNaturalBreaks(placed).map((group, index) => {
+    const label = `Group ${index + 1}`;
+    let leaders;
+    let rest;
+    if (index === 0) {
+      // podium: kept in score order, not shuffled
+      leaders = group.slice(0, ELO_PODIUM_SPOTS).map((row, place) => ({ ...row, podium: place + 1, promotion: false }));
+      rest = group.slice(ELO_PODIUM_SPOTS);
+    } else {
+      const spots = getEloPromotionSpots(index, group.length);
+      leaders = shuffle(group.slice(0, spots).map(row => ({ ...row, promotion: true })), rng);
+      rest = group.slice(spots);
+    }
+    rest = shuffle(rest.map(row => ({ ...row, promotion: false })), rng);
+    return {
+      key: `group-${index + 1}`,
+      label,
+      players: [...leaders, ...rest].map(row => ({ ...row, groupLabel: label })),
+    };
+  });
+
+  return { groups, placing };
+}
+
+export function findEloStanding(eloGroups, player) {
+  if (!eloGroups) return undefined;
+  const placed = findRankedPlayer(eloGroups.groups.flatMap(group => group.players), player);
+  if (placed) return placed;
+  const placing = findRankedPlayer(eloGroups.placing, player);
+  return placing ? { ...placing, placing: true } : undefined;
 }
 
 export function findPlayer(players, id) {
@@ -312,12 +450,12 @@ export function makeProfileStats(statsRecord, statsRecords = []) {
   ];
 }
 
-export function makeProfileEloCards(statsRecord, singlesRankings = [], doublesRankings = []) {
+export function makeProfileEloCards(statsRecord, singlesGroups, doublesGroups) {
   if (!statsRecord) return [];
 
   return [
-    makeProfileEloCard('Singles Elo', findRankedPlayer(singlesRankings, statsRecord)),
-    makeProfileEloCard('Doubles Elo', findRankedPlayer(doublesRankings, statsRecord)),
+    makeProfileEloCard('Singles Elo', findEloStanding(singlesGroups, statsRecord)),
+    makeProfileEloCard('Doubles Elo', findEloStanding(doublesGroups, statsRecord)),
   ].filter(Boolean);
 }
 
@@ -335,16 +473,18 @@ function statFromRecord(record, eventKey, label, color, rank) {
   };
 }
 
-function makeProfileEloCard(label, ranking) {
-  if (!ranking) return undefined;
+function makeProfileEloCard(label, standing) {
+  if (!standing) return undefined;
 
   return {
     label,
-    rank: ranking.rank,
-    mu: ranking.mu,
-    sigma: ranking.sigma,
-    games: ranking.games,
-    winPct: ranking.winPct,
+    groupLabel: standing.placing ? undefined : standing.groupLabel,
+    promotion: Boolean(standing.promotion),
+    podium: standing.podium,
+    placing: Boolean(standing.placing),
+    placementGames: standing.placementGames,
+    games: standing.games,
+    winPct: standing.winPct,
   };
 }
 

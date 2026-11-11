@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { Medal } from 'lucide-react';
 import {
   getAvatarTheme,
   getInitials,
@@ -272,24 +273,59 @@ export const StatRing = ({ stat }) => (
   </div>
 );
 
-const formatEloNumber = (value) => Number.isFinite(value) ? value.toFixed(2) : '-';
+const PODIUM_LABELS = { 1: '1st', 2: '2nd', 3: '3rd' };
+
+export const PodiumBadge = ({ place }) => (
+  <span className={`podium-badge podium-${place}`}>
+    <Medal size={14} strokeWidth={2.4} aria-hidden="true" />
+    {PODIUM_LABELS[place]}
+  </span>
+);
+
+export const PromotionTag = () => (
+  <span className="promotion-tag">&uarr; Promotion spot</span>
+);
+
+export const PlacementProgress = ({ games, needed }) => {
+  const percent = Math.min(100, Math.round((games / needed) * 100));
+  return (
+    <span className="placement-progress">
+      <span
+        className="placement-progress-bar"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={needed}
+        aria-valuenow={games}
+        aria-label={`${games} of ${needed} games played`}
+      >
+        <span style={{ width: `${percent}%` }} />
+      </span>
+      <span className="placement-progress-text">{games} / {needed}</span>
+    </span>
+  );
+};
+
+export const EloGroupSection = ({ label, tone, children }) => (
+  <section className={`elo-group elo-group-tone-${tone}`} aria-label={label}>
+    <h2 className="elo-group-title">{label}</h2>
+    {children}
+  </section>
+);
 
 export const ProfileEloCard = ({ card }) => (
   <article className="profile-elo-card">
     <strong>{card.label}</strong>
     <div className="profile-elo-rank">
-      <small>Rank</small>
-      <b>#{card.rank || '-'}</b>
+      <small>{card.placing ? 'Getting placed' : 'Group'}</small>
+      {card.placing ? (
+        <PlacementProgress games={card.games} needed={card.placementGames} />
+      ) : (
+        <b>{card.groupLabel || '-'}</b>
+      )}
+      {card.podium && <PodiumBadge place={card.podium} />}
+      {card.promotion && <PromotionTag />}
     </div>
     <dl>
-      <div>
-        <dt className="profile-elo-symbol">&mu;</dt>
-        <dd>{formatEloNumber(card.mu)}</dd>
-      </div>
-      <div>
-        <dt className="profile-elo-symbol">&sigma;</dt>
-        <dd>{formatEloNumber(card.sigma)}</dd>
-      </div>
       <div>
         <dt>Games</dt>
         <dd>{card.games}</dd>

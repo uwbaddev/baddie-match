@@ -20,7 +20,7 @@ export const ALL_TIME_STATS_SEASON = {
 };
 
 const BASE_URL = 'https://athletics.uwaterloo.ca';
-const V2_PLAYERS_PATH = '/v2/players';
+const V2_PLAYERS_PATH = '/players';
 
 const profileUrl = (slug, id) => `${BASE_URL}/sports/mens-badminton/roster/${slug}/${id}`;
 

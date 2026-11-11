@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { AppContext } from "../../Contexts/AppContext";
 import { MatchCard, PaginationControl, PlayerAvatar, ProfileEloCard, StatRing } from "./RedesignUI";
 import {
-    buildEloRankings,
+    buildEloGroups,
     findPlayer,
     formatPlayerName,
     groupMatchesByDate,
@@ -76,7 +76,11 @@ const PlayerProfile = () => {
             ))
         ).then(options => {
             const availableOptions = options.filter(option => option.hasStats);
-            const defaultOption = availableOptions.find(option => option.value === season) || ALL_TIME_STATS_SEASON;
+            // Default to the current season (first in ROSTER_STATS_SEASONS) when the player has stats in it,
+            // then the season from the profile link, then all time.
+            const defaultOption = availableOptions.find(option => option.value === ROSTER_STATS_SEASONS[0].value)
+                || availableOptions.find(option => option.value === season)
+                || ALL_TIME_STATS_SEASON;
             setStatsSeasonOptions([...availableOptions, ALL_TIME_STATS_SEASON]);
             setSelectedStatsSeason(defaultOption.value);
         });
@@ -105,12 +109,12 @@ const PlayerProfile = () => {
         [stats, statsPlayerId]
     );
 
-    const singlesEloRankings = useMemo(() => buildEloRankings(singlesElo, 'singles'), [singlesElo]);
-    const doublesEloRankings = useMemo(() => buildEloRankings(doublesElo, 'doubles'), [doublesElo]);
+    const singlesEloGroups = useMemo(() => buildEloGroups(singlesElo, 'singles'), [singlesElo]);
+    const doublesEloGroups = useMemo(() => buildEloGroups(doublesElo, 'doubles'), [doublesElo]);
     const profileStats = useMemo(() => makeProfileStats(statsRecord, stats), [statsRecord, stats]);
     const profileEloCards = useMemo(
-        () => makeProfileEloCards(statsRecord, singlesEloRankings, doublesEloRankings),
-        [statsRecord, singlesEloRankings, doublesEloRankings]
+        () => makeProfileEloCards(statsRecord, singlesEloGroups, doublesEloGroups),
+        [statsRecord, singlesEloGroups, doublesEloGroups]
     );
     const matchPageCount = Math.max(1, Math.ceil(matches.length / PROFILE_MATCHES_PER_PAGE));
     const paginatedMatches = useMemo(() => {
@@ -128,7 +132,7 @@ const PlayerProfile = () => {
 
     return (
         <main className="page-shell v2-site profile-page">
-            <Link className="back-link" to="/v2/players">
+            <Link className="back-link" to="/players">
                 <ArrowLeft size={18} />
                 Back to Roster
             </Link>

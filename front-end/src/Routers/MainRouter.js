@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import LandingPage from '../components/LandingPage';
 import ReportMatchComponent from '../components/ReportMatch';
@@ -13,11 +13,20 @@ import V2Players from '../v2/components/Players';
 import V2EloPage from '../v2/components/EloPage';
 import PlayerProfile from '../v2/components/PlayerProfile';
 
+export const V1_BASE_PATH = '/v1';
+
+const isV1Path = (pathname) => pathname === V1_BASE_PATH || pathname.startsWith(`${V1_BASE_PATH}/`);
+
 const RouteHeader = () => {
     const location = useLocation();
-    const isV2 = location.pathname === '/v2' || location.pathname.startsWith('/v2/');
+    return isV1Path(location.pathname) ? <Header /> : <V2Header />;
+};
 
-    return isV2 ? <V2Header /> : <Header />;
+// v2 used to live under /v2; keep old links and bookmarks working.
+const LegacyV2Redirect = () => {
+    const location = useLocation();
+    const pathname = location.pathname.replace(/^\/v2(?=\/|$)/, '') || '/';
+    return <Navigate to={`${pathname}${location.search}${location.hash}`} replace />;
 };
 
 const MainRouter = () => {
@@ -26,19 +35,20 @@ const MainRouter = () => {
             <BrowserRouter>
                 <RouteHeader />
                 <Routes>
-                    <Route exact path='/' element={<LandingPage />} />
-                    <Route exact path='/report' element={<ReportMatchComponent />} />
-                    <Route exact path='/results' element={<ResultsPage />} />
-                    <Route exact path='/players' element={<Players />} />
-                    <Route exact path='/elo' element={<EloPage />} />
-                    <Route exact path='/v2' element={<V2LandingPage />} />
-                    <Route exact path='/v2/report' element={<V2ReportMatch />} />
-                    <Route exact path='/v2/results' element={<V2ResultsPage />} />
-                    <Route exact path='/v2/players' element={<V2Players />} />
-                    <Route exact path='/v2/elo' element={<V2EloPage />} />
-                    <Route exact path='/v2/players/:season/id/:id' element={<PlayerProfile />} />
-                    <Route exact path='/v2/players/:season/:slug' element={<PlayerProfile />} />
-                    <Route exact path='/v2/players/:id' element={<PlayerProfile />} />
+                    <Route exact path='/' element={<V2LandingPage />} />
+                    <Route exact path='/report' element={<V2ReportMatch />} />
+                    <Route exact path='/results' element={<V2ResultsPage />} />
+                    <Route exact path='/players' element={<V2Players />} />
+                    <Route exact path='/elo' element={<V2EloPage />} />
+                    <Route exact path='/players/:season/id/:id' element={<PlayerProfile />} />
+                    <Route exact path='/players/:season/:slug' element={<PlayerProfile />} />
+                    <Route exact path='/players/:id' element={<PlayerProfile />} />
+                    <Route exact path={V1_BASE_PATH} element={<LandingPage />} />
+                    <Route exact path={`${V1_BASE_PATH}/report`} element={<ReportMatchComponent />} />
+                    <Route exact path={`${V1_BASE_PATH}/results`} element={<ResultsPage />} />
+                    <Route exact path={`${V1_BASE_PATH}/players`} element={<Players />} />
+                    <Route exact path={`${V1_BASE_PATH}/elo`} element={<EloPage />} />
+                    <Route path='/v2/*' element={<LegacyV2Redirect />} />
                 </Routes>
             </BrowserRouter>
         </>
