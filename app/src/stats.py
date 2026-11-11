@@ -9,6 +9,7 @@ class Stats:
             p['id']: {
                 "id": p["id"], 
                 "name": p["first_name"] + " " + p["last_name"],
+                "is_guest": p["is_guest"],
                 "singles_wins": 0,
                 "singles_losses": 0,
                 "doubles_wins": 0,

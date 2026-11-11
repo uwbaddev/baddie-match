@@ -22,7 +22,8 @@ const useApp = () => {
             .then(data => {
                 data.sort((a, b) => (a.first_name > b.first_name) ? 1 : ((b.first_name > a.first_name) ? -1 : 0));
                 setPlayers(data);
-                setActivePlayers(data.filter((p) => p.elegible_year >= 0));
+                // elegible_year -1 = retired; guests (is_guest) stay selectable so their matches can be reported
+                setActivePlayers(data.filter((p) => p.elegible_year >= 0 || p.is_guest));
             });
 
         fetch(CategoryUrl, { method: 'GET' })

@@ -5,6 +5,16 @@ from main import app
 
 db = SQLAlchemy(app)
 
+# HACK: there is no guest column yet (avoiding a migration), so guests are marked
+# with elegible_year == -2. Guests are non-Waterloo players (e.g. visiting players at
+# practice): their matches are still recorded, but they are left out of Elo and
+# hidden from rankings/leaderboards. Other values: -1 = retired/inactive, 1-5 = year.
+# Always go through is_guest() / the serialized 'is_guest' flag instead of checking -2.
+GUEST_ELIGIBLE_YEAR = -2
+
+def is_guest(player):
+  return player.get('elegible_year') == GUEST_ELIGIBLE_YEAR
+
 class Players(db.Model):
     #todo find out how to make non-nullable
     __tablename__ = 'players'
@@ -76,7 +86,8 @@ class Players(db.Model):
           'first_name' : self.first_name,
           'last_name': self.last_name,
           'elegible_year' : self.elegible_year,
-          'sex' : self.sex
+          'sex' : self.sex,
+          'is_guest' : self.elegible_year == GUEST_ELIGIBLE_YEAR,
         }
 
 

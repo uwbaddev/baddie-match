@@ -121,8 +121,8 @@ class Player_elo:
             # Singles update
 
             # list of elo scores for team 
-            p1_elo = player_stats[match['players'][0]][2]
-            p2_elo = player_stats[match['players'][1]][2]
+            p1_elo = player_stats[match['players'][0]][1]
+            p2_elo = player_stats[match['players'][1]][1]
 
             t1 = [p1_elo]
             t2 = [p2_elo]
@@ -164,8 +164,15 @@ class Player_elo:
     
         matches = [m.serialize() for m in all_matches]
  
+        # Guests (see is_guest in players.py) are excluded from Elo entirely. A match
+        # with a guest in it is skipped for everyone, since there is no rating to
+        # play against; the match itself is still recorded and shows in results.
+        guest_ids = {p['id'] for p in players if p['is_guest']}
+        players = [p for p in players if not p['is_guest']]
+        matches = [m for m in matches if not guest_ids.intersection(m['players'])]
+
         player_stats = Player_elo.initialize_player_stat_dict(players)
-        
+
         # get recent matches
         # matches = [match for match in matches if datetime.datetime.strptime(match['date_added'], '%Y-%m-%d-%H:%M:%S') > datetime.datetime(2022, 9, 1)]
         # get sorted matches

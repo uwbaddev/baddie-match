@@ -60,8 +60,8 @@ Start the backend:
 # For Windows:
 waitress-serve --host=0.0.0.0 --port=5000 myapp:app
 
-# For mac
-gunicorn -b 0.0.0.0:5000 main:app
+# For mac/linux (local): --reload restarts workers when Python files change
+gunicorn -b 0.0.0.0:5000 --reload --reload-engine=poll main:app
 ```
 
 ### Static roster photos

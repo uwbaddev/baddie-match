@@ -59,7 +59,15 @@ export function cleanSeedPrefix(name) {
   return (name || '').replace(/^t_/i, '').replace(/\s+/g, ' ').trim();
 }
 
+// Guests (non-Waterloo players) are flagged by the backend via `is_guest`
+// (currently a hack: elegible_year === -2, see app/src/players.py). Their matches
+// are recorded, but they are kept out of Elo and the rankings/leaderboards.
+export function isGuestPlayer(player) {
+  return Boolean(player && player.is_guest);
+}
+
 export function getPlayerYearLabel(player) {
+  if (isGuestPlayer(player)) return 'Guest';
   const index = Number(player && player.elegible_year);
   return YEAR_LABELS[index] || 'Player';
 }
@@ -108,6 +116,7 @@ export function buildWinRankings(stats, eventKey) {
   const lossesKey = `${eventKey}_losses`;
 
   return [...(stats || [])]
+    .filter(player => !isGuestPlayer(player))
     .map(player => {
       const wins = Number(player[winsKey] || 0);
       const losses = Number(player[lossesKey] || 0);
@@ -130,6 +139,7 @@ export function buildWinRankings(stats, eventKey) {
 
 export function buildOverallWinRankings(stats) {
   return [...(stats || [])]
+    .filter(player => !isGuestPlayer(player))
     .map(player => {
       const wins = Number(player.singles_wins || 0) + Number(player.doubles_wins || 0) + Number(player.mixed_wins || 0);
       const losses = Number(player.singles_losses || 0) + Number(player.doubles_losses || 0) + Number(player.mixed_losses || 0);

@@ -341,3 +341,14 @@ test('groupMatchesByDate returns newest date sections first', () => {
 
   expect(groups.map(group => group.label)).toEqual(['FRI SEP 19, 2025', 'THU SEP 18, 2025']);
 });
+
+test('guests are hidden from win rankings and labelled Guest', () => {
+  const stats = [
+    { id: 1, name: 'Team Player', is_guest: false, singles_wins: 8, singles_losses: 0 },
+    { id: 2, name: 'Guest Player', is_guest: true, singles_wins: 9, singles_losses: 0 },
+  ];
+
+  expect(buildWinRankings(stats, 'singles').map(row => row.id)).toEqual([1]);
+  expect(buildOverallWinRankings(stats).map(row => row.id)).toEqual([1]);
+  expect(getPlayerYearLabel({ elegible_year: -2, is_guest: true })).toBe('Guest');
+});
