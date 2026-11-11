@@ -6,6 +6,7 @@ export const ROSTER_SEASONS = [
 ];
 
 export const ROSTER_STATS_SEASONS = [
+  { label: '2026 - 2027', value: '2026-27', start: '2026-09-01', end: '2027-08-31' },
   { label: '2025 - 2026', value: '2025-26', start: '2025-09-01', end: '2026-08-31' },
   { label: '2023 - 2024', value: '2023-24', start: '2023-09-01', end: '2024-08-31' },
   { label: '2022 - 2023', value: '2022-23', start: '2022-09-01', end: '2023-08-31' },

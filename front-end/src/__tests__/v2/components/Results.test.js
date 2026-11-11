@@ -111,8 +111,8 @@ test('results pagination uses a sliding five-page window', async () => {
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     2,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['1', '2', '3', '4', '5']);
@@ -122,8 +122,8 @@ test('results pagination uses a sliding five-page window', async () => {
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     5,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['3', '4', '5', '6', '7']);
@@ -147,8 +147,8 @@ test('results pagination shows the final five-page window near the end', async (
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     23,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['19', '20', '21', '22', '23']);
@@ -172,8 +172,8 @@ test('clicking a results page fetches that page', async () => {
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     3,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
   expect(screen.getByRole('button', { name: '3' })).toHaveClass('is-active');
@@ -196,8 +196,8 @@ test('changing results season resets pagination to page one', async () => {
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     3,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
 
@@ -229,8 +229,8 @@ test('changing results event filter resets pagination to page one and refetches 
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     3,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
 
@@ -239,8 +239,8 @@ test('changing results event filter resets pagination to page one and refetches 
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     1,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'singles',
   ));
 });
@@ -266,8 +266,8 @@ test('results renders pagination above and below populated match lists', async (
   await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(
     2,
     20,
-    '2025-09-01',
-    '2026-08-31',
+    '2026-09-01',
+    '2027-08-31',
     'all',
   ));
 });

@@ -12,8 +12,8 @@ const LandingPage = () => {
     const [activeEvent, setActiveEvent] = useState('singles');
     const [currentPage, setCurrentPage] = useState(1);
     const [seasonValue, setSeasonValue] = useState(SEASON_OPTIONS[0].value);
-    const [seasonStart, setSeasonStart] = useState('2025-09-01');
-    const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
+    const [seasonStart, setSeasonStart] = useState('2026-09-01');
+    const [seasonEnd, setSeasonEnd] = useState('2027-08-31');
 
     const getStats = (newSeasonStart, newSeasonEnd) => {
         queryStats(newSeasonStart, newSeasonEnd).then(data => {

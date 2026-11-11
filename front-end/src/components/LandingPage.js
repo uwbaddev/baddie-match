@@ -9,8 +9,8 @@ const LandingPage = () => {
     const [singlesRankings, setSinglesRankings] = useState([]);
     const [doublesRankings, setDoublesRankings] = useState([]);
     const [mixedRankings, setMixedRankings] = useState([]);
-    const [seasonStart, setSeasonStart] = useState('2025-09-01');
-    const [seasonEnd, setSeasonEnd] = useState('2026-08-31');
+    const [seasonStart, setSeasonStart] = useState('2026-09-01');
+    const [seasonEnd, setSeasonEnd] = useState('2027-08-31');
 
     const updateStats = (category, newStats) => {
         const results = newStats.map(s => {

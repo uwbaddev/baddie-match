@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 const SeasonSelector = ({ setStart, setEnd }) => {
-  const [selectedSeason, setSelectedSeason] = useState('2025-09-01, 2026-08-31');
+  const [selectedSeason, setSelectedSeason] = useState('2026-09-01, 2027-08-31');
   const options = [
+    { label: '2026-2027', value: '2026-09-01, 2027-08-31' },
     { label: '2025-2026', value: '2025-09-01, 2026-08-31' },
     { label: '2024-2025', value: '2024-09-01, 2025-08-31' },
     { label: '2023-2024', value: '2023-09-01, 2024-08-31' },
