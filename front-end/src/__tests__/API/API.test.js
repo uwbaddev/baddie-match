@@ -1,10 +1,18 @@
-import { fetchElo } from '../../API/API';
+import { fetchElo, MatchPageUrl } from '../../API/API';
 
 const summary = { singles: [{ name: 'Ada', singles_elo: 1100 }], doubles: [{ name: 'Ben' }] };
 const originalFetch = global.fetch;
 
 afterEach(() => {
   global.fetch = originalFetch;
+});
+
+test('match page requests include both filters and preserve unfiltered defaults', () => {
+  const url = new URL(MatchPageUrl(2, 20, '2026-09-01', '2027-08-31', 'mixed', 59), 'http://localhost');
+  expect(url.searchParams.get('event')).toBe('mixed');
+  expect(url.searchParams.get('playerId')).toBe('59');
+  expect(url.searchParams.get('page')).toBe('2');
+  expect(MatchPageUrl(1, 20, '2026-09-01', '2027-08-31')).toContain('event=all&playerId=all');
 });
 
 test('concurrent singles and doubles queries share one request for the same period', async () => {

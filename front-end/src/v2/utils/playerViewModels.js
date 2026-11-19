@@ -432,6 +432,11 @@ export function filterMatchesByEvent(matches, eventKey) {
   return (matches || []).filter(match => (match.event || '').toLowerCase() === eventKey);
 }
 
+export function filterMatchesByPlayer(matches, playerId) {
+  if (playerId === 'all') return matches || [];
+  return (matches || []).filter(match => (match.players || []).some(id => Number(id) === Number(playerId)));
+}
+
 export function makeProfileStats(statsRecord, statsRecords = []) {
   if (!statsRecord) return [];
   const singlesRank = findRank(buildWinRankings(statsRecords, 'singles'), statsRecord);

@@ -1,6 +1,6 @@
 import { CategoryId, CategoryUrl, MatchUrl, PlayerIdUrl, PlayerMatchesUrl, PlayersUrl, GetStatsUrl, fetchElo as queryElo, MatchPageUrl } from "../API/API"
 import React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 export const AppContext = React.createContext('')
 
@@ -51,7 +51,7 @@ const useApp = () => {
             })
     };
 
-    const queryPlayerResults = (id, start, end) => fetch(PlayerMatchesUrl(id, start, end), { method: 'GET' }).then(response => response.json())
+    const queryPlayerResults = useCallback((id, start, end) => fetch(PlayerMatchesUrl(id, start, end), { method: 'GET' }).then(response => response.json()), [])
 
     const queryMatch = (id) => fetch(MatchUrl(id), { method: 'GET' }).then(response => response.json())
 
@@ -59,9 +59,9 @@ const useApp = () => {
 
     const queryCategory = (id) => fetch(CategoryId, { method: 'GET' }).then(response => response.json())
 
-    const queryStats = (start, end) => fetch(GetStatsUrl(start, end), { method: 'GET' }).then(response => response.json())
+    const queryStats = useCallback((start, end) => fetch(GetStatsUrl(start, end), { method: 'GET' }).then(response => response.json()), [])
 
-    const queryMatchPage = (id, perPage, start, end, event) => fetch(MatchPageUrl(id, perPage, start, end, event), { method: 'GET' }).then(response => response.json())
+    const queryMatchPage = useCallback((id, perPage, start, end, event, playerId) => fetch(MatchPageUrl(id, perPage, start, end, event, playerId), { method: 'GET' }).then(response => response.json()), [])
 
     return {
         //constants across app

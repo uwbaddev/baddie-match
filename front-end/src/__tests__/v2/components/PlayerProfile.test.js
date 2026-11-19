@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { AppContext } from '../../../Contexts/AppContext';
+import AppContextProvider, { AppContext } from '../../../Contexts/AppContext';
+import { CategoryUrl, PlayersUrl } from '../../../API/API';
 import PlayerProfile from '../../../v2/components/PlayerProfile';
 
 const statsRecord = (id, name, wins, overrides = {}) => ({
@@ -268,12 +269,89 @@ test('caps profile match pagination at five numbered buttons', async () => {
   expect(screen.queryByRole('button', { name: '6' })).not.toBeInTheDocument();
 });
 
+test('profile event and participant filters run before pagination without changing stats requests', async () => {
+  const matches = [
+    ...Array.from({ length: 7 }, (_, index) => profileMatch(index + 1, index + 1, index + 7)),
+    { ...profileMatch(8, 8, 15), event: 'Mixed', players: [113, 2, 3, 4], score: [15, 10, 10, 15, 15, 8] },
+  ];
+  const { queryStats, queryElo, queryPlayerResults } = renderProfile({
+    route: '/players/2025-26/id/113',
+    players: [
+      { id: 113, first_name: 'Liam', last_name: 'Zhang' },
+      { id: 2, first_name: 'Allison', last_name: 'Cheng' },
+      { id: 3, first_name: 'Jessica', last_name: 'Cheng' },
+      { id: 4, first_name: 'Ivan', last_name: 'Cheng' },
+      { id: 5, first_name: 'No', last_name: 'Matches' },
+    ],
+    statsByStart: { '2025-09-01': [statsRecord(113, 'Liam Zhang', 2)] },
+    playerMatchesByStart: { '2025-09-01': matches },
+  });
+  await userEvent.click(await screen.findByRole('button', { name: '2' }));
+  const calls = [queryStats.mock.calls.length, queryElo.mock.calls.length, queryPlayerResults.mock.calls.length];
+  const playerFilter = screen.getByRole('combobox', { name: 'Match player' });
+  expect(within(playerFilter).queryByRole('option', { name: 'Liam Zhang' })).not.toBeInTheDocument();
+  expect(within(playerFilter).queryByRole('option', { name: 'No Matches' })).not.toBeInTheDocument();
+  expect(within(playerFilter).getByRole('option', { name: 'Jessica Cheng' })).toBeInTheDocument();
+  await userEvent.selectOptions(playerFilter, '3');
+  expect(screen.queryByLabelText('Profile match pages')).not.toBeInTheDocument();
+  expect(screen.getByText('3:00 PM')).toBeInTheDocument();
+  expect(screen.queryByText('7:00 AM')).not.toBeInTheDocument();
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match event' }), 'singles');
+  expect(screen.getByText('No matches found for these filters.')).toBeInTheDocument();
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match event' }), 'mixed');
+  expect(screen.getByText('3:00 PM')).toBeInTheDocument();
+  await userEvent.selectOptions(playerFilter, '2');
+  expect(screen.getByText('3:00 PM')).toBeInTheDocument();
+  expect([queryStats.mock.calls.length, queryElo.mock.calls.length, queryPlayerResults.mock.calls.length]).toEqual(calls);
+});
+
+test('background provider updates preserve profile filters without refetching', async () => {
+  const originalFetch = global.fetch;
+  let resolveCategories;
+  const categories = new Promise(resolve => { resolveCategories = resolve; });
+  const response = data => ({ ok: true, json: () => Promise.resolve(data) });
+  global.fetch = jest.fn(url => {
+    if (url === CategoryUrl) return categories;
+    if (url === PlayersUrl) return Promise.resolve(response([
+      { id: 113, first_name: 'Liam', last_name: 'Zhang', elegible_year: 0 },
+      { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
+    ]));
+    if (url.includes('/players/stats?')) return Promise.resolve(response(
+      url.includes('start=2025-09-01') ? [statsRecord(113, 'Liam Zhang', 2)] : []
+    ));
+    if (url.includes('/match/player/113?')) return Promise.resolve(response([profileMatch(1, 1)]));
+    if (url.includes('/elo?')) return Promise.resolve(response({ singles: [], doubles: [] }));
+    throw new Error(`Unexpected request: ${url}`);
+  });
+  try {
+    render(
+      <MemoryRouter initialEntries={['/players/2025-26/id/113']}>
+        <AppContextProvider>
+          <Routes><Route path="/players/:season/id/:id" element={<PlayerProfile />} /></Routes>
+        </AppContextProvider>
+      </MemoryRouter>
+    );
+    const playerFilter = await screen.findByRole('combobox', { name: 'Match player' });
+    await waitFor(() => expect(within(playerFilter).getByRole('option', { name: 'Allison Cheng' })).toBeInTheDocument());
+    await userEvent.selectOptions(playerFilter, '2');
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match event' }), 'singles');
+    const requests = global.fetch.mock.calls.length;
+    await act(async () => { resolveCategories(response([{ name: 'ranked' }])); });
+    expect(playerFilter).toHaveValue('2');
+    expect(screen.getByRole('combobox', { name: 'Match event' })).toHaveValue('singles');
+    expect(global.fetch).toHaveBeenCalledTimes(requests);
+  } finally {
+    global.fetch = originalFetch;
+  }
+});
+
 test('changing profile stats season resets match pagination to page one', async () => {
   renderProfile({
     route: '/players/2025-26/id/113',
     players: [
       { id: 113, first_name: 't_Liam', last_name: 'Zhang', elegible_year: 0 },
       { id: 2, first_name: 'Allison', last_name: 'Cheng', elegible_year: 0 },
+      { id: 3, first_name: 'Jessica', last_name: 'Cheng', elegible_year: 0 },
     ],
     statsByStart: {
       '2025-09-01': [statsRecord(113, 't_Liam Zhang', 2)],
@@ -282,13 +360,14 @@ test('changing profile stats season resets match pagination to page one', async 
     playerMatchesByStart: {
       '2025-09-01': Array.from({ length: 7 }, (_, index) => profileMatch(index + 1, index + 1, index + 7)),
       '2000-09-01': [
-        { ...profileMatch(100, 20, 9), last_edit: '2025-10-20-09:00:00' },
-        { ...profileMatch(101, 21, 10), last_edit: '2025-10-21-10:00:00' },
+        { ...profileMatch(100, 20, 9), players: [113, 3], last_edit: '2025-10-20-09:00:00' },
+        { ...profileMatch(101, 21, 10), players: [113, 3], last_edit: '2025-10-21-10:00:00' },
       ],
     },
   });
 
   await screen.findByLabelText('Profile match pages');
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match player' }), '2');
   await userEvent.click(screen.getByRole('button', { name: '2' }));
   expect(await screen.findByText('1:00 PM')).toBeInTheDocument();
 
@@ -297,6 +376,10 @@ test('changing profile stats season resets match pagination to page one', async 
   await waitFor(() => expect(screen.queryByLabelText('Profile match pages')).not.toBeInTheDocument());
   expect(screen.getByText('9:00 AM')).toBeInTheDocument();
   expect(screen.queryByText('1:00 PM')).not.toBeInTheDocument();
+  const dropdown = screen.getByRole('combobox', { name: 'Match player' });
+  expect(dropdown).toHaveValue('all');
+  expect(within(dropdown).queryByRole('option', { name: 'Allison Cheng' })).not.toBeInTheDocument();
+  expect(within(dropdown).getByRole('option', { name: 'Jessica Cheng' })).toBeInTheDocument();
 });
 
 test('falls back to all-time stats when route season has no stats', async () => {

@@ -30,5 +30,5 @@ export const fetchElo = (event, start, end) => {
   return pendingEloRequests.get(url).then(results => results[event]);
 };
 
-export const MatchPageUrl = (page, perPage,start,end,event = 'all') => `${DomainName}/matches?page=${page}&perPage=${perPage}&start=${start}&end=${end}&event=${encodeURIComponent(event)}`
+export const MatchPageUrl = (page, perPage,start,end,event = 'all',playerId = 'all') => `${DomainName}/matches?page=${page}&perPage=${perPage}&start=${start}&end=${end}&event=${encodeURIComponent(event)}&playerId=${encodeURIComponent(playerId)}`
 export const GetMatchesCount = `${DomainName}/matches/count`

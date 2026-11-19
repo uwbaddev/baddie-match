@@ -2,10 +2,12 @@ import { ArrowLeft } from "lucide-react";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { AppContext } from "../../Contexts/AppContext";
-import { MatchCard, PaginationControl, PlayerAvatar, ProfileEloCard, StatRing } from "./RedesignUI";
+import { MatchCard, MatchFilters, PaginationControl, PlayerAvatar, ProfileEloCard, StatRing } from "./RedesignUI";
 import {
     buildEloGroups,
     findPlayer,
+    filterMatchesByEvent,
+    filterMatchesByPlayer,
     formatPlayerName,
     groupMatchesByDate,
     makeProfileEloCards,
@@ -36,6 +38,8 @@ const PlayerProfile = () => {
     const [statsSeasonOptions, setStatsSeasonOptions] = useState([]);
     const [selectedStatsSeason, setSelectedStatsSeason] = useState('');
     const [matchPage, setMatchPage] = useState(1);
+    const [eventFilter, setEventFilter] = useState('all');
+    const [playerFilter, setPlayerFilter] = useState('all');
 
     const routeLocalPlayer = id ? findPlayer(players, id) : null;
     const slugRosterPlayer = season && slug ? findRosterPlayer(season, slug) : null;
@@ -60,6 +64,8 @@ const PlayerProfile = () => {
         setSinglesElo([]);
         setDoublesElo([]);
         setMatchPage(1);
+        setEventFilter('all');
+        setPlayerFilter('all');
 
         if (!statsPlayerId) return;
 
@@ -89,7 +95,10 @@ const PlayerProfile = () => {
     useEffect(() => {
         if (!statsPlayerId || !selectedStatsSeason) return;
 
+        let isCurrent = true;
         setMatchPage(1);
+        setMatches([]);
+        setPlayerFilter('all');
         const statsSeason = getStatsSeasonRange(selectedStatsSeason);
         Promise.all([
             queryPlayerResults(statsPlayerId, statsSeason.start, statsSeason.end),
@@ -97,11 +106,13 @@ const PlayerProfile = () => {
             queryElo('doubles', statsSeason.start, statsSeason.end),
             queryStats(statsSeason.start, statsSeason.end),
         ]).then(([matchData, singlesEloData, doublesEloData, statsData]) => {
+            if (!isCurrent) return;
             setMatches(matchData || []);
             setSinglesElo(singlesEloData || []);
             setDoublesElo(doublesEloData || []);
             setStats(statsData || []);
         });
+        return () => { isCurrent = false; };
     }, [statsPlayerId, selectedStatsSeason, queryPlayerResults, queryStats, queryElo]);
 
     const statsRecord = useMemo(
@@ -116,11 +127,20 @@ const PlayerProfile = () => {
         () => makeProfileEloCards(statsRecord, singlesEloGroups, doublesEloGroups),
         [statsRecord, singlesEloGroups, doublesEloGroups]
     );
-    const matchPageCount = Math.max(1, Math.ceil(matches.length / PROFILE_MATCHES_PER_PAGE));
+    const matchPlayers = useMemo(() => {
+        const ids = new Set(matches.flatMap(match => match.players || []).map(Number));
+        ids.delete(Number(statsPlayerId));
+        return players.filter(player => ids.has(Number(player.id)));
+    }, [matches, players, statsPlayerId]);
+    const filteredMatches = useMemo(
+        () => filterMatchesByPlayer(filterMatchesByEvent(matches, eventFilter), playerFilter),
+        [matches, eventFilter, playerFilter]
+    );
+    const matchPageCount = Math.max(1, Math.ceil(filteredMatches.length / PROFILE_MATCHES_PER_PAGE));
     const paginatedMatches = useMemo(() => {
         const startIndex = (matchPage - 1) * PROFILE_MATCHES_PER_PAGE;
-        return matches.slice(startIndex, startIndex + PROFILE_MATCHES_PER_PAGE);
-    }, [matches, matchPage]);
+        return filteredMatches.slice(startIndex, startIndex + PROFILE_MATCHES_PER_PAGE);
+    }, [filteredMatches, matchPage]);
     const matchGroups = useMemo(() => groupMatchesByDate(paginatedMatches), [paginatedMatches]);
 
     const details = [
@@ -203,6 +223,15 @@ const PlayerProfile = () => {
 
             <section className="profile-recent">
                 <h2>Matches with {playerName}</h2>
+                {statsPlayerId && (
+                    <MatchFilters
+                        players={matchPlayers}
+                        event={eventFilter}
+                        playerId={playerFilter}
+                        onEventChange={value => { setEventFilter(value); setMatchPage(1); }}
+                        onPlayerChange={value => { setPlayerFilter(value); setMatchPage(1); }}
+                    />
+                )}
                 <PaginationControl
                     currentPage={matchPage}
                     pageCount={matchPageCount}
@@ -221,7 +250,7 @@ const PlayerProfile = () => {
                         </section>
                     ))}
                 </div>
-                {matches.length === 0 && <p className="empty-state">No matches found for this stats range.</p>}
+                {filteredMatches.length === 0 && <p className="empty-state">{matches.length === 0 ? 'No matches found for this stats range.' : 'No matches found for these filters.'}</p>}
             </section>
         </main>
     )

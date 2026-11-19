@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Medal } from 'lucide-react';
+import { ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Medal } from 'lucide-react';
 import {
   getAvatarTheme,
   getInitials,
   formatPlayerName,
+  EVENT_FILTERS,
   SEASON_OPTIONS,
   parseSeasonValue,
 } from '../utils/playerViewModels';
@@ -52,6 +53,29 @@ export const SeasonSelect = ({ value, onChange, className = '' }) => (
 
 const MAX_VISIBLE_PAGES = 5;
 
+export const MatchFilters = ({ players, event, playerId, onEventChange, onPlayerChange, children }) => (
+  <div className="match-filters" role="group" aria-label="Match filters">
+    {children}
+    <label className="match-filter">
+      <span>Event</span>
+      <select className="filter-select" aria-label="Match event" value={event} onChange={e => onEventChange(e.target.value)}>
+        {EVENT_FILTERS.map(option => <option key={option.key} value={option.key}>{option.label}</option>)}
+      </select>
+      <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
+    </label>
+    <label className="match-filter">
+      <span>Player</span>
+      <select className="filter-select" aria-label="Match player" value={playerId} onChange={e => onPlayerChange(e.target.value)}>
+        <option value="all">All Players</option>
+        {[...players].sort((a, b) => formatPlayerName(a).localeCompare(formatPlayerName(b))).map(player => (
+          <option key={player.id} value={player.id}>{formatPlayerName(player)}</option>
+        ))}
+      </select>
+      <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
+    </label>
+  </div>
+);
+
 export const getVisiblePages = (currentPage, pageCount, maxVisiblePages = MAX_VISIBLE_PAGES) => {
   const visibleCount = Math.min(pageCount, maxVisiblePages);
   const halfWindow = Math.floor(visibleCount / 2);
@@ -84,22 +108,24 @@ export const PaginationControl = ({ currentPage, pageCount, onPageChange, label 
         onClick={() => goToPage(1)}
         disabled={currentPage === 1}
         aria-label="First page"
+        title="First page"
       >
-        &laquo;
+        <ChevronFirst size={16} aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
         aria-label="Previous page"
+        title="Previous page"
       >
-        &lsaquo;
+        <ChevronLeft size={16} aria-hidden="true" />
       </button>
       {pages.map(page => (
         <button
           key={page}
           type="button"
-          className={page === currentPage ? 'is-active' : ''}
+          className={`page-number${page === currentPage ? ' is-active' : ''}${Math.abs(page - currentPage) > 1 ? ' is-distant' : ''}`}
           onClick={() => goToPage(page)}
           aria-current={page === currentPage ? 'page' : undefined}
         >
@@ -111,16 +137,18 @@ export const PaginationControl = ({ currentPage, pageCount, onPageChange, label 
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === pageCount}
         aria-label="Next page"
+        title="Next page"
       >
-        &rsaquo;
+        <ChevronRight size={16} aria-hidden="true" />
       </button>
       <button
         type="button"
         onClick={() => goToPage(pageCount)}
         disabled={currentPage === pageCount}
         aria-label="Last page"
+        title="Last page"
       >
-        &raquo;
+        <ChevronLast size={16} aria-hidden="true" />
       </button>
     </nav>
   );
@@ -220,7 +248,9 @@ export const MatchCard = ({ match }) => (
 
 const ScoreLine = ({ sets, team, showWinnerDot }) => (
   <div className="score-line">
-    {showWinnerDot && <span className="score-dot" aria-hidden="true" />}
+    <span className="score-marker" aria-hidden="true">
+      {showWinnerDot && <span className="score-dot" />}
+    </span>
     {sets.map((set, index) => (
       <span
         key={index}
