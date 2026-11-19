@@ -1,6 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { MatchCard, NamePill, PlayerAvatar, ProfileEloCard, SeasonSelect } from '../../../v2/components/RedesignUI';
+import { MatchCard, NamePill, PaginationControl, PlayerAvatar, ProfileEloCard, SeasonSelect } from '../../../v2/components/RedesignUI';
+
+test('pagination arrows use labelled icons and preserve page navigation', () => {
+  const onPageChange = jest.fn();
+  render(<PaginationControl currentPage={3} pageCount={12} onPageChange={onPageChange} />);
+  for (const label of ['First page', 'Previous page', 'Next page', 'Last page']) {
+    const button = screen.getByRole('button', { name: label });
+    expect(button).toHaveAttribute('title', label);
+    expect(button.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+  }
+  expect(screen.getByRole('button', { name: '3' })).toHaveAttribute('aria-current', 'page');
+  fireEvent.click(screen.getByRole('button', { name: 'Previous page' }));
+  expect(onPageChange).toHaveBeenLastCalledWith(2);
+  fireEvent.click(screen.getByRole('button', { name: 'Last page' }));
+  expect(onPageChange).toHaveBeenLastCalledWith(12);
+});
 
 test('cached avatars use lazy loading and fall back to initials on image failure', () => {
   render(<PlayerAvatar player={{ name: 'Jessica Cheng' }} />);
@@ -110,6 +125,8 @@ test('MatchCard renders linked player names with one winner dot', () => {
   expect(container.querySelectorAll('.score-dot')).toHaveLength(1);
   expect(container.querySelector('.match-team.is-winner .score-dot')).toBeInTheDocument();
   const rows = container.querySelectorAll('.match-team');
+  expect(rows[0].querySelector('.score-line').firstElementChild).toHaveClass('score-marker');
+  expect(rows[1].querySelector('.score-line').firstElementChild).toHaveClass('score-marker');
   expect(rows[0]).toHaveClass('match-team');
   expect(rows[0]).not.toHaveClass('is-winner');
   expect(rows[1]).toHaveClass('match-team', 'is-winner');

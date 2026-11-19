@@ -4,12 +4,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { AppContext } from '../../../Contexts/AppContext';
 import ResultsPage from '../../../v2/components/Results';
 
-const renderResults = (queryMatchPage) => {
+const renderResults = (queryMatchPage, players = [{ id: 1, first_name: 'Allison', last_name: 'Cheng' }]) => {
   render(
     <MemoryRouter>
       <AppContext.Provider
         value={{
-          players: [{ id: 1, first_name: 'Allison', last_name: 'Cheng' }],
+          players,
           queryMatchPage,
         }}
       >
@@ -114,6 +114,7 @@ test('results pagination uses a sliding five-page window', async () => {
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['1', '2', '3', '4', '5']);
 
@@ -124,6 +125,7 @@ test('results pagination uses a sliding five-page window', async () => {
     20,
     '2026-09-01',
     '2027-08-31',
+    'all',
     'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['3', '4', '5', '6', '7']);
@@ -150,6 +152,7 @@ test('results pagination shows the final five-page window near the end', async (
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
   expect(getNumberedPageButtons().map(button => button.textContent)).toEqual(['19', '20', '21', '22', '23']);
 });
@@ -175,6 +178,7 @@ test('clicking a results page fetches that page', async () => {
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
   expect(screen.getByRole('button', { name: '3' })).toHaveClass('is-active');
 });
@@ -199,6 +203,7 @@ test('changing results season resets pagination to page one', async () => {
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
 
   await userEvent.selectOptions(screen.getAllByRole('combobox')[0], '2000-09-01,3000-09-01');
@@ -208,6 +213,7 @@ test('changing results season resets pagination to page one', async () => {
     20,
     '2000-09-01',
     '3000-09-01',
+    'all',
     'all',
   ));
 });
@@ -232,6 +238,7 @@ test('changing results event filter resets pagination to page one and refetches 
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
 
   await userEvent.selectOptions(screen.getAllByRole('combobox')[1], 'singles');
@@ -242,6 +249,7 @@ test('changing results event filter resets pagination to page one and refetches 
     '2026-09-01',
     '2027-08-31',
     'singles',
+    'all',
   ));
 });
 
@@ -269,5 +277,53 @@ test('results renders pagination above and below populated match lists', async (
     '2026-09-01',
     '2027-08-31',
     'all',
+    'all',
   ));
+});
+
+test('player and event filters combine, reset the page, and clear back to all players', async () => {
+  const queryMatchPage = jest.fn((page, size, start, end, event, playerId) => resolvePage({
+    metadata: { pageCount: playerId === 'all' ? '3' : '1', playerIds: [1, 2] },
+    records: playerId === 'all' ? [] : [{ ...makeMatch(1), event: 'Mixed' }],
+  }));
+  renderResults(queryMatchPage, [
+    { id: 1, first_name: 'Allison', last_name: 'Cheng' },
+    { id: 2, first_name: 'Liam', last_name: 'Zhang' },
+  ]);
+  await userEvent.click(await screen.findByRole('button', { name: '3' }));
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match player' }), '2');
+  await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(1, 20, '2026-09-01', '2027-08-31', 'all', '2'));
+  await waitFor(() => expect(screen.queryByRole('button', { name: '3' })).not.toBeInTheDocument());
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match event' }), 'mixed');
+  await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(1, 20, '2026-09-01', '2027-08-31', 'mixed', '2'));
+  expect(await screen.findByText('WED SEP 10, 2025')).toBeInTheDocument();
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match player' }), 'all');
+  await waitFor(() => expect(queryMatchPage).toHaveBeenLastCalledWith(1, 20, '2026-09-01', '2027-08-31', 'mixed', 'all'));
+});
+
+test('player options come from the full season, stay stable across filters, and reset with the season', async () => {
+  const queryMatchPage = jest.fn((page, size, start, end, event, playerId) => resolvePage({
+    metadata: { pageCount: '1', playerIds: start === '2026-09-01' ? [1, 2, 4] : start === '2025-09-01' ? [3, 4] : [] },
+    records: [{ ...makeMatch(1), players: [1, 4] }],
+  }));
+  renderResults(queryMatchPage, [
+    { id: 1, first_name: 'Allison', last_name: 'Cheng' },
+    { id: 2, first_name: 'Liam', last_name: 'Zhang' },
+    { id: 3, first_name: 'Jessica', last_name: 'Cheng' },
+    { id: 4, first_name: 'Ivan', last_name: 'Cheng' },
+  ]);
+  const dropdown = screen.getByRole('combobox', { name: 'Match player' });
+  await waitFor(() => expect(within(dropdown).getByRole('option', { name: 'Liam Zhang' })).toBeInTheDocument());
+  expect(within(dropdown).getAllByRole('option').map(option => option.textContent)).toEqual(['All Players', 'Allison Cheng', 'Ivan Cheng', 'Liam Zhang']);
+  await userEvent.selectOptions(dropdown, '2');
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Match event' }), 'mixed');
+  expect(within(dropdown).getByRole('option', { name: 'Allison Cheng' })).toBeInTheDocument();
+  expect(dropdown).toHaveValue('2');
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Season' }), '2025-09-01,2026-08-31');
+  await waitFor(() => expect(within(dropdown).getByRole('option', { name: 'Jessica Cheng' })).toBeInTheDocument());
+  expect(within(dropdown).queryByRole('option', { name: 'Liam Zhang' })).not.toBeInTheDocument();
+  expect(dropdown).toHaveValue('all');
+  expect(queryMatchPage).toHaveBeenLastCalledWith(1, 20, '2025-09-01', '2026-08-31', 'mixed', 'all');
+  await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Season' }), '2023-09-01,2024-08-31');
+  await waitFor(() => expect(within(dropdown).getAllByRole('option')).toHaveLength(1));
 });

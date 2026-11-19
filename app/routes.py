@@ -192,10 +192,21 @@ def getMatchPage():
         start = request.args.get('start', default = "2020-09-01", type = Matches.toDate)
         end = request.args.get('end', default = "2023-09-01", type = Matches.toDate)
         event = get_match_event_filter(request.args.get('event'))
+        playerId = request.args.get('playerId')
+        if playerId not in (None, '', 'all'):
+            try:
+                playerId = int(playerId)
+            except ValueError:
+                return 'playerId must be a positive integer', 400
+            if playerId < 1:
+                return 'playerId must be a positive integer', 400
         matches = Matches.getMatchesBetweenDate(start, end)
+        seasonPlayerIds = sorted({player for match in matches for player in match.players if player is not None})
 
         if event is not None:
             matches = [match for match in matches if match.event == event]
+        if isinstance(playerId, int):
+            matches = [match for match in matches if playerId in match.players]
 
         matchPages = build_match_pages(matches, recordsPerPage)
         pageCount = max(1, len(matchPages))
@@ -205,7 +216,8 @@ def getMatchPage():
             {
                 'recordCount': str(len(matches)),
                 'pageCount': str(pageCount),
-                'recordsPerPage': str(recordsPerPage)
+                'recordsPerPage': str(recordsPerPage),
+                'playerIds': seasonPlayerIds
             },
             'records': [m.serialize() for m in matchPage]
         }

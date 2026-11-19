@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { AppContext } from "../../Contexts/AppContext";
-import { MatchCard, PageShell, PaginationControl, SeasonSelect } from "./RedesignUI";
+import { MatchCard, MatchFilters, PageShell, PaginationControl, SeasonSelect } from "./RedesignUI";
 import {
-    EVENT_FILTERS,
     SEASON_OPTIONS,
-    filterMatchesByEvent,
     groupMatchesByDate,
     parseSeasonValue,
     summarizeMatch,
@@ -15,7 +14,9 @@ const MATCHES_PER_PAGE = 20;
 const ResultsPage = () => {
     const { players, queryMatchPage } = useContext(AppContext)
     const [matches, setMatches] = useState([])
+    const [seasonPlayerIds, setSeasonPlayerIds] = useState([]);
     const [eventFilter, setEventFilter] = useState('all');
+    const [playerFilter, setPlayerFilter] = useState('all');
     const [seasonValue, setSeasonValue] = useState(SEASON_OPTIONS[0].value);
     const [seasonStart, setSeasonStart] = useState('2026-09-01');
     const [seasonEnd, setSeasonEnd] = useState('2027-08-31');
@@ -25,13 +26,14 @@ const ResultsPage = () => {
     useEffect(() => {
         let isCurrent = true;
 
-        queryMatchPage(currentPage, MATCHES_PER_PAGE, seasonStart, seasonEnd, eventFilter)
+        queryMatchPage(currentPage, MATCHES_PER_PAGE, seasonStart, seasonEnd, eventFilter, playerFilter)
             .then(data => {
                 if (!isCurrent) return;
                 const metadata = data.metadata || {};
                 const nextPageCount = Number(metadata.pageCount || 1);
 
                 setMatches(data.records || []);
+                setSeasonPlayerIds(metadata.playerIds || []);
                 setPageCount(nextPageCount);
                 if (currentPage > nextPageCount) {
                     setCurrentPage(nextPageCount);
@@ -41,37 +43,48 @@ const ResultsPage = () => {
         return () => {
             isCurrent = false;
         };
-    }, [queryMatchPage, currentPage, seasonStart, seasonEnd, eventFilter])
+    }, [queryMatchPage, currentPage, seasonStart, seasonEnd, eventFilter, playerFilter])
 
     const handleSeasonChange = (value, parsedSeason) => {
         const season = parsedSeason || parseSeasonValue(value);
         setSeasonValue(value);
         setSeasonStart(season.start);
         setSeasonEnd(season.end);
+        setMatches([]);
+        setSeasonPlayerIds([]);
+        setPlayerFilter('all');
+        setPageCount(1);
         setCurrentPage(1);
     };
 
-    const handleEventFilterChange = (event) => {
-        setEventFilter(event.target.value);
+    const handleEventFilterChange = (value) => {
+        setEventFilter(value);
+        setMatches([]);
         setCurrentPage(1);
     };
 
-    const filteredMatches = filterMatchesByEvent(matches, eventFilter);
-    const groupedMatches = groupMatchesByDate(filteredMatches);
+    const handlePlayerFilterChange = (value) => {
+        setPlayerFilter(value);
+        setMatches([]);
+        setCurrentPage(1);
+    };
+
+    const seasonPlayers = useMemo(() => {
+        const ids = new Set(seasonPlayerIds.map(Number));
+        return players.filter(player => ids.has(Number(player.id)));
+    }, [players, seasonPlayerIds]);
+    const groupedMatches = groupMatchesByDate(matches);
 
     return (
         <PageShell title="Results" className="results-page">
-            <div className="toolbar-row results-toolbar">
-                <SeasonSelect value={seasonValue} onChange={handleSeasonChange} />
-                <select
-                    className="filter-select"
-                    value={eventFilter}
-                    onChange={handleEventFilterChange}
-                >
-                    {EVENT_FILTERS.map(option => (
-                        <option key={option.key} value={option.key}>{option.label}</option>
-                    ))}
-                </select>
+            <div className="results-toolbar">
+                <MatchFilters players={seasonPlayers} event={eventFilter} playerId={playerFilter} onEventChange={handleEventFilterChange} onPlayerChange={handlePlayerFilterChange}>
+                    <label className="match-filter">
+                        <span>Season</span>
+                        <SeasonSelect value={seasonValue} onChange={handleSeasonChange} />
+                        <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
+                    </label>
+                </MatchFilters>
             </div>
             <PaginationControl
                 currentPage={currentPage}
