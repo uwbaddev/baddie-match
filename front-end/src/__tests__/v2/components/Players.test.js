@@ -19,12 +19,17 @@ const renderPlayers = (players = defaultPlayers) => render(
   </MemoryRouter>
 );
 
-test('defaults roster to 2025-26 and links official player cards', () => {
+test('defaults roster to 2026-27 and links player cards', () => {
   renderPlayers();
 
-  expect(screen.getByRole('combobox')).toHaveValue('2025-26');
+  expect(screen.getByRole('combobox')).toHaveValue('2026-27');
   expect(screen.getByText('Liam Zhang')).toBeInTheDocument();
-  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2025-26/id/113');
+  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2026-27/id/113');
+  expect(screen.getByText('Catherine Pang')).toBeInTheDocument();
+  expect(screen.getByText('Michael Qu')).toBeInTheDocument();
+  expect(screen.queryByText('Raunak Sandhu')).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'Coaches' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'Support Staff' })).not.toBeInTheDocument();
 });
 
 test('switches roster seasons from the dropdown', async () => {
@@ -46,7 +51,7 @@ test('switches roster seasons from the dropdown', async () => {
 test('falls back to slug profile routes when a roster player has no local database match', () => {
   renderPlayers([]);
 
-  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2025-26/liam-zhang');
+  expect(screen.getByText('Liam Zhang').closest('a')).toHaveAttribute('href', '/players/2026-27/liam-zhang');
 });
 
 test('keeps player roster cards simple while preserving staff roles', async () => {
@@ -55,6 +60,7 @@ test('keeps player roster cards simple while preserving staff roles', async () =
   expect(screen.getByText('Liam Zhang')).toBeInTheDocument();
   expect(screen.queryByText('Computer Engineering')).not.toBeInTheDocument();
   expect(screen.queryByText('Second Year')).not.toBeInTheDocument();
+  await userEvent.selectOptions(screen.getByRole('combobox'), '2025-26');
   expect(screen.getByText('Andrew Zhuang')).toBeInTheDocument();
   expect(screen.getByText('Andrew Zhuang').closest('a')).toHaveAttribute('href', '/players/2025-26/id/57');
   expect(screen.getByText('Head Coach')).toBeInTheDocument();

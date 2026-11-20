@@ -152,6 +152,11 @@ class Matches(db.Model):
       raise Exception('score cannot be null')
     if (len(score) != 6):
       raise Exception('score must be an array of 6')
+    if score[0] == 0 and score[1] == 0:
+      raise Exception('Enter scores for Game 1.')
+    for game in range(1, 3):
+      if any(score[game * 2:game * 2 + 2]) and not any(score[game * 2 - 2:game * 2]):
+        raise Exception('Enter Game ' + str(game) + ' before Game ' + str(game + 1) + '.')
 
   def validatePlayersAndEvents(players, event):
     if (players[0] is None):

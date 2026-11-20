@@ -1,4 +1,5 @@
 export const ROSTER_SEASONS = [
+  { label: '2026 - 2027', value: '2026-27' },
   { label: '2025 - 2026', value: '2025-26' },
   { label: '2024 - 2025', value: '2024-25' },
   { label: '2023 - 2024', value: '2023-24' },
@@ -186,6 +187,23 @@ export const ROSTERS_BY_SEASON = {
     ],
     supportStaff: [],
   },
+};
+
+ROSTERS_BY_SEASON['2026-27'] = {
+  players: [
+    ...ROSTERS_BY_SEASON['2025-26'].players
+      .filter(person => !['raunak-sandhu', 'jacob-kim', 'ashley-wong', 'daniel-hu', 'nicole-wang'].includes(person.slug))
+      .map(person => ({ ...person, season: '2026-27', eligYear: '', academicYear: '' })),
+    player('2026-27', 'Catherine Pang', 'catherine-pang', null, { eligYear: '1' }),
+    player('2026-27', 'Janna Xing', 'janna-xing', null, { eligYear: '1' }),
+    player('2026-27', 'Thi Pham', 'thi-pham', null, { eligYear: '1' }),
+    player('2026-27', 'Ryan Huang', 'ryan-huang', null, { eligYear: '1' }),
+    player('2026-27', 'Jimmy Lu', 'jimmy-lu', null, { eligYear: '1' }),
+    player('2026-27', 'Neilson Tao', 'neilson-tao', null, { eligYear: '1' }),
+    player('2026-27', 'Michael Qu', 'michael-qu', null, { eligYear: '1' }),
+  ],
+  coaches: [],
+  supportStaff: [],
 };
 
 export function getRosterBySeason(season) {

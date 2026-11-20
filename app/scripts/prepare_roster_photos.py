@@ -11,14 +11,16 @@ import requests
 
 
 PHOTO_DIR = Path(__file__).resolve().parents[2] / 'front-end' / 'src' / 'assets' / 'roster-photos'
+MAX_SIDE = 960
+QUALITY = 82
 
 
 def compress_photo(content):
     with Image.open(BytesIO(content)) as image:
         image = ImageOps.exif_transpose(image).convert('RGB')
-        image.thumbnail((320, 320), Image.Resampling.LANCZOS)
+        image.thumbnail((MAX_SIDE, MAX_SIDE), Image.Resampling.LANCZOS)
         output = BytesIO()
-        image.save(output, format='WEBP', quality=65, method=6)
+        image.save(output, format='WEBP', quality=QUALITY, method=6)
         return output.getvalue()
 
 
@@ -34,6 +36,7 @@ def prepare(sources, output_dir):
             cached = existing.get(key)
             # Unchanged photos are not fetched again on subsequent runs.
             if (cached and cached['source_url'] == person['sources'][0]['url']
+                    and cached.get('max_side') == MAX_SIDE and cached.get('quality') == QUALITY
                     and (output_dir / (key + '.webp')).exists()):
                 manifest.append(cached)
                 continue
@@ -51,6 +54,7 @@ def prepare(sources, output_dir):
                     'source_url': source['url'], 'source_season': source['season'],
                     'content_hash': sha256(content).hexdigest(),
                     'original_bytes': len(response.content), 'bytes': len(content),
+                    'max_side': MAX_SIDE, 'quality': QUALITY,
                 })
                 print(f"{key}: {len(response.content):,} -> {len(content):,} bytes", file=sys.stderr)
                 break

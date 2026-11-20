@@ -159,6 +159,50 @@ test('a failed submission keeps the entered values and displays the server error
   expect(screen.getByRole('spinbutton', { name: 'Player one, Game 1 score' })).toHaveValue(21);
 });
 
+test.each([
+  { games: [2, 3], message: 'Enter both scores for Game 1.' },
+  { games: [1, 3], message: 'Enter Game 2 before Game 3.' },
+])('rejects skipped games: $games', async ({ games, message }) => {
+  global.fetch = jest.fn();
+  renderReport();
+  selectSingles();
+  games.forEach(game => {
+    enterScore('Player one', game, 21);
+    enterScore('Player two', game, 15);
+  });
+  await userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
+  expect(screen.getByRole('alert')).toHaveTextContent(message);
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('zero-zero cannot disguise a skipped game', async () => {
+  global.fetch = jest.fn();
+  renderReport();
+  selectSingles();
+  [1, 3].forEach(game => {
+    enterScore('Player one', game, 21);
+    enterScore('Player two', game, 0);
+  });
+  enterScore('Player one', 2, 0);
+  enterScore('Player two', 2, 0);
+  await userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
+  expect(screen.getByRole('alert')).toHaveTextContent('Enter Game 2 before Game 3.');
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('allows consecutive games and a genuine zero score', async () => {
+  global.fetch = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('Match was added') });
+  renderReport();
+  selectSingles();
+  [1, 2, 3].forEach(game => {
+    enterScore('Player one', game, 21);
+    enterScore('Player two', game, 0);
+  });
+  await userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
+  await screen.findByRole('status');
+  expect(JSON.parse(global.fetch.mock.calls[0][1].body).score).toEqual([21, 0, 21, 0, 21, 0]);
+});
+
 test('clear form resets the entered values', async () => {
   renderReport();
   selectSingles();
