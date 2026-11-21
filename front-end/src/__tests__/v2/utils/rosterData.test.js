@@ -220,7 +220,7 @@ test('every available roster photo resolves to its versioned CDN image', () => {
     const avatar = getRosterPlayerAvatar({ name: photo.name });
     const image = manifest.find(record => record.key === photo.key);
     expect(avatar.type).toBe('image');
-    expect(image.filename).toBe(`${photo.key}.${image.content_hash.slice(0, 12)}.webp`);
+    expect(image.filename).toBe(`${photo.key}.${image.content_hash.slice(0, 5)}.webp`);
     expect(avatar.src).toBe(`https://images.uwbadminton.com/${image.filename}`);
   });
 });

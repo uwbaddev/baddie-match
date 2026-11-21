@@ -74,7 +74,9 @@ The original URLs in the roster data are download sources only; visitors never
 fetch headshots from Waterloo or a photo API. No photo database table or import
 is needed. An existing local `roster_photos` table is unused and can be left alone.
 
-Each filename includes a content hash, so changing an image changes its URL.
+Each filename includes a five-character content hash, so changing an image changes
+its URL. The manifest retains the full SHA-256 fingerprint for verification, and
+preparation refuses to overwrite a conflicting local or current-manifest filename.
 Roster cards and profiles share the same CDN URL, including during local development.
 Players without an available photo retain initials.
 

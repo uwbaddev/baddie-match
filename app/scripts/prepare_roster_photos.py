@@ -50,8 +50,12 @@ def prepare(sources, output_dir, manifest_path):
                     print(f"Could not fetch {key}: {error}", file=sys.stderr)
                     continue
                 content_hash = sha256(content).hexdigest()
-                filename = f'{key}.{content_hash[:12]}.webp'
-                (output_dir / filename).write_bytes(content)
+                filename = f'{key}.{content_hash[:5]}.webp'
+                destination = output_dir / filename
+                if ((cached and cached['filename'] == filename and cached['content_hash'] != content_hash)
+                        or (destination.exists() and sha256(destination.read_bytes()).hexdigest() != content_hash)):
+                    raise SystemExit(f'Hash collision for {filename}; existing photo was not overwritten.')
+                destination.write_bytes(content)
                 manifest.append({
                     'key': key, 'name': person['name'],
                     'source_url': source['url'], 'source_season': source['season'],
