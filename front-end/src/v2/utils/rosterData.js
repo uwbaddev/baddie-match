@@ -372,10 +372,14 @@ export function getRosterPhotoSources() {
   people.forEach(person => {
     if (records.some(record => namesOverlap(record, person))) return;
     const versions = people.filter(candidate => namesOverlap(candidate, person));
-    const sources = versions.filter(candidate => candidate.photoUrl).map(candidate => ({
-      url: candidate.photoUrl,
-      season: candidate.season,
-    }));
+    const sourceUrls = new Set();
+    const sources = [];
+    versions.forEach(candidate => {
+      if (candidate.photoUrl && !sourceUrls.has(candidate.photoUrl)) {
+        sourceUrls.add(candidate.photoUrl);
+        sources.push({ url: candidate.photoUrl, season: candidate.season });
+      }
+    });
     if (!sources.length) return;
     records.push({
       key: person.slug,

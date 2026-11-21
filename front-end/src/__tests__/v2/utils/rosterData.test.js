@@ -208,6 +208,10 @@ test('deduplicates photo sources across aliases and coaching roles, newest first
   expect(getRosterPlayerAvatar(olderJessica).src).toContain('jessica-viyan-cheng');
   expect(photos.filter(photo => photo.aliases.includes('Ivan Cheng'))).toHaveLength(1);
   expect(new Set(photos.map(photo => photo.key)).size).toBe(photos.length);
+  photos.forEach(photo => {
+    const urls = photo.sources.map(source => source.url);
+    expect(new Set(urls).size).toBe(urls.length);
+  });
 });
 
 test('every available roster photo resolves to its versioned CDN image', () => {
