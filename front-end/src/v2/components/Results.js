@@ -1,5 +1,4 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { AppContext } from "../../Contexts/AppContext";
 import { MatchCard, MatchFilters, PageShell, PaginationControl, SeasonSelect } from "./RedesignUI";
 import {
@@ -82,7 +81,6 @@ const ResultsPage = () => {
                     <label className="match-filter">
                         <span>Season</span>
                         <SeasonSelect value={seasonValue} onChange={handleSeasonChange} />
-                        <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
                     </label>
                 </MatchFilters>
             </div>

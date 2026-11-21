@@ -10,21 +10,24 @@ from PIL import Image, ImageOps
 import requests
 
 
-PHOTO_DIR = Path(__file__).resolve().parents[2] / 'front-end' / 'src' / 'assets' / 'roster-photos'
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PHOTO_DIR = REPO_ROOT / '.roster-photo-uploads'
+MANIFEST_PATH = REPO_ROOT / 'front-end' / 'src' / 'assets' / 'roster-photos' / 'manifest.json'
+MAX_SIDE = 960
+QUALITY = 82
 
 
 def compress_photo(content):
     with Image.open(BytesIO(content)) as image:
         image = ImageOps.exif_transpose(image).convert('RGB')
-        image.thumbnail((320, 320), Image.Resampling.LANCZOS)
+        image.thumbnail((MAX_SIDE, MAX_SIDE), Image.Resampling.LANCZOS)
         output = BytesIO()
-        image.save(output, format='WEBP', quality=65, method=6)
+        image.save(output, format='WEBP', quality=QUALITY, method=6)
         return output.getvalue()
 
 
-def prepare(sources, output_dir):
+def prepare(sources, output_dir, manifest_path):
     output_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path = output_dir / 'manifest.json'
     previous = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
     existing = {record['key']: record for record in previous}
     manifest, failures = [], []
@@ -34,7 +37,8 @@ def prepare(sources, output_dir):
             cached = existing.get(key)
             # Unchanged photos are not fetched again on subsequent runs.
             if (cached and cached['source_url'] == person['sources'][0]['url']
-                    and (output_dir / (key + '.webp')).exists()):
+                    and cached.get('max_side') == MAX_SIDE and cached.get('quality') == QUALITY
+                    and (output_dir / cached['filename']).exists()):
                 manifest.append(cached)
                 continue
             for source in person['sources']:
@@ -45,12 +49,19 @@ def prepare(sources, output_dir):
                 except (requests.RequestException, OSError, Image.DecompressionBombError) as error:
                     print(f"Could not fetch {key}: {error}", file=sys.stderr)
                     continue
-                (output_dir / (key + '.webp')).write_bytes(content)
+                content_hash = sha256(content).hexdigest()
+                filename = f'{key}.{content_hash[:5]}.webp'
+                destination = output_dir / filename
+                if ((cached and cached['filename'] == filename and cached['content_hash'] != content_hash)
+                        or (destination.exists() and sha256(destination.read_bytes()).hexdigest() != content_hash)):
+                    raise SystemExit(f'Hash collision for {filename}; existing photo was not overwritten.')
+                destination.write_bytes(content)
                 manifest.append({
                     'key': key, 'name': person['name'],
                     'source_url': source['url'], 'source_season': source['season'],
-                    'content_hash': sha256(content).hexdigest(),
+                    'content_hash': content_hash, 'filename': filename,
                     'original_bytes': len(response.content), 'bytes': len(content),
+                    'max_side': MAX_SIDE, 'quality': QUALITY,
                 })
                 print(f"{key}: {len(response.content):,} -> {len(content):,} bytes", file=sys.stderr)
                 break
@@ -68,4 +79,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', type=Path, default=PHOTO_DIR)
     args = parser.parse_args()
-    prepare(json.load(sys.stdin), args.output_dir)
+    prepare(json.load(sys.stdin), args.output_dir, MANIFEST_PATH)

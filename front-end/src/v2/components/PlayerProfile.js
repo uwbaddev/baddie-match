@@ -143,11 +143,11 @@ const PlayerProfile = () => {
     }, [filteredMatches, matchPage]);
     const matchGroups = useMemo(() => groupMatchesByDate(paginatedMatches), [paginatedMatches]);
 
+    const program = displayRosterPlayer && displayRosterPlayer.program;
     const details = [
-        displayRosterPlayer && displayRosterPlayer.program ? ['Program', displayRosterPlayer.program] : null,
         displayRosterPlayer && displayRosterPlayer.hometown ? ['Hometown', displayRosterPlayer.hometown] : null,
         displayRosterPlayer && displayRosterPlayer.highSchool ? ['High School', displayRosterPlayer.highSchool] : null,
-        displayRosterPlayer && displayRosterPlayer.height ? ['Height', displayRosterPlayer.height] : null,
+        displayRosterPlayer && displayRosterPlayer.height ? ['Height', displayRosterPlayer.height.replace('-', "'")] : null,
     ].filter(Boolean);
 
     return (
@@ -157,24 +157,25 @@ const PlayerProfile = () => {
                 Back to Roster
             </Link>
 
-            <section className="profile-hero">
+            <section className={`profile-hero${details.length ? ' has-details' : ''}`}>
                 <div className="profile-hero-media">
                     <PlayerAvatar player={profilePlayer} size="lg" />
                 </div>
-                <div className="profile-hero-content is-left-aligned">
+                <div className="profile-hero-content">
                     <h1 className="profile-hero-title">{playerName}</h1>
                     {roleTitle && <p className="profile-role">{roleTitle}</p>}
-                    {details.length > 0 && (
-                        <dl className="profile-details">
-                            {details.map(([label, value]) => (
-                                <div key={label}>
-                                    <dt>{label}</dt>
-                                    <dd>{value}</dd>
-                                </div>
-                            ))}
-                        </dl>
-                    )}
+                    {program && <p className="profile-program">{program}</p>}
                 </div>
+                {details.length > 0 && (
+                    <dl className="profile-details">
+                        {details.map(([label, value]) => (
+                            <div key={label}>
+                                <dt>{label}</dt>
+                                <dd>{value}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                )}
             </section>
 
             {statsPlayerId ? (

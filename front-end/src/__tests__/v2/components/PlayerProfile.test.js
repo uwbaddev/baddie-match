@@ -74,9 +74,12 @@ test('shows route-season bio details with the latest available player photo', as
   expect(container.querySelector('.profile-hero-title')).toHaveTextContent('Allison Cheng');
   expect(container.querySelector('.profile-hero')).toBeInTheDocument();
   expect(container.querySelector('.profile-hero-media')).toContainElement(screen.getByRole('img', { name: /Allison Cheng/i }));
-  expect(container.querySelector('.profile-hero-content')).toHaveClass('is-left-aligned');
   expect(container.querySelector('.profile-hero-content')).toContainElement(container.querySelector('.profile-hero-title'));
-  expect(screen.getByText('Math/CPA')).toBeInTheDocument();
+  expect(container.querySelector('.profile-program')).toHaveTextContent('Math/CPA');
+  expect(container.querySelector('.profile-hero')).toContainElement(container.querySelector('.profile-details'));
+  expect(screen.queryByRole('heading', { name: 'About' })).not.toBeInTheDocument();
+  expect(screen.getByText("5'2")).toBeInTheDocument();
+  expect(screen.queryByText('5-2')).not.toBeInTheDocument();
   expect(screen.queryByText('St. Clements')).not.toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
     'src',
@@ -104,7 +107,7 @@ test('shows route-season bio details from database-id season profile routes', as
 });
 
 test('renders local database profile when season-id route has no roster record for that season', async () => {
-  renderProfile({
+  const { container } = renderProfile({
     route: '/players/2024-25/id/999',
     players: [{ id: 999, first_name: 't_Test', last_name: 'Player', elegible_year: 0 }],
     statsByStart: {
@@ -113,7 +116,9 @@ test('renders local database profile when season-id route has no roster record f
   });
 
   expect(await screen.findByRole('heading', { name: 'Test Player' })).toBeInTheDocument();
-  expect(screen.queryByText('Program')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-program')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-details')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-hero')).not.toHaveClass('has-details');
 });
 
 test('defaults stats to the current 2026-2027 season when the player has stats in it', async () => {

@@ -1,4 +1,5 @@
 export const ROSTER_SEASONS = [
+  { label: '2026 - 2027', value: '2026-27' },
   { label: '2025 - 2026', value: '2025-26' },
   { label: '2024 - 2025', value: '2024-25' },
   { label: '2023 - 2024', value: '2023-24' },
@@ -20,6 +21,7 @@ export const ALL_TIME_STATS_SEASON = {
 };
 
 const BASE_URL = 'https://athletics.uwaterloo.ca';
+const PHOTO_BASE_URL = 'https://images.uwbadminton.com';
 const V2_PLAYERS_PATH = '/players';
 
 const profileUrl = (slug, id) => `${BASE_URL}/sports/mens-badminton/roster/${slug}/${id}`;
@@ -188,6 +190,23 @@ export const ROSTERS_BY_SEASON = {
   },
 };
 
+ROSTERS_BY_SEASON['2026-27'] = {
+  players: [
+    ...ROSTERS_BY_SEASON['2025-26'].players
+      .filter(person => !['raunak-sandhu', 'jacob-kim', 'ashley-wong', 'daniel-hu', 'nicole-wang'].includes(person.slug))
+      .map(person => ({ ...person, season: '2026-27', eligYear: '', academicYear: '' })),
+    player('2026-27', 'Catherine Pang', 'catherine-pang', null, { eligYear: '1' }),
+    player('2026-27', 'Janna Xing', 'janna-xing', null, { eligYear: '1' }),
+    player('2026-27', 'Thi Pham', 'thi-pham', null, { eligYear: '1' }),
+    player('2026-27', 'Ryan Huang', 'ryan-huang', null, { eligYear: '1' }),
+    player('2026-27', 'Jimmy Lu', 'jimmy-lu', null, { eligYear: '1' }),
+    player('2026-27', 'Neilson Tao', 'neilson-tao', null, { eligYear: '1' }),
+    player('2026-27', 'Michael Qu', 'michael-qu', null, { eligYear: '1' }),
+  ],
+  coaches: [],
+  supportStaff: [],
+};
+
 export function getRosterBySeason(season) {
   return ROSTERS_BY_SEASON[season] || ROSTERS_BY_SEASON[ROSTER_SEASONS[0].value];
 }
@@ -333,10 +352,10 @@ export function getRosterAvatar(rosterPlayer) {
 
 export function getRosterPlayerAvatar(rosterPlayer) {
   const photo = getRosterPhotoSources().find(record => namesOverlap(record, rosterPlayer || {}));
-  const image = photo ? require(`../../assets/roster-photos/${photo.key}.webp`) : null;
+  const image = photo && require('../../assets/roster-photos/manifest.json').find(record => record.key === photo.key);
   return getRosterAvatar({
     name: rosterPlayer && rosterPlayer.name,
-    photoUrl: image && (image.default || image),
+    photoUrl: image && `${PHOTO_BASE_URL}/${image.filename}`,
   });
 }
 
@@ -353,10 +372,14 @@ export function getRosterPhotoSources() {
   people.forEach(person => {
     if (records.some(record => namesOverlap(record, person))) return;
     const versions = people.filter(candidate => namesOverlap(candidate, person));
-    const sources = versions.filter(candidate => candidate.photoUrl).map(candidate => ({
-      url: candidate.photoUrl,
-      season: candidate.season,
-    }));
+    const sourceUrls = new Set();
+    const sources = [];
+    versions.forEach(candidate => {
+      if (candidate.photoUrl && !sourceUrls.has(candidate.photoUrl)) {
+        sourceUrls.add(candidate.photoUrl);
+        sources.push({ url: candidate.photoUrl, season: candidate.season });
+      }
+    });
     if (!sources.length) return;
     records.push({
       key: person.slug,

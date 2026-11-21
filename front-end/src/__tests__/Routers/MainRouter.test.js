@@ -73,6 +73,22 @@ test('mobile menu includes a back to v1 link', async () => {
   expect(backLinks[1]).toHaveAttribute('href', '/v1');
 });
 
+test.each([
+  ['/', 'Home'],
+  ['/report', 'Report Match'],
+  ['/results', 'Results'],
+  ['/elo', 'Rankings'],
+  ['/players', 'Roster'],
+  ['/players/', 'Roster'],
+  ['/players/2025-26/id/113', 'Player Profile'],
+])('mobile menu subtitle follows %s', async (route, label) => {
+  renderRoute(route);
+  fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
+  const menu = screen.getByRole('dialog', { name: 'Main menu' });
+  expect(menu.querySelector('.mobile-menu-brand small')).toHaveTextContent(label);
+  await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument());
+});
+
 test('v2 and v1 report routes render their respective tab UIs', () => {
   const { container, unmount } = renderRoute('/v1/report');
 

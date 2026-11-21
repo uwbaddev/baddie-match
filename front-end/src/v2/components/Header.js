@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ArrowLeft, ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
 import '../../index.css'
 
 const Header = () => {
     const [expanded, setExpanded] = useState(false);
+    const { pathname } = useLocation();
     const closeMenu = () => setExpanded(false);
     const navItems = [
         { to: '/', label: 'Home', icon: Home },
@@ -13,6 +14,10 @@ const Header = () => {
         { to: '/elo', label: 'Rankings', icon: ArrowUpRight },
         { to: '/players', label: 'Roster', icon: User },
     ];
+    const path = pathname.replace(/\/+$/, '') || '/';
+    const pageLabel = path.startsWith('/players/')
+        ? 'Player Profile'
+        : navItems.find(item => item.to === path)?.label;
 
     return (
         <>
@@ -52,7 +57,7 @@ const Header = () => {
                             <img src="/warriors_logo.png" alt="" />
                             <span>
                                 <strong>Varsity Badminton</strong>
-                                <small>TEAM STATISTICS</small>
+                                {pageLabel && <small>{pageLabel}</small>}
                             </span>
                         </div>
                         <nav aria-label="Mobile primary">

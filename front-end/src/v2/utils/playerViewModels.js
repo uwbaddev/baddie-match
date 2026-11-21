@@ -443,9 +443,9 @@ export function makeProfileStats(statsRecord, statsRecords = []) {
   const doublesRank = findRank(buildWinRankings(statsRecords, 'doubles'), statsRecord);
   const mixedRank = findRank(buildWinRankings(statsRecords, 'mixed'), statsRecord);
   const overallRank = findRank(buildOverallWinRankings(statsRecords), statsRecord);
-  const singles = statFromRecord(statsRecord, 'singles', 'SINGLES', '#ff5f6d', singlesRank);
-  const doubles = statFromRecord(statsRecord, 'doubles', 'DOUBLES', '#ffa51f', doublesRank);
-  const mixed = statFromRecord(statsRecord, 'mixed', 'MIXED', '#16b7ff', mixedRank);
+  const singles = statFromRecord(statsRecord, 'singles', 'SINGLES', singlesRank);
+  const doubles = statFromRecord(statsRecord, 'doubles', 'DOUBLES', doublesRank);
+  const mixed = statFromRecord(statsRecord, 'mixed', 'MIXED', mixedRank);
   const overallWins = singles.wins + doubles.wins + mixed.wins;
   const overallLosses = singles.losses + doubles.losses + mixed.losses;
   const total = overallWins + overallLosses;
@@ -456,7 +456,6 @@ export function makeProfileStats(statsRecord, statsRecords = []) {
     mixed,
     {
       label: 'OVERALL',
-      color: '#727272',
       winPct: total > 0 ? Math.round((overallWins / total) * 100) : 0,
       rank: overallRank,
       wins: overallWins,
@@ -474,13 +473,12 @@ export function makeProfileEloCards(statsRecord, singlesGroups, doublesGroups) {
   ].filter(Boolean);
 }
 
-function statFromRecord(record, eventKey, label, color, rank) {
+function statFromRecord(record, eventKey, label, rank) {
   const wins = Number(record[`${eventKey}_wins`] || 0);
   const losses = Number(record[`${eventKey}_losses`] || 0);
   const total = wins + losses;
   return {
     label,
-    color,
     winPct: total > 0 ? Math.round((wins / total) * 100) : 0,
     rank,
     wins,
