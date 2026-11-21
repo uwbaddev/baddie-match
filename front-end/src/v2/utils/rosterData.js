@@ -21,6 +21,7 @@ export const ALL_TIME_STATS_SEASON = {
 };
 
 const BASE_URL = 'https://athletics.uwaterloo.ca';
+const PHOTO_BASE_URL = 'https://images.uwbadminton.com';
 const V2_PLAYERS_PATH = '/players';
 
 const profileUrl = (slug, id) => `${BASE_URL}/sports/mens-badminton/roster/${slug}/${id}`;
@@ -351,10 +352,10 @@ export function getRosterAvatar(rosterPlayer) {
 
 export function getRosterPlayerAvatar(rosterPlayer) {
   const photo = getRosterPhotoSources().find(record => namesOverlap(record, rosterPlayer || {}));
-  const image = photo ? require(`../../assets/roster-photos/${photo.key}.webp`) : null;
+  const image = photo && require('../../assets/roster-photos/manifest.json').find(record => record.key === photo.key);
   return getRosterAvatar({
     name: rosterPlayer && rosterPlayer.name,
-    photoUrl: image && (image.default || image),
+    photoUrl: image && `${PHOTO_BASE_URL}/${image.filename}`,
   });
 }
 

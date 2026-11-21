@@ -210,11 +210,13 @@ test('deduplicates photo sources across aliases and coaching roles, newest first
   expect(new Set(photos.map(photo => photo.key)).size).toBe(photos.length);
 });
 
-test('every available roster photo resolves to a bundled image instead of a remote or API URL', () => {
+test('every available roster photo resolves to its versioned CDN image', () => {
+  const manifest = require('../../../assets/roster-photos/manifest.json');
   getRosterPhotoSources().forEach(photo => {
     const avatar = getRosterPlayerAvatar({ name: photo.name });
+    const image = manifest.find(record => record.key === photo.key);
     expect(avatar.type).toBe('image');
-    expect(avatar.src).toContain(photo.key);
-    expect(avatar.src).not.toMatch(/https?:|\/api\//);
+    expect(image.filename).toBe(`${photo.key}.${image.content_hash.slice(0, 12)}.webp`);
+    expect(avatar.src).toBe(`https://images.uwbadminton.com/${image.filename}`);
   });
 });
