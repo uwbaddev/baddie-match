@@ -74,11 +74,15 @@ The original URLs in the roster data are download sources only; visitors never
 fetch headshots from Waterloo or a photo API. No photo database table or import
 is needed. An existing local `roster_photos` table is unused and can be left alone.
 
-Each filename includes a five-character content hash, so changing an image changes
+Each filename uses the database player ID and a five-character content hash
+(for example `73.ea56e.webp`), so changing an image changes
 its URL. The manifest retains the full SHA-256 fingerprint for verification, and
 preparation refuses to overwrite a conflicting local or current-manifest filename.
 Roster cards and profiles share the same CDN URL, including during local development.
 Players without an available photo retain initials.
+`PHOTO_PLAYER_IDS` in the roster data maps each photographed person to their
+existing database ID, not their season-specific Waterloo athletics ID. Add an
+entry when adding a person's first photo; never reuse another person's ID.
 
 To prepare photos after changing the source URLs in the roster data, from the
 repo root (Node 16.20.2 or newer):
@@ -92,6 +96,16 @@ This command downloads each changed person's newest available source, falls back
 to older sources if needed, strips image metadata, and compresses it. It writes
 versioned WebPs to `.roster-photo-uploads/` (ignored by Git) and updates the manifest.
 Unchanged files already in that folder are reused without network requests.
+
+For a supplied local photo, pass its database ID and path to the same command:
+
+```bash
+node front-end/scripts/roster-photo-sources.mjs | .venv/bin/python -m app.scripts.prepare_roster_photos --local-photo 57 /path/to/photo.webp
+```
+
+Local originals remain outside Git; the manifest does not store their file paths.
+Keep an original separately for future reprocessing. Existing prepared local
+photos are reused when running without `--local-photo`.
 
 Upload the generated WebPs to the root of the `uwbadminton-images` R2 bucket through
 the Cloudflare dashboard. Verify every changed URL under `https://images.uwbadminton.com/`

@@ -24,6 +24,39 @@ const BASE_URL = 'https://athletics.uwaterloo.ca';
 const PHOTO_BASE_URL = 'https://images.uwbadminton.com';
 const V2_PLAYERS_PATH = '/players';
 
+// Stable database IDs, shared by each person's photos across seasons and roles.
+const PHOTO_PLAYER_IDS = {
+  'allison-cheng': 79,
+  'jessica-viyan-cheng': 59,
+  'daniel-hu': 82,
+  'kelvin-huynh': 83,
+  'ankit-mathew-jacob': 147,
+  'michael-ji': 84,
+  'jacob-kim': 51,
+  'allison-larrass': 80,
+  'katie-lau': 112,
+  'carolyn-lee': 72,
+  'raymond-li': 85,
+  'karla-mccallum': 39,
+  'taruja-pathmarajah': 146,
+  'raunak-sandhu': 116,
+  'maggie-su': 73,
+  'nicole-wang': 42,
+  'ashley-wong': 67,
+  'maggie-wong': 58,
+  'emily-xia': 81,
+  'josh-yan': 178,
+  'matthew-hanxiao-yu': 114,
+  'liam-zhang': 113,
+  'andrew-zhuang': 57,
+  'ivan-cheng': 44,
+  'darren-choi': 45,
+  'thomas-dent': 47,
+  'connor-johanson': 74,
+  'siya-lai': 36,
+  'joseph-lu': 52,
+};
+
 const profileUrl = (slug, id) => `${BASE_URL}/sports/mens-badminton/roster/${slug}/${id}`;
 
 const player = (season, name, slug, id, details = {}) => ({
@@ -380,9 +413,11 @@ export function getRosterPhotoSources() {
         sources.push({ url: candidate.photoUrl, season: candidate.season });
       }
     });
-    if (!sources.length) return;
+    const key = PHOTO_PLAYER_IDS[person.slug];
+    if (!sources.length && !key) return;
+    if (!Number.isInteger(key)) throw new Error(`Missing photo database ID for ${person.slug}`);
     records.push({
-      key: person.slug,
+      key,
       name: person.name,
       aliases: [...new Set(versions.flatMap(candidate => [candidate.name, ...(candidate.aliases || [])]))],
       sources,

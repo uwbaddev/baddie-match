@@ -190,7 +190,7 @@ test('shares a cached photo URL across roster seasons', () => {
 
   expect(getRosterPlayerAvatar(olderAllison)).toEqual({
     type: 'image',
-    src: expect.stringContaining('allison-cheng'),
+    src: expect.stringMatching(/\/79\.[a-f0-9]{5}\.webp$/),
   });
   expect(getRosterPlayerAvatar(olderAllison)).toEqual(getRosterPlayerAvatar(getRosterBySeason('2025-26').players[0]));
   expect(getRosterPlayerAvatar(jerry)).toEqual({
@@ -201,11 +201,11 @@ test('shares a cached photo URL across roster seasons', () => {
 
 test('deduplicates photo sources across aliases and coaching roles, newest first', () => {
   const photos = getRosterPhotoSources();
-  const jessica = photos.find(photo => photo.key === 'jessica-viyan-cheng');
+  const jessica = photos.find(photo => photo.key === 59);
   expect(jessica.aliases).toContain('Jessica Cheng');
   expect(jessica.sources[0].season).toBe('2026-27');
   const olderJessica = getRosterBySeason('2022-23').players.find(player => player.name === 'Jessica Cheng');
-  expect(getRosterPlayerAvatar(olderJessica).src).toContain('jessica-viyan-cheng');
+  expect(getRosterPlayerAvatar(olderJessica).src).toMatch(/\/59\.[a-f0-9]{5}\.webp$/);
   expect(photos.filter(photo => photo.aliases.includes('Ivan Cheng'))).toHaveLength(1);
   expect(new Set(photos.map(photo => photo.key)).size).toBe(photos.length);
   photos.forEach(photo => {
@@ -220,7 +220,15 @@ test('every available roster photo resolves to its versioned CDN image', () => {
     const avatar = getRosterPlayerAvatar({ name: photo.name });
     const image = manifest.find(record => record.key === photo.key);
     expect(avatar.type).toBe('image');
+    expect(Number.isInteger(image.key)).toBe(true);
     expect(image.filename).toBe(`${photo.key}.${image.content_hash.slice(0, 5)}.webp`);
     expect(avatar.src).toBe(`https://images.uwbadminton.com/${image.filename}`);
   });
+});
+
+test('shares Andrew Zhuang\'s uploaded photo across coaching seasons', () => {
+  const currentAndrew = getRosterBySeason('2025-26').coaches.find(person => person.name === 'Andrew Zhuang');
+  const olderAndrew = getRosterBySeason('2024-25').coaches.find(person => person.name === 'Andrew Zhuang');
+  expect(getRosterPlayerAvatar(currentAndrew).src).toMatch(/\/57\.[a-f0-9]{5}\.webp$/);
+  expect(getRosterPlayerAvatar(olderAndrew)).toEqual(getRosterPlayerAvatar(currentAndrew));
 });

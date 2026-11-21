@@ -26,7 +26,11 @@ def compress_photo(content):
         return output.getvalue()
 
 
-def prepare(sources, output_dir, manifest_path):
+def prepare(sources, output_dir, manifest_path, local_photos=None):
+    local_photos = local_photos or {}
+    unknown_ids = local_photos.keys() - {person['key'] for person in sources}
+    if unknown_ids:
+        raise SystemExit(f'Unknown roster photo IDs: {sorted(unknown_ids)}')
     output_dir.mkdir(parents=True, exist_ok=True)
     previous = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
     existing = {record['key']: record for record in previous}
@@ -35,17 +39,25 @@ def prepare(sources, output_dir, manifest_path):
         for person in sources:
             key = person['key']
             cached = existing.get(key)
+            local_photo = local_photos.get(key)
             # Unchanged photos are not fetched again on subsequent runs.
-            if (cached and cached['source_url'] == person['sources'][0]['url']
+            if (cached and not local_photo
+                    and (cached['source_url'] is None or not person['sources']
+                         or cached['source_url'] == person['sources'][0]['url'])
                     and cached.get('max_side') == MAX_SIDE and cached.get('quality') == QUALITY
                     and (output_dir / cached['filename']).exists()):
                 manifest.append(cached)
                 continue
-            for source in person['sources']:
+            candidates = ([{'path': local_photo, 'season': None}] if local_photo else person['sources'])
+            for source in candidates:
                 try:
-                    response = session.get(source['url'], timeout=30)
-                    response.raise_for_status()
-                    content = compress_photo(response.content)
+                    if local_photo:
+                        original = Path(source['path']).read_bytes()
+                    else:
+                        response = session.get(source['url'], timeout=30)
+                        response.raise_for_status()
+                        original = response.content
+                    content = compress_photo(original)
                 except (requests.RequestException, OSError, Image.DecompressionBombError) as error:
                     print(f"Could not fetch {key}: {error}", file=sys.stderr)
                     continue
@@ -58,12 +70,12 @@ def prepare(sources, output_dir, manifest_path):
                 destination.write_bytes(content)
                 manifest.append({
                     'key': key, 'name': person['name'],
-                    'source_url': source['url'], 'source_season': source['season'],
+                    'source_url': source.get('url'), 'source_season': source['season'],
                     'content_hash': content_hash, 'filename': filename,
-                    'original_bytes': len(response.content), 'bytes': len(content),
+                    'original_bytes': len(original), 'bytes': len(content),
                     'max_side': MAX_SIDE, 'quality': QUALITY,
                 })
-                print(f"{key}: {len(response.content):,} -> {len(content):,} bytes", file=sys.stderr)
+                print(f"{key}: {len(original):,} -> {len(content):,} bytes", file=sys.stderr)
                 break
             else:
                 if cached:
@@ -71,12 +83,15 @@ def prepare(sources, output_dir, manifest_path):
                 failures.append(key)
     manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
     if failures:
-        raise SystemExit('No new photo downloaded for: ' + ', '.join(failures))
+        raise SystemExit('No new photo prepared for: ' + ', '.join(map(str, failures)))
     print(f'Prepared {len(manifest)} photos', file=sys.stderr)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir', type=Path, default=PHOTO_DIR)
+    parser.add_argument('--local-photo', nargs=2, action='append', default=[], metavar=('PLAYER_ID', 'PATH'),
+                        help='Use a local image for an existing roster photo database ID.')
     args = parser.parse_args()
-    prepare(json.load(sys.stdin), args.output_dir, MANIFEST_PATH)
+    prepare(json.load(sys.stdin), args.output_dir, MANIFEST_PATH,
+            {int(player_id): Path(path) for player_id, path in args.local_photo})
