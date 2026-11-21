@@ -105,7 +105,9 @@ node front-end/scripts/roster-photo-sources.mjs | .venv/bin/python -m app.script
 
 Local originals remain outside Git; the manifest does not store their file paths.
 Keep an original separately for future reprocessing. Existing prepared local
-photos are reused when running without `--local-photo`.
+photos are reused when running without `--local-photo`. On a fresh checkout, their
+published manifest entries are preserved even if the ignored upload folder is
+absent. Pass the original again to replace them or change their compression settings.
 
 Upload the generated WebPs to the root of the `uwbadminton-images` R2 bucket through
 the Cloudflare dashboard. Verify every changed URL under `https://images.uwbadminton.com/`

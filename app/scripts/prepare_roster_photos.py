@@ -40,15 +40,19 @@ def prepare(sources, output_dir, manifest_path, local_photos=None):
             key = person['key']
             cached = existing.get(key)
             local_photo = local_photos.get(key)
-            # Unchanged photos are not fetched again on subsequent runs.
+            # Published local uploads remain usable without the ignored local cache.
             if (cached and not local_photo
                     and (cached['source_url'] is None or not person['sources']
                          or cached['source_url'] == person['sources'][0]['url'])
                     and cached.get('max_side') == MAX_SIDE and cached.get('quality') == QUALITY
-                    and (output_dir / cached['filename']).exists()):
+                    and (cached['source_url'] is None or (output_dir / cached['filename']).exists())):
                 manifest.append(cached)
                 continue
-            candidates = ([{'path': local_photo, 'season': None}] if local_photo else person['sources'])
+            candidates = person['sources']
+            if local_photo:
+                candidates = [{'path': local_photo, 'season': None}]
+            elif cached and cached['source_url'] is None:
+                candidates = []
             for source in candidates:
                 try:
                     if local_photo:
