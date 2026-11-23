@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Medal } from 'lucide-react';
+import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Medal } from 'lucide-react';
 import {
   getAvatarTheme,
   getInitials,
@@ -61,7 +61,6 @@ export const MatchFilters = ({ players, event, playerId, onEventChange, onPlayer
       <select className="filter-select" aria-label="Match event" value={event} onChange={e => onEventChange(e.target.value)}>
         {EVENT_FILTERS.map(option => <option key={option.key} value={option.key}>{option.label}</option>)}
       </select>
-      <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
     </label>
     <label className="match-filter">
       <span>Player</span>
@@ -71,7 +70,6 @@ export const MatchFilters = ({ players, event, playerId, onEventChange, onPlayer
           <option key={player.id} value={player.id}>{formatPlayerName(player)}</option>
         ))}
       </select>
-      <ChevronDown className="filter-chevron" size={16} aria-hidden="true" />
     </label>
   </div>
 );
@@ -265,8 +263,8 @@ const ScoreLine = ({ sets, team, showWinnerDot }) => (
 export const RosterCard = ({ player, index, to, subtitle }) => {
   const content = (
     <>
-      <PlayerAvatar player={player} index={index} />
-      <span>
+      <PlayerAvatar player={player} index={index} size="roster" />
+      <span className="roster-caption">
         <strong>{formatPlayerName(player)}</strong>
         {subtitle && <em>{subtitle}</em>}
       </span>
@@ -286,7 +284,6 @@ export const StatRing = ({ stat }) => (
       <div
         className="stat-ring"
         style={{
-          '--stat-color': stat.color,
           '--stat-value': `${Math.max(0, Math.min(100, stat.winPct))}%`,
         }}
       >

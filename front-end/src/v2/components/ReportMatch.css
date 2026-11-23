@@ -1,13 +1,5 @@
-.report-page {
-  width: min(calc(780px * var(--v2-font-scale)), calc(100% - 64px));
-}
-
 .report-page .page-heading {
   margin-bottom: 24px;
-}
-
-.report-page .page-heading h1 {
-  font-size: calc(30px * var(--v2-font-scale));
 }
 
 .report-page .report-tabs {
@@ -342,10 +334,6 @@
 }
 
 @media (max-width: 700px) {
-  .report-page {
-    width: calc(100% - 40px);
-  }
-
   .report-page .report-score-grid {
     grid-template-columns: minmax(0, 1fr) repeat(3, 52px);
     gap: 10px;

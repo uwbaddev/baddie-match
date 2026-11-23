@@ -56,6 +56,12 @@ const ReportMatchForm = ({ event, submitting, onSubmittingChange }) => {
             return fail('Scores must be whole numbers from 0 to 30.');
         }
         if (numericScores.every(value => value === 0)) return fail('Enter a score for at least one game.');
+        for (let game = 1; game < 3; game += 1) {
+            if (numericScores.slice(game * 2, game * 2 + 2).some(value => value > 0)
+                && numericScores.slice(game * 2 - 2, game * 2).every(value => value === 0)) {
+                return fail(`Enter Game ${game} before Game ${game + 1}.`);
+            }
+        }
         const selectedCategory = categories.find(item => cleanSeedPrefix(item.name).toLowerCase() === category);
         if (!selectedCategory) return fail('Match categories are still loading. Please try again.');
 

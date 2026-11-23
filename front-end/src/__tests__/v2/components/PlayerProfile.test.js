@@ -74,13 +74,16 @@ test('shows route-season bio details with the latest available player photo', as
   expect(container.querySelector('.profile-hero-title')).toHaveTextContent('Allison Cheng');
   expect(container.querySelector('.profile-hero')).toBeInTheDocument();
   expect(container.querySelector('.profile-hero-media')).toContainElement(screen.getByRole('img', { name: /Allison Cheng/i }));
-  expect(container.querySelector('.profile-hero-content')).toHaveClass('is-left-aligned');
   expect(container.querySelector('.profile-hero-content')).toContainElement(container.querySelector('.profile-hero-title'));
-  expect(screen.getByText('Math/CPA')).toBeInTheDocument();
+  expect(container.querySelector('.profile-program')).toHaveTextContent('Math/CPA');
+  expect(container.querySelector('.profile-hero')).toContainElement(container.querySelector('.profile-details'));
+  expect(screen.queryByRole('heading', { name: 'About' })).not.toBeInTheDocument();
+  expect(screen.getByText("5'2")).toBeInTheDocument();
+  expect(screen.queryByText('5-2')).not.toBeInTheDocument();
   expect(screen.queryByText('St. Clements')).not.toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('allison-cheng')
+    expect.stringMatching(/\/79\.[a-f0-9]{5}\.webp$/)
   );
   const statsSelect = await screen.findByRole('combobox', { name: /Stats season/i });
   await waitFor(() => expect(statsSelect).toHaveValue('all'));
@@ -98,13 +101,13 @@ test('shows route-season bio details from database-id season profile routes', as
   expect(screen.getByText('Math/CPA')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Allison Cheng/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('allison-cheng')
+    expect.stringMatching(/\/79\.[a-f0-9]{5}\.webp$/)
   );
   await waitFor(() => expect(queryPlayerResults).toHaveBeenCalledWith(1, '2000-09-01', '3000-09-01'));
 });
 
 test('renders local database profile when season-id route has no roster record for that season', async () => {
-  renderProfile({
+  const { container } = renderProfile({
     route: '/players/2024-25/id/999',
     players: [{ id: 999, first_name: 't_Test', last_name: 'Player', elegible_year: 0 }],
     statsByStart: {
@@ -113,7 +116,9 @@ test('renders local database profile when season-id route has no roster record f
   });
 
   expect(await screen.findByRole('heading', { name: 'Test Player' })).toBeInTheDocument();
-  expect(screen.queryByText('Program')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-program')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-details')).not.toBeInTheDocument();
+  expect(container.querySelector('.profile-hero')).not.toHaveClass('has-details');
 });
 
 test('defaults stats to the current 2026-2027 season when the player has stats in it', async () => {
@@ -420,7 +425,7 @@ test('maps legacy local profile routes to official roster display when names mat
   expect(screen.getByText('Computer Engineering')).toBeInTheDocument();
   expect(screen.getByRole('img', { name: /Liam Zhang/i })).toHaveAttribute(
     'src',
-    expect.stringContaining('liam-zhang')
+    expect.stringMatching(/\/113\.[a-f0-9]{5}\.webp$/)
   );
 });
 

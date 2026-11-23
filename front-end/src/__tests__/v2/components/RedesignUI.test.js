@@ -20,7 +20,7 @@ test('pagination arrows use labelled icons and preserve page navigation', () => 
 test('cached avatars use lazy loading and fall back to initials on image failure', () => {
   render(<PlayerAvatar player={{ name: 'Jessica Cheng' }} />);
   const image = screen.getByRole('img', { name: 'Jessica Cheng' });
-  expect(image.src).toContain('jessica-viyan-cheng');
+  expect(image.src).toMatch(/\/59\.[a-f0-9]{5}\.webp$/);
   expect(image.src).not.toContain('/api/');
   expect(image).toHaveAttribute('loading', 'lazy');
   expect(image).toHaveAttribute('decoding', 'async');

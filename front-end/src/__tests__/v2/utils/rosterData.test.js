@@ -15,8 +15,9 @@ import {
   ROSTER_SEASONS,
 } from '../../../v2/utils/rosterData';
 
-test('exposes roster seasons from 2025-26 through 2022-23', () => {
+test('exposes roster seasons from 2026-27 through 2022-23', () => {
   expect(ROSTER_SEASONS.map(season => season.value)).toEqual([
+    '2026-27',
     '2025-26',
     '2024-25',
     '2023-24',
@@ -30,6 +31,28 @@ test('filters roster data by selected season', () => {
   expect(roster.players.map(player => player.name)).toContain('Allison Cheng');
   expect(roster.players.map(player => player.name)).toContain('Ivan Cheng');
   expect(roster.players.map(player => player.name)).not.toContain('Liam Zhang');
+});
+
+test('2026-27 retains returning players, adds seven rookies, and leaves staff empty', () => {
+  const previous = getRosterBySeason('2025-26');
+  const roster = getRosterBySeason('2026-27');
+  const departed = ['Raunak Sandhu', 'Jacob Kim', 'Ashley Wong', 'Daniel Hu', 'Nicole Wang'];
+  const rookies = ['Catherine Pang', 'Janna Xing', 'Thi Pham', 'Ryan Huang', 'Jimmy Lu', 'Neilson Tao', 'Michael Qu'];
+  const returning = previous.players.filter(player => !departed.includes(player.name));
+  expect(roster.players.map(player => player.name).sort()).toEqual([...returning.map(player => player.name), ...rookies].sort());
+  expect(roster.players.every(player => player.season === '2026-27')).toBe(true);
+  expect(roster.coaches).toEqual([]);
+  expect(roster.supportStaff).toEqual([]);
+  rookies.forEach(name => {
+    const rookie = roster.players.find(player => player.name === name);
+    expect(rookie.eligYear).toBe('1');
+    expect(getRosterCardProfilePath(rookie, [])).toBe(`/players/2026-27/${rookie.slug}`);
+  });
+  expect(roster.players[0].photoUrl).toBe(previous.players[0].photoUrl);
+  expect(previous.players).toHaveLength(23);
+  expect(previous.players.some(player => player.name === 'Nicole Wang')).toBe(true);
+  expect(roster.players).toHaveLength(25);
+  expect(previous.players[0].eligYear).toBe('2');
 });
 
 test('includes requested 2025-26 coaches and support staff', () => {
@@ -75,11 +98,11 @@ test('maps local seeded player records to latest official roster profiles', () =
 
   expect(latest).toEqual(expect.objectContaining({
     name: 'Liam Zhang',
-    season: '2025-26',
+    season: '2026-27',
     slug: 'liam-zhang',
   }));
-  expect(getRosterProfilePath(latest)).toBe('/players/2025-26/liam-zhang');
-  expect(getLocalPlayerRosterProfilePath({ id: 113, first_name: 't_Liam', last_name: 'Zhang' })).toBe('/players/2025-26/id/113');
+  expect(getRosterProfilePath(latest)).toBe('/players/2026-27/liam-zhang');
+  expect(getLocalPlayerRosterProfilePath({ id: 113, first_name: 't_Liam', last_name: 'Zhang' })).toBe('/players/2026-27/id/113');
 });
 
 test('maps local stat records to 2025-26 coach profiles when names match', () => {
@@ -124,8 +147,8 @@ test('keeps same-name local records on distinct database-id profile paths', () =
     { id: 902, first_name: 'Liam', last_name: 'Zhang' },
   ];
 
-  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[0])).toBe('/players/2025-26/id/901');
-  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[1])).toBe('/players/2025-26/id/902');
+  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[0])).toBe('/players/2026-27/id/901');
+  expect(getLocalPlayerRosterProfilePath(sameNamePlayers[1])).toBe('/players/2026-27/id/902');
 });
 
 test('does not create profile routes for support staff records', () => {
@@ -157,7 +180,7 @@ test('uses official roster photo before generated avatar fallback', () => {
 test('finds the latest roster record for the same player across seasons', () => {
   const latest = findLatestRosterRecord(getRosterBySeason('2024-25').players.find(player => player.name === 'Allison Cheng'));
 
-  expect(latest.season).toBe('2025-26');
+  expect(latest.season).toBe('2026-27');
   expect(latest.photoUrl).toContain('2026/3/4/Allison_Cheng_DxO.jpg');
 });
 
@@ -167,7 +190,7 @@ test('shares a cached photo URL across roster seasons', () => {
 
   expect(getRosterPlayerAvatar(olderAllison)).toEqual({
     type: 'image',
-    src: expect.stringContaining('allison-cheng'),
+    src: expect.stringMatching(/\/79\.[a-f0-9]{5}\.webp$/),
   });
   expect(getRosterPlayerAvatar(olderAllison)).toEqual(getRosterPlayerAvatar(getRosterBySeason('2025-26').players[0]));
   expect(getRosterPlayerAvatar(jerry)).toEqual({
@@ -178,20 +201,34 @@ test('shares a cached photo URL across roster seasons', () => {
 
 test('deduplicates photo sources across aliases and coaching roles, newest first', () => {
   const photos = getRosterPhotoSources();
-  const jessica = photos.find(photo => photo.key === 'jessica-viyan-cheng');
+  const jessica = photos.find(photo => photo.key === 59);
   expect(jessica.aliases).toContain('Jessica Cheng');
-  expect(jessica.sources[0].season).toBe('2025-26');
+  expect(jessica.sources[0].season).toBe('2026-27');
   const olderJessica = getRosterBySeason('2022-23').players.find(player => player.name === 'Jessica Cheng');
-  expect(getRosterPlayerAvatar(olderJessica).src).toContain('jessica-viyan-cheng');
+  expect(getRosterPlayerAvatar(olderJessica).src).toMatch(/\/59\.[a-f0-9]{5}\.webp$/);
   expect(photos.filter(photo => photo.aliases.includes('Ivan Cheng'))).toHaveLength(1);
   expect(new Set(photos.map(photo => photo.key)).size).toBe(photos.length);
+  photos.forEach(photo => {
+    const urls = photo.sources.map(source => source.url);
+    expect(new Set(urls).size).toBe(urls.length);
+  });
 });
 
-test('every available roster photo resolves to a bundled image instead of a remote or API URL', () => {
+test('every available roster photo resolves to its versioned CDN image', () => {
+  const manifest = require('../../../assets/roster-photos/manifest.json');
   getRosterPhotoSources().forEach(photo => {
     const avatar = getRosterPlayerAvatar({ name: photo.name });
+    const image = manifest.find(record => record.key === photo.key);
     expect(avatar.type).toBe('image');
-    expect(avatar.src).toContain(photo.key);
-    expect(avatar.src).not.toMatch(/https?:|\/api\//);
+    expect(Number.isInteger(image.key)).toBe(true);
+    expect(image.filename).toBe(`${photo.key}.${image.content_hash.slice(0, 5)}.webp`);
+    expect(avatar.src).toBe(`https://images.uwbadminton.com/${image.filename}`);
   });
+});
+
+test('shares Andrew Zhuang\'s uploaded photo across coaching seasons', () => {
+  const currentAndrew = getRosterBySeason('2025-26').coaches.find(person => person.name === 'Andrew Zhuang');
+  const olderAndrew = getRosterBySeason('2024-25').coaches.find(person => person.name === 'Andrew Zhuang');
+  expect(getRosterPlayerAvatar(currentAndrew).src).toMatch(/\/57\.[a-f0-9]{5}\.webp$/);
+  expect(getRosterPlayerAvatar(olderAndrew)).toEqual(getRosterPlayerAvatar(currentAndrew));
 });

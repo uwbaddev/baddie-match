@@ -36,7 +36,7 @@ test('elo groups link player names to official roster profiles when matched', as
   expect(screen.getByRole('button', { name: 'Singles' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Doubles' })).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'Mixed' })).not.toBeInTheDocument();
-  expect(link).toHaveAttribute('href', '/players/2025-26/id/8');
+  expect(link).toHaveAttribute('href', '/players/2026-27/id/8');
   expect(link).toHaveClass('table-name-link');
   expect(link).not.toHaveClass('name-pill');
   expect(screen.queryByText('Never Played')).not.toBeInTheDocument();
