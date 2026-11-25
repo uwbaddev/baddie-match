@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ArrowRight, CheckCircle2, CircleAlert, LoaderCircle, RotateCcw, X } from 'lucide-react';
 import { AppContext } from '../../Contexts/AppContext';
 import { ReportMatchUrl } from '../../API/API';
 import { cleanSeedPrefix, formatPlayerName } from '../utils/playerViewModels';
+import ReportPlayerSelect from './ReportPlayerSelect';
 
 const matchCategories = [
     { value: 'ranked', label: 'Ranked' },
@@ -18,6 +19,9 @@ const ReportMatchForm = ({ event, submitting, onSubmittingChange }) => {
     const [category, setCategory] = useState('ranked');
     const [notice, setNotice] = useState(null);
     const [cooldown, setCooldown] = useState(false);
+    const playerOptions = useMemo(() => activePlayers.map(player => ({
+        id: String(player.id), name: formatPlayerName(player), sex: player.sex,
+    })).sort((a, b) => a.name.localeCompare(b.name)), [activePlayers]);
 
     useEffect(() => {
         if (!cooldown || submitting) return;
@@ -110,20 +114,16 @@ const ReportMatchForm = ({ event, submitting, onSubmittingChange }) => {
                                 return (
                                     <div className="report-player-field" key={index}>
                                         {!singles && <label htmlFor={`report-player-${index}`}>{label}</label>}
-                                        <select
+                                        <ReportPlayerSelect
                                             id={`report-player-${index}`}
-                                            aria-label={singles ? sideLabel(side) : `${sideLabel(side)}, ${label}`}
+                                            label={singles ? sideLabel(side) : `${sideLabel(side)}, ${label}`}
                                             value={players[index]}
                                             disabled={submitting}
-                                            onChange={e => setPlayers(players.map((value, i) => i === index ? e.target.value : value))}
-                                        >
-                                            <option value="">Choose a player</option>
-                                            {activePlayers.filter(player => !sex || player.sex === sex).map(player => (
-                                                <option key={player.id} value={player.id} disabled={players.some((id, i) => i !== index && id === String(player.id))}>
-                                                    {formatPlayerName(player)}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            options={playerOptions.filter(player => !sex || player.sex === sex).map(player => ({
+                                                ...player, disabled: players.some((id, i) => i !== index && id === player.id),
+                                            }))}
+                                            onChange={id => setPlayers(players.map((value, i) => i === index ? id : value))}
+                                        />
                                     </div>
                                 );
                             })}
