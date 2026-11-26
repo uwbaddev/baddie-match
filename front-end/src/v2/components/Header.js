@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ArrowLeft, ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
+import { ArrowUpRight, BarChart3, Home, Menu, PencilLine, User, X } from 'lucide-react';
 import '../../index.css'
 
 const Header = () => {
@@ -37,9 +37,6 @@ const Header = () => {
                             {item.label === 'Roster' ? 'Players' : item.label}
                         </NavLink>
                     ))}
-                    <Link to="/v1" className="v2-exit-link" onClick={closeMenu}>
-                        Back to V1
-                    </Link>
                 </nav>
                 <button
                     className="menu-button"
@@ -76,10 +73,6 @@ const Header = () => {
                                     </NavLink>
                                 );
                             })}
-                            <Link to="/v1" className="v2-exit-link" onClick={closeMenu}>
-                                <ArrowLeft size={17} />
-                                Back to V1
-                            </Link>
                         </nav>
                         <button className="mobile-menu-close" type="button" aria-label="Close menu" onClick={closeMenu}>
                             <X size={18} />

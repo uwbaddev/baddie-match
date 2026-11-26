@@ -345,6 +345,7 @@ test('background provider updates preserve profile filters without refetching', 
     expect(playerFilter).toHaveValue('2');
     expect(screen.getByRole('combobox', { name: 'Match event' })).toHaveValue('singles');
     expect(global.fetch).toHaveBeenCalledTimes(requests);
+    expect(global.fetch).not.toHaveBeenCalledWith(expect.stringContaining('start=undefined'), expect.anything());
   } finally {
     global.fetch = originalFetch;
   }
