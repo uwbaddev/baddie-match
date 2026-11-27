@@ -1,4 +1,3 @@
-import './App.css';
 import MainRouter from './Routers/MainRouter';
 import AppContextProvider from './Contexts/AppContext';
 
