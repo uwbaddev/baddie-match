@@ -413,6 +413,25 @@ hr {
 
 .elo-group .data-table {
   min-width: 0;
+  table-layout: fixed;
+}
+
+.elo-group .data-table th:first-child {
+  width: 70%;
+}
+
+.elo-group .placement-progress {
+  display: flex;
+}
+
+.elo-group .placement-progress-bar {
+  flex: 0 1 72px;
+  min-width: 0;
+}
+
+.elo-group .placement-progress-text {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .elo-name-cell {

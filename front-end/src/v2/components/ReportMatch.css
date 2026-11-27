@@ -97,7 +97,7 @@
   font-weight: 500;
 }
 
-.report-page select,
+.report-page .report-player-search input,
 .report-page .report-score-row input {
   width: 100%;
   min-width: 0;
@@ -109,6 +109,99 @@
   color: #292929;
   font-size: calc(13px * var(--v2-font-scale));
   letter-spacing: 0;
+}
+
+.report-page .report-player-search {
+  position: relative;
+}
+
+.report-page .report-player-search input {
+  padding-left: 36px;
+  padding-right: 64px;
+}
+
+.report-page .report-player-search-icon,
+.report-page .report-player-chevron {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666666;
+  pointer-events: none;
+}
+
+.report-page .report-player-search-icon { left: 12px; }
+.report-page .report-player-chevron { right: 12px; }
+
+.report-page .report-player-clear {
+  position: absolute;
+  top: 8px;
+  right: 32px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #555555;
+}
+
+.report-page .report-player-clear:hover { background: #f0f0f0; }
+
+.report-page .report-player-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px #00000012;
+}
+
+.report-page .report-player-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #222222;
+  font-size: calc(13px * var(--v2-font-scale));
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.report-page .report-player-options button.is-active,
+.report-page .report-player-options button[aria-selected="true"] {
+  background: #f3f3f3;
+}
+
+.report-page .report-player-options button[aria-disabled="true"] {
+  color: #888888;
+  cursor: not-allowed;
+}
+
+.report-page .report-player-options small {
+  flex: none;
+  font-size: 11px;
+}
+
+.report-page .report-player-options p {
+  margin: 0;
+  padding: 12px 8px;
+  color: #555555;
+  font-size: calc(13px * var(--v2-font-scale));
 }
 
 .report-page select:focus-visible,

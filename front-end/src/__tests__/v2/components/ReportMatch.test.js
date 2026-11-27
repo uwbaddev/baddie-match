@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AppContext } from '../../../Contexts/AppContext';
 import ReportMatchComponent from '../../../v2/components/ReportMatch';
@@ -25,9 +25,15 @@ const renderReport = () => render(
   </AppContext.Provider>
 );
 
+const selectPlayer = (label, id) => {
+  const player = appContext.activePlayers.find(player => player.id === id);
+  userEvent.click(screen.getByRole('combobox', { name: label }));
+  userEvent.click(screen.getByRole('option', { name: `${player.first_name} ${player.last_name}`, exact: true }));
+};
+
 const selectSingles = () => {
-  userEvent.selectOptions(screen.getByRole('combobox', { name: 'Player one' }), '1');
-  userEvent.selectOptions(screen.getByRole('combobox', { name: 'Player two' }), '2');
+  selectPlayer('Player one', 1);
+  selectPlayer('Player two', 2);
 };
 
 const enterScore = (side, game, value) => {
@@ -76,7 +82,8 @@ test('selected names appear beside scores and cannot be selected on the other si
   const scoreNames = container.querySelectorAll('.report-score-player');
   expect(scoreNames[0]).toHaveTextContent('Liam Zhang');
   expect(scoreNames[1]).toHaveTextContent('Allison Cheng');
-  expect(within(screen.getByRole('combobox', { name: 'Player two' })).getByRole('option', { name: 'Liam Zhang' })).toBeDisabled();
+  userEvent.click(screen.getByRole('combobox', { name: 'Player two' }));
+  expect(screen.getByRole('option', { name: 'Liam Zhang Already selected' })).toHaveAttribute('aria-disabled', 'true');
   expect(container.querySelector('.report-side-marker')).not.toBeInTheDocument();
   expect(container.querySelector('.report-score-player img')).not.toBeInTheDocument();
   expect(screen.queryByText('Side')).not.toBeInTheDocument();
@@ -89,10 +96,12 @@ test('mixed player selectors preserve male and female choices', async () => {
   await userEvent.click(screen.getByRole('button', { name: 'Mixed' }));
   const male = screen.getByRole('combobox', { name: 'Team one, Male' });
   const female = screen.getByRole('combobox', { name: 'Team one, Female' });
-  expect(within(male).getByRole('option', { name: 'Liam Zhang' })).toBeInTheDocument();
-  expect(within(male).queryByRole('option', { name: 'Allison Cheng' })).not.toBeInTheDocument();
-  expect(within(female).getByRole('option', { name: 'Allison Cheng' })).toBeInTheDocument();
-  expect(within(female).queryByRole('option', { name: 'Liam Zhang' })).not.toBeInTheDocument();
+  userEvent.click(male);
+  expect(screen.getByRole('option', { name: 'Liam Zhang' })).toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Allison Cheng' })).not.toBeInTheDocument();
+  userEvent.click(female);
+  expect(screen.getByRole('option', { name: 'Allison Cheng' })).toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Liam Zhang' })).not.toBeInTheDocument();
 });
 
 test('singles submission keeps the API score ordering and resets after success', async () => {
@@ -120,7 +129,7 @@ test.each(['Doubles', 'Mixed'])('%s submits four players in their team positions
   await userEvent.click(screen.getByRole('button', { name: event }));
   const labels = event === 'Mixed' ? ['Male', 'Female'] : ['Player 1', 'Player 2'];
   ['one', 'two'].forEach((side, index) => labels.forEach((label, slot) => {
-    userEvent.selectOptions(screen.getByRole('combobox', { name: `Team ${side}, ${label}` }), String(index * 2 + slot + 1));
+    selectPlayer(`Team ${side}, ${label}`, index * 2 + slot + 1);
   }));
   enterScore('Team one', 1, 21);
   enterScore('Team two', 1, 18);
@@ -155,7 +164,7 @@ test('a failed submission keeps the entered values and displays the server error
   enterScore('Player two', 1, 15);
   await userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
   await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Database unavailable'));
-  expect(screen.getByRole('combobox', { name: 'Player one' })).toHaveValue('1');
+  expect(screen.getByRole('combobox', { name: 'Player one' })).toHaveValue('Liam Zhang');
   expect(screen.getByRole('spinbutton', { name: 'Player one, Game 1 score' })).toHaveValue(21);
 });
 
@@ -260,4 +269,106 @@ test('default Ranked resolves to the database category after categories load', a
   await userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
   await screen.findByRole('status');
   expect(JSON.parse(global.fetch.mock.calls[0][1].body).category).toBe('t_ranked');
+});
+
+test('player search matches last names case-insensitively and supports keyboard selection', () => {
+  global.fetch = jest.fn();
+  renderReport();
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  userEvent.type(input, ' zHaNg ');
+  expect(screen.getAllByRole('option')).toHaveLength(1);
+  expect(screen.getByRole('option', { name: 'Liam Zhang' })).toBeInTheDocument();
+  fireEvent.keyDown(input, { key: 'ArrowDown' });
+  expect(input).toHaveAttribute('aria-activedescendant', 'report-player-0-option-1');
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(input).toHaveValue('Liam Zhang');
+  expect(input).toHaveAttribute('aria-expanded', 'false');
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('an unfinished search clears the old player ID and cannot be submitted', () => {
+  global.fetch = jest.fn();
+  renderReport();
+  selectSingles();
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  userEvent.type(input, 'Nobody');
+  expect(screen.getByRole('status')).toHaveTextContent('No players found.');
+  userEvent.click(screen.getByRole('button', { name: 'Submit match' }));
+  expect(screen.getByRole('alert')).toHaveTextContent('Select a player for every position.');
+  expect(input).toHaveValue('');
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('player search closes on Escape and blur and can clear a selected player', () => {
+  renderReport();
+  selectSingles();
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  userEvent.click(input);
+  fireEvent.keyDown(input, { key: 'Escape' });
+  expect(input).toHaveValue('Liam Zhang');
+  expect(input).toHaveAttribute('aria-expanded', 'false');
+  userEvent.click(input);
+  userEvent.click(screen.getByRole('heading', { name: 'Score' }));
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  userEvent.click(screen.getByRole('button', { name: 'Clear player one' }));
+  expect(input).toHaveValue('');
+  expect(input).toHaveFocus();
+  userEvent.tab();
+  expect(input).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('already-selected players cannot be chosen by mouse or keyboard', () => {
+  renderReport();
+  selectPlayer('Player one', 1);
+  const input = screen.getByRole('combobox', { name: 'Player two' });
+  userEvent.type(input, 'Liam');
+  userEvent.click(screen.getByRole('option', { name: 'Liam Zhang Already selected' }));
+  fireEvent.keyDown(input, { key: 'ArrowDown' });
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(input).toHaveValue('Liam');
+  expect(input).not.toHaveAttribute('aria-activedescendant');
+  userEvent.clear(input);
+  fireEvent.keyDown(input, { key: 'ArrowUp' });
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(input).toHaveValue('Katie Lau');
+  expect(screen.getByRole('combobox', { name: 'Player one' })).toHaveValue('Liam Zhang');
+});
+
+test('an empty player list supports searching without selecting an invalid player', () => {
+  render(
+    <AppContext.Provider value={{ ...appContext, activePlayers: [] }}><ReportMatchComponent /></AppContext.Provider>
+  );
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  userEvent.type(input, 'Liam');
+  fireEvent.keyDown(input, { key: 'ArrowUp' });
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(screen.getByRole('status')).toHaveTextContent('No players found.');
+  expect(screen.queryByRole('option')).not.toBeInTheDocument();
+});
+
+test('tabbing back to a selected player and pressing Enter preserves that player', () => {
+  global.fetch = jest.fn();
+  renderReport();
+  selectSingles();
+  userEvent.tab({ shift: true });
+  userEvent.tab({ shift: true });
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  expect(input).toHaveFocus();
+  expect(input).toHaveValue('Liam Zhang');
+  expect(input).toHaveAttribute('aria-activedescendant', 'report-player-0-option-1');
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(input).toHaveValue('Liam Zhang');
+  expect(screen.getByRole('combobox', { name: 'Player two' })).toHaveValue('Allison Cheng');
+  expect(global.fetch).not.toHaveBeenCalled();
+});
+
+test('Enter does not select an unhighlighted player after clearing the field', () => {
+  renderReport();
+  selectSingles();
+  userEvent.click(screen.getByRole('button', { name: 'Clear player one' }));
+  const input = screen.getByRole('combobox', { name: 'Player one' });
+  expect(input).not.toHaveAttribute('aria-activedescendant');
+  fireEvent.keyDown(input, { key: 'Enter' });
+  expect(input).toHaveValue('');
 });
